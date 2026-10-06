@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
 <channel>
-<title>llunatic-lab (id)</title><link>https://llunatic-lab.vercel.app/id/</link>
+<title>llunatic-lab (id)</title><link>https://lab.llunaticsys.web.id/id/</link>
 <description>Catatan keamanan dari sisi gelap internet</description>
 <language>id</language>
 <item><title>EASM: Memetakan Attack Surface Sebelum Penyerang Melakukannya</title>
-            <link>https://llunatic-lab.vercel.app/id/artikel/easm-memetakan-permukaan-serangan/</link>
+            <link>https://lab.llunaticsys.web.id/id/artikel/easm-memetakan-permukaan-serangan/</link>
             <description>Kebanyakan organisasi kebobolan bukan lewat pintu depan, melainkan lewat aset yang bahkan tidak mereka sadari ada. EASM adalah disiplin untuk menemukan semuanya lebih dulu.</description>
             <pubDate>Tue, 06 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://llunatic-lab.vercel.app/id/artikel/easm-memetakan-permukaan-serangan/</guid></item>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/easm-memetakan-permukaan-serangan/</guid></item>
 </channel>
 </rss>

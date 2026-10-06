@@ -11,7 +11,7 @@ GLOSSARY = ROOT / "content" / "glossary.json"
 TEMPLATES = ROOT / "templates"
 ASSETS = ROOT / "assets"
 PUBLIC = ROOT / "public"
-SITE_URL = "https://llunatic-lab.vercel.app"
+SITE_URL = "https://lab.llunaticsys.web.id"
 
 MONTHS = {
     "en": ["", "January", "February", "March", "April", "May", "June",

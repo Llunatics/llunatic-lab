@@ -9,7 +9,7 @@
     try { localStorage.setItem("llunatic-theme", t); } catch (e) {}
     var dark = t !== "light";
     document.querySelectorAll(".theme-toggle").forEach(function (b) {
-      b.setAttribute("aria-label", dark ? "Ganti ke mode terang" : "Ganti ke mode gelap");
+      b.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
       b.innerHTML = dark ? ICON_SUN : ICON_MOON;
     });
   }
@@ -71,11 +71,11 @@
     head.innerHTML = '<span class="dots"><i></i><i></i><i></i></span><span>' + lang + '</span>';
     var btn = document.createElement("button");
     btn.className = "copy-btn";
-    btn.textContent = "salin";
+    btn.textContent = "copy";
     btn.addEventListener("click", function () {
       navigator.clipboard.writeText(code.innerText).then(function () {
-        btn.textContent = "tersalin ✓";
-        setTimeout(function () { btn.textContent = "salin"; }, 1600);
+        btn.textContent = "copied ✓";
+        setTimeout(function () { btn.textContent = "copy"; }, 1600);
       });
     });
     head.appendChild(btn);
@@ -164,7 +164,7 @@
             return '<a href="' + a.url + '"><div class="t">' + a.title + '</div>' +
               '<div class="m">' + a.date + " · " + a.tags.join(" · ") + "</div></a>";
           }).join("")
-        : '<div class="empty">nggak ketemu — coba kata kunci lain.</div>';
+        : '<div class="empty">nothing found — try another keyword.</div>';
     });
   }
 

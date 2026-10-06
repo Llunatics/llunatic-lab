@@ -13,8 +13,8 @@ ASSETS = ROOT / "assets"
 PUBLIC = ROOT / "public"
 SITE_URL = "https://llunatic-lab.vercel.app"
 
-BULAN = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-         "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
+BULAN = ["", "January", "February", "March", "April", "May", "June",
+         "July", "August", "September", "October", "November", "December"]
 
 # ---------------- frontmatter ----------------
 def parse_md(path):
@@ -166,7 +166,7 @@ def index_row(a, n):
         <h3><a href="/artikel/{a['slug']}/">{html.escape(a['title'])}</a></h3>
         <p class="excerpt">{html.escape(a['excerpt'])}</p>
         <div class="meta"><span>{tgl_id(a['date'])}</span><span>·</span>
-        <span>{mins} mnt baca</span>{tags}</div>
+        <span>{mins} min read</span>{tags}</div>
       </div>
       {thumb}
       <span class="arrow">→</span>
@@ -177,7 +177,7 @@ def toc_html(toc):
     items = "".join(
         f'<li style="margin-left:{(lvl-2)*14}px"><a href="#{hid}">{html.escape(txt)}</a></li>'
         for lvl, hid, txt in toc)
-    return f'<aside class="toc"><h4>Daftar isi</h4><ol>{items}</ol></aside>'
+    return f'<aside class="toc"><h4>Contents</h4><ol>{items}</ol></aside>'
 
 # ---------------- build ----------------
 def main():
@@ -206,25 +206,25 @@ def main():
     chips = "".join(f'<a class="chip" href="/tag/{t}/">{t}</a>' for t in all_tags)
     home = f"""
     <section class="hero"><div class="wrap">
-      <div class="kicker"><span class="dot"></span>security notes — dari sisi gelap internet</div>
-      <h1>Catatan <em>keamanan</em> untuk yang tidak mau jadi korban <em>berikutnya.</em></h1>
-      <p class="lede">Ditulis oleh <strong>kou</strong> — threat intel, tutorial, dan bedah kasus keamanan siber.
-      Istilah teknis ada penjelasannya: cukup <strong>arahkan kursor</strong> ke kata bergaris titik-titik.</p>
-      <div class="hero-meta"><span><b>{len(articles):02d}</b> artikel</span>
-      <span><b>{len(all_tags):02d}</b> topik</span><span>terbit 3–4× seminggu</span></div>
+      <div class="kicker"><span class="dot"></span>security notes — from the dark side of the internet</div>
+      <h1>Security <em>notes</em> for those who refuse to be the <em>next victim.</em></h1>
+      <p class="lede">Written by <strong>kou</strong> — threat intel, tutorials, and cybersecurity case breakdowns.
+      Technical terms come with explanations: just <strong>hover</strong> over dotted-underlined words.</p>
+      <div class="hero-meta"><span><b>{len(articles):02d}</b> articles</span>
+      <span><b>{len(all_tags):02d}</b> topics</span><span>published 3–4× a week</span></div>
     </div>
     <div class="ticker"><div class="ticker-track">{ticker_items}</div></div>
     </section>
     <section><div class="wrap">
-      <div class="sec-head"><h2><span class="idx">01</span>Tulisan terbaru</h2>
-      <a class="more" href="/arsip/">semua arsip →</a></div>
+      <div class="sec-head"><h2><span class="idx">01</span>Latest writings</h2>
+      <a class="more" href="/arsip/">full archive →</a></div>
       <ol class="index-list">{rows}</ol>
-      <div class="sec-head"><h2><span class="idx">02</span>Jelajahi topik</h2></div>
+      <div class="sec-head"><h2><span class="idx">02</span>Browse topics</h2></div>
       <div class="chips">{chips}</div>
     </div></section>"""
     (PUBLIC / "index.html").write_text(
-        page("Catatan keamanan siber",
-             "Threat intel, tutorial, dan bedah kasus keamanan siber oleh kou — llunatic-lab.",
+        page("Cybersecurity notes",
+             "Threat intel, tutorials, and cybersecurity case breakdowns by kou — llunatic-lab.",
              home), encoding="utf-8")
 
     # ---- article pages ----
@@ -235,19 +235,19 @@ def main():
         cover = (f'<img class="cover" src="{a["cover"]}" alt="{html.escape(a["title"])}">'
                  if a["cover"] else "")
         pager = '<div class="pager">'
-        pager += (f'<a href="/artikel/{prev_a["slug"]}/"><span class="dir">← sebelumnya</span>'
+        pager += (f'<a href="/artikel/{prev_a["slug"]}/"><span class="dir">← previous</span>'
                   f'<span class="t">{html.escape(prev_a["title"])}</span></a>'
                   if prev_a else "<span></span>")
-        pager += (f'<a class="next" href="/artikel/{next_a["slug"]}/"><span class="dir">berikutnya →</span>'
+        pager += (f'<a class="next" href="/artikel/{next_a["slug"]}/"><span class="dir">next →</span>'
                   f'<span class="t">{html.escape(next_a["title"])}</span></a>'
                   if next_a else "<span></span>")
         pager += "</div>"
         art = f"""
         <article class="article-hero"><div class="wrap-narrow">
-          <div class="kicker"><span class="dot"></span>artikel</div>
+          <div class="kicker"><span class="dot"></span>article</div>
           <h1>{html.escape(a['title'])}</h1>
           <div class="meta"><span>{tgl_id(a['date'])}</span><span>·</span>
-          <span>{a['mins']} mnt baca</span><span>·</span><span>oleh kou</span>{tags}</div>
+          <span>{a['mins']} mnt baca</span><span>·</span><span>by kou</span>{tags}</div>
           {cover}
         </div></article>
         <div class="article-body"><div class="wrap">
@@ -267,8 +267,8 @@ def main():
     by_year = {}
     for a in articles:
         by_year.setdefault(a["date"][:4], []).append(a)
-    arch = '<div class="page-head"><div class="wrap"><div class="kicker"><span class="dot"></span>arsip</div>'
-    arch += "<h1>Semua <em>tulisan.</em></h1></div></div><div class='wrap'>"
+    arch = '<div class="page-head"><div class="wrap"><div class="kicker"><span class="dot"></span>archive</div>'
+    arch += "<h1>All <em>writings.</em></h1></div></div><div class='wrap'>"
     for year in sorted(by_year, reverse=True):
         arch += f'<div class="arch-year">— {year}</div><ol class="index-list">'
         arch += "\n".join(index_row(a, i + 1)
@@ -277,7 +277,7 @@ def main():
         arch += "</ol>"
     arch += "</div>"
     d = PUBLIC / "arsip"; d.mkdir(parents=True)
-    (d / "index.html").write_text(page("Arsip", "Semua artikel llunatic-lab.", arch),
+    (d / "index.html").write_text(page("Archive", "Every article on llunatic-lab.", arch),
                                   encoding="utf-8")
 
     # ---- tag pages ----
@@ -285,39 +285,39 @@ def main():
         tagged = [a for a in articles if t in a["tags"]]
         rows = "\n".join(index_row(a, i + 1) for i, a in enumerate(tagged))
         c = (f'<div class="page-head"><div class="wrap"><div class="kicker">'
-             f'<span class="dot"></span>topik</div><h1>#{t}</h1></div></div>'
+             f'<span class="dot"></span>topic</div><h1>#{t}</h1></div></div>'
              f'<div class="wrap"><ol class="index-list">{rows}</ol></div>')
         d = PUBLIC / "tag" / t; d.mkdir(parents=True)
-        (d / "index.html").write_text(page(f"#{t}", f"Artikel bertopik {t}.", c),
+        (d / "index.html").write_text(page(f"#{t}", f"Articles about {t}.", c),
                                      encoding="utf-8")
 
     # ---- about ----
     about = """
     <div class="page-head"><div class="wrap">
-      <div class="kicker"><span class="dot"></span>tentang</div>
-      <h1>Lab kecil untuk <em>keamanan siber.</em></h1>
+      <div class="kicker"><span class="dot"></span>about</div>
+      <h1>A small lab for <em>cybersecurity.</em></h1>
     </div></div>
     <div class="wrap"><div class="about-grid"><div>
-      <p class="big">llunatic-lab adalah catatan publik <b>kou</b> — tempat mendokumentasikan
-      apa yang dipelajari soal keamanan siber: threat intelligence, attack surface,
-      ethical hacking, dan pertahanan.</p>
-      <p style="margin-top:20px;color:var(--ink-dim)">Ditulis dengan gaya yang bisa diikuti
-      pemula tapi tetap berguna buat praktisi. Setiap istilah teknis punya penjelasan
-      sekali hover — tidak ada yang dibiarkan menggantung.</p>
+      <p class="big">llunatic-lab is the public notebook of <b>kou</b> — a place to
+      document what&apos;s learned about cybersecurity: threat intelligence, attack
+      surface, ethical hacking, and defense.</p>
+      <p style="margin-top:20px;color:var(--ink-dim)">Written in a style beginners can
+      follow but practitioners still find useful. Every technical term has a hover
+      explanation — nothing is left hanging.</p>
     </div><div>
-      <p style="color:var(--ink-dim)">Semua artikel di situs ini ditulis dan diterbitkan
-      lewat pipeline otomatis: riset → tulis → review → terbit, 3–4 kali seminggu.
-      Kalau ada yang keliru secara teknis, itu tanggung jawab penulis — dan koreksi
-      selalu diterima dengan senang hati.</p>
+      <p style="color:var(--ink-dim)">Every article on this site is written and published
+      through an automated pipeline: research → write → review → publish, 3–4 times
+      a week. If anything is technically wrong, that&apos;s on the author — and
+      corrections are always welcome.</p>
     </div></div>
     <div class="stat-row">
-      <div class="stat"><b>{{n_artikel}}</b><span>artikel terbit</span></div>
-      <div class="stat"><b>{{n_topik}}</b><span>topik dibahas</span></div>
-      <div class="stat"><b>3–4×</b><span>terbit per minggu</span></div>
+      <div class="stat"><b>{{n_artikel}}</b><span>articles published</span></div>
+      <div class="stat"><b>{{n_topik}}</b><span>topics covered</span></div>
+      <div class="stat"><b>3–4×</b><span>published per week</span></div>
     </div></div>""".replace("{{n_artikel}}", f"{len(articles):02d}").replace(
         "{{n_topik}}", f"{len(all_tags):02d}")
     d = PUBLIC / "tentang"; d.mkdir(parents=True)
-    (d / "index.html").write_text(page("Tentang", "Tentang llunatic-lab dan kou.", about),
+    (d / "index.html").write_text(page("About", "About llunatic-lab and kou.", about),
                                   encoding="utf-8")
 
     # ---- search.json ----
@@ -346,7 +346,7 @@ def main():
         for a in articles[:20])
     rss = (f'<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0">\n<channel>\n'
            f"<title>llunatic-lab</title><link>{SITE_URL}</link>\n"
-           f"<description>Security notes oleh kou</description>\n{items}\n</channel>\n</rss>")
+           f"<description>Security notes by kou</description>\n{items}\n</channel>\n</rss>")
     (PUBLIC / "rss.xml").write_text(rss, encoding="utf-8")
 
     print(f"built {len(articles)} artikel, {len(all_tags)} topik -> {PUBLIC}")

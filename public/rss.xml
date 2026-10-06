@@ -2,10 +2,10 @@
 <rss version="2.0">
 <channel>
 <title>llunatic-lab</title><link>https://llunatic-lab.vercel.app</link>
-<description>Security notes oleh kou</description>
-<item><title>EASM: Memetakan Permukaan Serangan Sebelum Penyerang Melakukannya</title>
+<description>Security notes by kou</description>
+<item><title>EASM: Mapping Your Attack Surface Before Attackers Do</title>
         <link>https://llunatic-lab.vercel.app/artikel/easm-memetakan-permukaan-serangan/</link>
-        <description>Kebanyakan organisasi diserang bukan lewat pintu depan, melainkan lewat aset yang bahkan tidak mereka sadari ada. EASM adalah disiplin untuk menemukan semuanya lebih dulu.</description>
+        <description>Most organizations aren&#x27;t breached through the front door, but through assets they didn&#x27;t even know existed. EASM is the discipline of finding them first.</description>
         <pubDate>Tue, 06 Oct 2026 00:00:00 -0000</pubDate>
         <guid>https://llunatic-lab.vercel.app/artikel/easm-memetakan-permukaan-serangan/</guid></item>
 </channel>

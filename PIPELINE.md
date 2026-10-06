@@ -1,53 +1,56 @@
-# Pipeline artikel otomatis — playbook cron worker
+# Automated article pipeline — cron worker playbook
 
-Jadwal: Senin, Rabu, Jumat, Minggu pukul 07:00 WIB (4x/minggu).
-Tujuan: riset → tulis → build → push, tanpa campur tangan user.
-Repo: `Llunatics/llunatic-lab`. Push via skill `github-push` (pakai konektor
-`custom.github`). Vercel auto-deploy setiap push ke branch utama.
+Schedule: Monday, Wednesday, Friday, Sunday at 07:00 WIB (4x/week).
+Goal: research → write → build → push, with no user intervention.
+Repo: `Llunatics/llunatic-lab`. Push via stored git credential helper.
+Vercel auto-deploys on every push to the main branch.
 
-## Langkah
+## Steps
 
-1. **Pilih topik.** Baca judul + tag artikel yang sudah ada (`content/articles/`),
-   jangan mengulang topik yang sama dalam 8 minggu terakhir. Rotasi kategori:
-   threat-intel → tutorial-praktis → bedah-konsep → tools → bedah-kasus → ulangi.
-   Prioritaskan yang sedang ramai: CVE kritis baru, breach besar, atau teknik
-   yang lagi dibahas komunitas.
+1. **Pick a topic.** Read titles + tags of existing articles (`content/articles/`),
+   don't repeat a topic covered in the last 8 weeks. Rotate categories:
+   threat-intel → hands-on tutorial → concept explainer → tools → case
+   breakdown → repeat. Prefer what's hot: new critical CVEs, major breaches,
+   or techniques the community is discussing.
 
-2. **Riset (wajib, jangan halusinasi).** Gunakan `browser.search` (vertical `news`
-   untuk kabar terbaru) atau `browser.deep_research` untuk topik berat.
-   Catat: fakta kunci, angka, nama, tanggal, dan 2–4 URL sumber. JANGAN mengarang
-   nomor CVE, nama perusahaan korban, atau tanggal kejadian.
+2. **Research (mandatory, no hallucinating).** Use `browser.search` (`news`
+   vertical for fresh stories) or `browser.deep_research` for heavy topics.
+   Record: key facts, numbers, names, dates, and 2–4 source URLs. NEVER invent
+   CVE numbers, victim company names, or incident dates.
 
-3. **Tulis artikel** ke `content/articles/YYYY-MM-DD-slug.md`:
-   - Frontmatter: title, date (hari ini), tags (2–4, huruf kecil, strip),
-     excerpt (1–2 kalimat), cover (`/assets/covers/<slug>.jpg`).
-   - Bahasa Indonesia, 800–1500 kata, target pembaca campuran.
-   - Struktur: hook pembuka → penjelasan → detail teknis → mitigasi/langkah
-     praktis → penutup yang nempel di kepala.
-   - Istilah teknis dibungkus `[[Istilah]]` saat pertama muncul. Kalau istilah
-     belum ada di `content/glossary.json`, tambahkan dengan penjelasan
-     Indonesia yang ringkas dan akurat.
-   - Code block selalu pakai bahasa (```bash, ```python, dsb).
+3. **Write the article** to `content/articles/YYYY-MM-DD-slug.md`:
+   - Frontmatter: title, date (today), tags (2–4, lowercase, hyphens),
+     excerpt (1–2 sentences), cover (`/assets/covers/<slug>.jpg`).
+   - English, 800–1500 words, mixed audience.
+   - Structure: strong hook → explanation → technical detail → mitigation /
+     practical steps → memorable closing.
+   - Wrap technical terms in `[[Term]]` on first mention. If a term isn't in
+     `content/glossary.json` yet, add it with a concise, accurate English
+     explanation.
+   - Code blocks always declare a language (```bash, ```python, etc.).
 
-4. **Generate cover** via `media.generate_image`:
+4. **Generate the cover** via `media.generate_image`:
    - `output_dir`: `/home/hatch/workspace/llunatic-lab/assets/covers`
-   - `name`: slug artikel, `output_format`: `jpg`
-   - Prompt: dark editorial illustration, aksen lime-green, sinematik,
-     minimalis, **tanpa teks/huruf/angka sama sekali**. Sesuaikan dengan topik.
+   - `name`: article slug, `output_format`: `jpg`
+   - Prompt: dark editorial illustration, lime-green accents, cinematic,
+     minimalist, **absolutely no text, letters, or numbers**.
 
 5. **Build**: `cd /home/hatch/workspace/llunatic-lab && python3 scripts/build.py`.
-   Pastikan tidak error dan artikel baru muncul di `public/`.
+   Must complete with no errors and the new article must appear in `public/`.
 
-6. **Push**: `git add -A && git commit -m "artikel: <slug>"` lalu push via
-   skill `github-push`. Jangan push kalau build gagal.
+6. **Push**: `git add -A && git commit -m "article: <slug>"` then push
+   (`git push origin main` — auth is stored, just push). Don't push if the
+   build failed.
 
-7. **Lapor ke user** via WhatsApp (chat ini): judul artikel + 1 kalimat isi +
-   link Vercel (format link inline diikuti teks, JANGAN di akhir pesan).
+7. **Notify the user** on WhatsApp (this chat): "🤖 New article published:
+   <title> — <1 sentence on what it's about>. Read it: <link> (llunatic-lab)".
+   Link INLINE followed by text, NEVER at the end of the message. First check
+   that https://llunatic-lab.vercel.app/artikel/<slug>/ loads; if it's not live
+   yet (user hasn't connected Vercel), link the markdown file on GitHub instead.
 
-## Aturan keras
+## Hard rules
 
-- Tidak ada fakta tanpa sumber yang diverifikasi di langkah 2.
-- Tidak ada plagiarisme: tulis ulang dengan gaya llunatic-lab, jangan
-  copy-paste sumber.
-- Kalau riset buntu (topik tidak cukup sumber), ganti topik — jangan dipaksakan.
-- Satu artikel per run. Kalau gagal di tengah, jangan commit setengah jalan.
+- No facts without verified sources from step 2.
+- No plagiarism: rewrite everything in llunatic-lab's voice, never copy-paste sources.
+- If research stalls (not enough sources), switch topics — don't force it.
+- One article per run. If something fails midway, don't commit a half-done state.

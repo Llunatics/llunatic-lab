@@ -1,58 +1,58 @@
 ---
-title: "EASM: Memetakan Permukaan Serangan Sebelum Penyerang Melakukannya"
+title: "EASM: Mapping Your Attack Surface Before Attackers Do"
 date: 2026-10-06
-tags: [EASM, attack-surface, blue-team]
-excerpt: "Kebanyakan organisasi diserang bukan lewat pintu depan, melainkan lewat aset yang bahkan tidak mereka sadari ada. EASM adalah disiplin untuk menemukan semuanya lebih dulu."
+tags: [easm, attack-surface, blue-team]
+excerpt: "Most organizations aren't breached through the front door, but through assets they didn't even know existed. EASM is the discipline of finding them first."
 cover: /assets/covers/easm-attack-surface.jpg
 ---
 
-Bayangkan kamu disuruh menjaga sebuah gedung. Kamu kunci pintu depan, pasang CCTV, sewa satpam. Tapi ternyata gedung itu punya pintu belakang yang tidak tercatat di denah, jendela gudang yang tidak pernah dikunci, dan lorong servis yang sudah lama tidak dipakai siapa pun. Penyerang tidak akan mengetuk pintu depan — mereka akan masuk lewat celah yang bahkan tidak kamu tahu ada.
+Imagine you're hired to guard a building. You lock the front door, install CCTV, hire guards. But the building has a back door missing from the blueprints, a warehouse window that's never locked, and a service corridor nobody has used in years. Attackers won't knock on the front door — they'll slip in through gaps you didn't even know existed.
 
-Itulah gambaran paling jujur tentang keamanan siber kebanyakan organisasi hari ini. Dan disiplin ilmu yang lahir untuk menjawab masalah ini namanya [[EASM]].
+That's the most honest picture of most organizations' cybersecurity today. And the discipline born to answer it is called [[EASM]].
 
-## Masalahnya: kamu tidak bisa menjaga yang tidak kamu ketahui
+## The problem: you can't protect what you don't know
 
-Setiap perusahaan modern punya jejak digital yang jauh lebih besar dari yang mereka kira: [[subdomain]] yang dibuat untuk proyek tiga tahun lalu dan tidak pernah dimatikan, bucket penyimpanan cloud yang tidak sengaja terbuka publik, server pengembangan yang lupa di-patch, sertifikat SSL untuk layanan yang sudah tidak dipakai, hingga akun karyawan di layanan pihak ketiga.
+Every modern company has a digital footprint far larger than it realizes: [[subdomain]]s created for a project three years ago and never shut down, cloud storage buckets accidentally left public, dev servers forgotten unpatched, SSL certificates for services nobody uses anymore, even employee accounts on third-party services.
 
-Semua itu adalah bagian dari [[attack surface]] — dan penyerang punya satu keunggulan fundamental: mereka hanya butuh menemukan **satu** celah, sementara tim bertahan harus menutup **semuanya**.
+All of it is part of the [[attack surface]] — and attackers hold one fundamental advantage: they only need to find **one** gap, while defenders must close **every** one.
 
-Inilah kenapa pendekatan keamanan yang reaktif ("tunggu ada insiden, baru bertindak") selalu kalah. [[EASM]] membalik logikanya: **berpikir seperti penyerang, tapi bergerak lebih dulu.**
+That's why reactive security ("wait for an incident, then act") always loses. [[EASM]] flips the logic: **think like an attacker, but move first.**
 
-## Apa sebenarnya yang dilakukan EASM?
+## What does EASM actually do?
 
-Secara sederhana, [[EASM]] adalah proses berkelanjutan untuk menemukan, menginventarisasi, dan memantau seluruh aset digital organisasi yang terekspos ke internet — dari sudut pandang orang luar.
+Simply put, [[EASM]] is the continuous process of discovering, inventorying, and monitoring every internet-exposed digital asset of an organization — from an outsider's perspective.
 
-Ada empat tahapan intinya:
+There are four core stages:
 
-**1. Discovery — menemukan semuanya.**
-Ini fondasinya. Tekniknya mirip dengan yang dipakai penyerang saat fase reconnaissance: enumerasi [[subdomain]], pemindaian sertifikat SSL (setiap sertifikat mencatat nama domain — sumber informasi yang luar biasa), pencarian di mesin pencari khusus seperti [[Shodan]] dan [[Censys]], sampai teknik [[OSINT]] klasik. Tool seperti [[Amass]] mengotomatiskan sebagian besar pekerjaan ini.
+**1. Discovery — find everything.**
+This is the foundation. The techniques mirror what attackers use during reconnaissance: [[subdomain]] enumeration, SSL certificate scanning (every certificate logs domain names — an incredible source of intel), special-purpose search engines like [[Shodan]] and [[Censys]], and classic [[OSINT]] techniques. Tools like [[Amass]] automate most of this work.
 
-**2. Inventory — mencatat dan mengklasifikasikan.**
-Aset yang ditemukan dicatat: apa layanannya, versi software apa yang berjalan, siapa pemiliknya di internal, seberapa kritis. Tanpa inventaris yang rapi, temuan discovery hanya jadi daftar panjang yang tidak bisa ditindaklanjuti.
+**2. Inventory — record and classify.**
+Discovered assets get logged: what service is running, what software version, who owns it internally, how critical it is. Without a tidy inventory, discovery findings are just a long list nobody can act on.
 
-**3. Assessment — menilai risikonya.**
-Setiap aset dinilai: apakah ada [[vulnerability]] yang diketahui? Apakah layanannya sudah usang? Apakah ada [[CVE]] kritis yang belum di-patch? Tahap ini biasanya terhubung dengan [[threat intelligence]] agar penilaian risikonya mengikuti ancaman yang sedang aktif di dunia nyata.
+**3. Assessment — evaluate the risk.**
+Each asset gets scored: any known [[vulnerability]]s? Outdated services? Unpatched critical [[CVE]]s? This stage usually connects to [[threat intelligence]] so the risk assessment tracks threats that are actually active in the wild.
 
-**4. Monitoring — mengawasi terus-menerus.**
-Attack surface tidak pernah diam. Setiap deploy baru, setiap uji coba layanan cloud, setiap akuisisi perusahaan menambah permukaan serangan. [[EASM]] yang baik berjalan kontinu, bukan audit setahun sekali.
+**4. Monitoring — watch continuously.**
+The attack surface never sits still. Every new deploy, every cloud service trial, every company acquisition expands it. Good [[EASM]] runs continuously — not as a once-a-year audit.
 
-## Kenapa ini relevan untuk semua orang, bukan cuma korporat?
+## Why this matters to everyone, not just corporations
 
-Prinsip yang sama berlaku dalam skala kecil. Punya blog pribadi? Cek subdomain yang tidak terpakai. Punya VPS? Pastikan tidak ada port manajemen yang terbuka ke seluruh internet. Prinsipnya satu: **kurangi apa yang terlihat dari luar, dan ketahui persis apa yang masih terlihat.**
+The same principle scales down. Got a personal blog? Check for unused subdomains. Got a VPS? Make sure no management ports are wide open to the internet. The principle is one: **shrink what's visible from the outside, and know exactly what remains visible.**
 
-Bahkan untuk individu, pola pikir [[EASM]] berguna: akun-akun lama yang terlupakan, layanan yang masih terhubung ke email utama, aplikasi yang masih punya akses ke akun Google — semuanya adalah "attack surface" pribadi.
+Even for individuals, the [[EASM]] mindset helps: forgotten old accounts, services still connected to your main email, apps still holding access to your Google account — all of it is personal "attack surface".
 
-## Mulai dari mana?
+## Where to start?
 
-Kamu tidak butuh budget enterprise untuk mulai berpikir ala [[EASM]]. Langkah paling sederhana yang bisa dilakukan siapa pun hari ini:
+You don't need an enterprise budget to start thinking in [[EASM]] terms. The simplest steps anyone can take today:
 
-- Cari tahu subdomain apa saja yang dimiliki domainmu (banyak tool gratis untuk ini).
-- Cek sertifikat SSL yang pernah diterbitkan untuk domainmu — sering ada kejutan di sana.
-- Cari namamu atau nama organisasimu di [[Shodan]] — lihat apa yang terlihat dari luar.
-- Buat daftarnya, lalu tutup atau amankan yang tidak perlu terekspos.
+- Find out what subdomains your domain has (plenty of free tools for this).
+- Check the SSL certificates ever issued for your domain — there are often surprises.
+- Search your name or organization on [[Shodan]] — see what's visible from the outside.
+- List it all, then close or secure whatever doesn't need to be exposed.
 
-Penyerang melakukan hal yang persis sama setiap hari, secara otomatis, dalam skala masif. Satu-satunya pertanyaan adalah: siapa yang menemukan asetmu lebih dulu — kamu, atau mereka?
+Attackers do exactly this every day, automatically, at massive scale. The only question is: who finds your assets first — you, or them?
 
 ---
 
-*Artikel ini adalah pembuka seri attack surface di llunatic-lab. Berikutnya kita akan praktik langsung: enumerasi subdomain dari nol dengan tool gratis.*
+*This article opens the attack surface series on llunatic-lab. Next up: hands-on subdomain enumeration from zero, with free tools.*

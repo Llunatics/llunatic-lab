@@ -374,7 +374,7 @@ img { max-width: 100%; display: block; }
 }
 .prose { font-size: 17px; line-height: 1.85; color: var(--ink); }
 .prose > * + * { margin-top: 1.5em; }
-.prose p:first-of-type::first-letter {
+.prose > p:first-of-type::first-letter {
   font-family: var(--serif);
   font-size: 3.6em;
   float: left;

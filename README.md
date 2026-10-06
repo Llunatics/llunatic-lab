@@ -1,6 +1,6 @@
 # llunatic-lab
 
-Security notes from the dark side of the internet — written by **kou**.
+Security notes from the dark side of the internet.
 
 A static site (no framework, no server-side build step). Articles are written in
 Markdown under `content/articles/`, then `scripts/build.py` (stdlib Python only,

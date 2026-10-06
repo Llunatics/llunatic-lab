@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EASM: Memetakan Attack Surface Sebelum Penyerang Melakukannya — llunatic-lab</title>
+<meta name="description" content="Kebanyakan organisasi kebobolan bukan lewat pintu depan, melainkan lewat aset yang bahkan tidak mereka sadari ada. EASM adalah disiplin untuk menemukan semuanya lebih dulu.">
+<meta property="og:title" content="EASM: Memetakan Attack Surface Sebelum Penyerang Melakukannya">
+<meta property="og:description" content="Kebanyakan organisasi kebobolan bukan lewat pintu depan, melainkan lewat aset yang bahkan tidak mereka sadari ada. EASM adalah disiplin untuk menemukan semuanya lebih dulu.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="/assets/covers/easm-attack-surface.jpg"><link rel="alternate" hreflang="id" href="https://llunatic-lab.vercel.app/id/artikel/easm-memetakan-permukaan-serangan/"><link rel="alternate" hreflang="en" href="https://llunatic-lab.vercel.app/artikel/easm-memetakan-permukaan-serangan/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/id/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/id/arsip/">Arsip</a>
+      <a href="/id/tentang/">Tentang</a>
+      <a class="lang-toggle" href="/artikel/easm-memetakan-permukaan-serangan/">EN</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>artikel</div>
+              <h1>EASM: Memetakan Attack Surface Sebelum Penyerang Melakukannya</h1>
+              <div class="meta"><span>6 Oktober 2026</span><span>·</span>
+              <span>3 mnt baca</span><a class="tag" href="/id/tag/easm/">easm</a> <a class="tag" href="/id/tag/attack-surface/">attack-surface</a> <a class="tag" href="/id/tag/blue-team/">blue-team</a></div>
+              <img class="cover" src="/assets/covers/easm-attack-surface.jpg" alt="EASM: Memetakan Attack Surface Sebelum Penyerang Melakukannya">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Bayangkan kamu disewa untuk menjaga sebuah gedung. Kamu kunci pintu depan, pasang CCTV, sewa satpam. Tapi ternyata gedung itu punya pintu belakang yang tidak tercatat di denah, jendela gudang yang tidak pernah dikunci, dan lorong servis yang sudah lama tidak dipakai siapa pun. Penyerang tidak akan mengetuk pintu depan — mereka akan menyelinap lewat celah yang bahkan tidak kamu tahu ada.</p>
+<p>Itulah gambaran paling jujur tentang keamanan siber kebanyakan organisasi hari ini. Dan disiplin ilmu yang lahir untuk menjawabnya namanya <span class="gterm" data-term="EASM" data-def="External Attack Surface Management — the practice of discovering and monitoring every internet-exposed digital asset before attackers do.">EASM</span>.</p>
+<h2 id="masalahnya-kamu-tidak-bisa-menjaga-yang-tidak-kamu-ketahui"><span class="hnum">01</span>Masalahnya: kamu tidak bisa menjaga yang tidak kamu ketahui</h2>
+<p>Setiap perusahaan modern punya jejak digital yang jauh lebih besar dari yang mereka kira: <span class="gterm" data-term="subdomain" data-def="Part of a main domain; e.g. blog.example.com is a subdomain of example.com. Often a forgotten entry point.">subdomain</span> yang dibuat untuk proyek tiga tahun lalu dan tidak pernah dimatikan, bucket penyimpanan cloud yang tidak sengaja terbuka publik, server pengembangan yang lupa di-patch, sertifikat SSL untuk layanan yang sudah tidak dipakai, hingga akun karyawan di layanan pihak ketiga.</p>
+<p>Semua itu adalah bagian dari <span class="gterm" data-term="attack surface" data-def="The sum of all points (servers, apps, APIs, subdomains) that can be attacked from the outside.">attack surface</span> — dan penyerang punya satu keunggulan fundamental: mereka hanya butuh menemukan <strong>satu</strong> celah, sementara tim bertahan harus menutup <strong>semuanya</strong>.</p>
+<p>Itulah kenapa keamanan yang reaktif (&quot;tunggu ada insiden, baru bertindak&quot;) selalu kalah. <span class="gterm" data-term="EASM" data-def="External Attack Surface Management — the practice of discovering and monitoring every internet-exposed digital asset before attackers do.">EASM</span> membalik logikanya: <strong>berpikir seperti penyerang, tapi bergerak lebih dulu.</strong></p>
+<h2 id="apa-sebenarnya-yang-dilakukan-easm"><span class="hnum">02</span>Apa sebenarnya yang dilakukan EASM?</h2>
+<p>Secara sederhana, <span class="gterm" data-term="EASM" data-def="External Attack Surface Management — the practice of discovering and monitoring every internet-exposed digital asset before attackers do.">EASM</span> adalah proses berkelanjutan untuk menemukan, menginventarisasi, dan memantau seluruh aset digital organisasi yang terekspos ke internet — dari sudut pandang orang luar.</p>
+<p>Ada empat tahapan intinya:</p>
+<p><strong>1. Discovery — menemukan semuanya.</strong> Ini fondasinya. Tekniknya mirip dengan yang dipakai penyerang saat fase reconnaissance: enumerasi <span class="gterm" data-term="subdomain" data-def="Part of a main domain; e.g. blog.example.com is a subdomain of example.com. Often a forgotten entry point.">subdomain</span>, pemindaian sertifikat SSL (setiap sertifikat mencatat nama domain — sumber informasi yang luar biasa), mesin pencari khusus seperti <span class="gterm" data-term="Shodan" data-def="A search engine for internet-connected devices — finds publicly exposed servers, cameras, and databases.">Shodan</span> dan <span class="gterm" data-term="Censys" data-def="Internet-wide scanning platform that maps certificates, hosts, and publicly exposed services.">Censys</span>, sampai teknik <span class="gterm" data-term="OSINT" data-def="Open-Source Intelligence — gathering information from public sources for security research.">OSINT</span> klasik. Tool seperti <span class="gterm" data-term="Amass" data-def="Open-source tool for subdomain enumeration and attack surface mapping.">Amass</span> mengotomatiskan sebagian besar pekerjaan ini.</p>
+<p><strong>2. Inventory — mencatat dan mengklasifikasikan.</strong> Aset yang ditemukan dicatat: layanannya apa, versi software apa yang berjalan, siapa pemiliknya di internal, seberapa kritis. Tanpa inventaris yang rapi, temuan discovery hanya jadi daftar panjang yang tidak bisa ditindaklanjuti.</p>
+<p><strong>3. Assessment — menilai risikonya.</strong> Setiap aset dinilai: apakah ada <span class="gterm" data-term="vulnerability" data-def="A weakness in a system or application that attackers can exploit.">vulnerability</span> yang diketahui? Apakah layanannya sudah usang? Apakah ada <span class="gterm" data-term="CVE" data-def="Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.">CVE</span> kritis yang belum di-patch? Tahap ini biasanya terhubung dengan <span class="gterm" data-term="threat intelligence" data-def="Structured information about attacker tactics, techniques, and behavior.">threat intelligence</span> agar penilaian risikonya mengikuti ancaman yang sedang aktif di dunia nyata.</p>
+<p><strong>4. Monitoring — mengawasi terus-menerus.</strong> Attack surface tidak pernah diam. Setiap deploy baru, setiap uji coba layanan cloud, setiap akuisisi perusahaan menambah permukaan serangan. <span class="gterm" data-term="EASM" data-def="External Attack Surface Management — the practice of discovering and monitoring every internet-exposed digital asset before attackers do.">EASM</span> yang baik berjalan kontinu, bukan audit setahun sekali.</p>
+<h2 id="kenapa-ini-relevan-untuk-semua-orang-bukan-cuma-korporat"><span class="hnum">03</span>Kenapa ini relevan untuk semua orang, bukan cuma korporat?</h2>
+<p>Prinsip yang sama berlaku dalam skala kecil. Punya blog pribadi? Cek subdomain yang tidak terpakai. Punya VPS? Pastikan tidak ada port manajemen yang terbuka ke seluruh internet. Prinsipnya satu: <strong>kurangi apa yang terlihat dari luar, dan ketahui persis apa yang masih terlihat.</strong></p>
+<p>Bahkan untuk individu, pola pikir <span class="gterm" data-term="EASM" data-def="External Attack Surface Management — the practice of discovering and monitoring every internet-exposed digital asset before attackers do.">EASM</span> berguna: akun-akun lama yang terlupakan, layanan yang masih terhubung ke email utama, aplikasi yang masih punya akses ke akun Google — semuanya adalah &quot;attack surface&quot; pribadi.</p>
+<h2 id="mulai-dari-mana"><span class="hnum">04</span>Mulai dari mana?</h2>
+<p>Kamu tidak butuh budget enterprise untuk mulai berpikir ala <span class="gterm" data-term="EASM" data-def="External Attack Surface Management — the practice of discovering and monitoring every internet-exposed digital asset before attackers do.">EASM</span>. Langkah paling sederhana yang bisa dilakukan siapa pun hari ini:</p>
+<ul>
+<li>Cari tahu subdomain apa saja yang dimiliki domainmu (banyak tool gratis untuk ini).</li>
+<li>Cek sertifikat SSL yang pernah diterbitkan untuk domainmu — sering ada kejutan di sana.</li>
+<li>Cari namamu atau nama organisasimu di <span class="gterm" data-term="Shodan" data-def="A search engine for internet-connected devices — finds publicly exposed servers, cameras, and databases.">Shodan</span> — lihat apa yang terlihat dari luar.</li>
+<li>Buat daftarnya, lalu tutup atau amankan yang tidak perlu terekspos.</li>
+</ul>
+<p>Penyerang melakukan hal yang persis sama setiap hari, secara otomatis, dalam skala masif. Satu-satunya pertanyaan adalah: siapa yang menemukan asetmu lebih dulu — kamu, atau mereka?</p>
+<hr>
+<p><em>Artikel ini adalah pembuka seri attack surface di llunatic-lab. Berikutnya kita akan praktik langsung: enumerasi subdomain dari nol dengan tool gratis.</em></p><div class="author-box"><div class="kicker"><span class="dot"></span>ditulis oleh</div><p><strong>kou</strong> mendokumentasikan threat intel, attack surface, dan pertahanan praktis — dari sisi gelap internet.</p></div><div class="pager"><span></span><span></span></div></div>
+                <aside class="toc"><h4>Daftar isi</h4><ol><li style="margin-left:0px"><a href="#masalahnya-kamu-tidak-bisa-menjaga-yang-tidak-kamu-ketahui">Masalahnya: kamu tidak bisa menjaga yang tidak kamu ketahui</a></li><li style="margin-left:0px"><a href="#apa-sebenarnya-yang-dilakukan-easm">Apa sebenarnya yang dilakukan EASM?</a></li><li style="margin-left:0px"><a href="#kenapa-ini-relevan-untuk-semua-orang-bukan-cuma-korporat">Kenapa ini relevan untuk semua orang, bukan cuma korporat?</a></li><li style="margin-left:0px"><a href="#mulai-dari-mana">Mulai dari mana?</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-giant">LLUNATIC—LAB</div>
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>catatan keamanan dari sisi gelap internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="cari artikel…" aria-label="search">
+    <div class="search-hint">ketik minimal 2 huruf · esc untuk tutup · ctrl+k dari mana saja</div>
+    <div class="search-results" data-empty="nggak ketemu — coba kata kunci lain."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

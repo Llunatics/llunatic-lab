@@ -18,10 +18,16 @@ Vercel auto-deploys on every push to the main branch.
    Record: key facts, numbers, names, dates, and 2–4 source URLs. NEVER invent
    CVE numbers, victim company names, or incident dates.
 
-3. **Write the article** to `content/articles/YYYY-MM-DD-slug.md`:
+3. **Write the article** — in TWO languages:
+   - `content/articles/YYYY-MM-DD-slug.md`: ENGLISH version.
+   - `content/articles/YYYY-MM-DD-slug.id.md`: INDONESIAN version (same
+     frontmatter, translated title/excerpt/body; keep IT/technical terms in
+     ENGLISH, e.g. "EASM", "attack surface", "subdomain" — explain them in
+     Indonesian around the terms).
    - Frontmatter: title, date (today), tags (2–4, lowercase, hyphens),
-     excerpt (1–2 sentences), cover (`/assets/covers/<slug>.jpg`).
-   - English, 800–1500 words, mixed audience.
+     excerpt (1–2 sentences), cover (`/assets/covers/<slug>.jpg`, same file
+     for both languages).
+   - 800–1500 words each, mixed audience.
    - Structure: strong hook → explanation → technical detail → mitigation /
      practical steps → memorable closing.
    - Wrap technical terms in `[[Term]]` on first mention. If a term isn't in

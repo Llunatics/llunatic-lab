@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
 <channel>
-<title>llunatic-lab</title><link>https://llunatic-lab.vercel.app</link>
-<description>Security notes by kou</description>
+<title>llunatic-lab (en)</title><link>https://llunatic-lab.vercel.app/</link>
+<description>Security notes from the dark side of the internet</description>
+<language>en</language>
 <item><title>EASM: Mapping Your Attack Surface Before Attackers Do</title>
-        <link>https://llunatic-lab.vercel.app/artikel/easm-memetakan-permukaan-serangan/</link>
-        <description>Most organizations aren&#x27;t breached through the front door, but through assets they didn&#x27;t even know existed. EASM is the discipline of finding them first.</description>
-        <pubDate>Tue, 06 Oct 2026 00:00:00 -0000</pubDate>
-        <guid>https://llunatic-lab.vercel.app/artikel/easm-memetakan-permukaan-serangan/</guid></item>
+            <link>https://llunatic-lab.vercel.app/artikel/easm-memetakan-permukaan-serangan/</link>
+            <description>Most organizations aren&#x27;t breached through the front door, but through assets they didn&#x27;t even know existed. EASM is the discipline of finding them first.</description>
+            <pubDate>Tue, 06 Oct 2026 00:00:00 -0000</pubDate>
+            <guid>https://llunatic-lab.vercel.app/artikel/easm-memetakan-permukaan-serangan/</guid></item>
 </channel>
 </rss>

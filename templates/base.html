@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="{{s:lang}}" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,12 +20,13 @@
 
 <nav class="nav">
   <div class="nav-inner">
-    <a class="brand" href="/">LLUNATIC<span class="cursor">_</span></a>
+    <a class="brand" href="{{s:home_url}}">LLUNATIC<span class="cursor">_</span></a>
     <div class="nav-links">
-      <a href="/arsip/">Archive</a>
-      <a href="/tentang/">About</a>
-      <button class="icon-btn search-toggle" aria-label="Cari artikel"></button>
-      <button class="icon-btn theme-toggle" aria-label="Ganti tema"></button>
+      <a href="{{s:nav_archive_url}}">{{s:nav_archive}}</a>
+      <a href="{{s:nav_about_url}}">{{s:nav_about}}</a>
+      <a class="lang-toggle" href="{{s:lang_url}}">{{s:other_label}}</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
     </div>
   </div>
 </nav>
@@ -38,8 +39,8 @@
   <div class="wrap">
     <div class="foot-giant">LLUNATIC—LAB</div>
     <div class="foot-row">
-      <span>© <span class="js-year">2026</span> llunaticsys — written by <b>kou</b></span>
-      <span>security notes from the dark side of the internet</span>
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>{{s:foot_tag}}</span>
       <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
     </div>
   </div>
@@ -47,9 +48,9 @@
 
 <div class="search-overlay">
   <div class="search-box">
-    <input type="text" placeholder="search articles…" aria-label="Search articles">
-    <div class="search-hint">type at least 2 characters · esc to close · ctrl+k anywhere</div>
-    <div class="search-results"></div>
+    <input type="text" placeholder="{{s:search_ph}}" aria-label="search">
+    <div class="search-hint">{{s:search_hint}}</div>
+    <div class="search-results" data-empty="{{s:search_empty}}"></div>
   </div>
 </div>
 

@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>#blue-team — llunatic-lab</title>
-<meta name="description" content="Articles about blue-team.">
+<meta name="description" content="topic: blue-team">
 <meta property="og:title" content="#blue-team">
-<meta property="og:description" content="Articles about blue-team.">
+<meta property="og:description" content="topic: blue-team">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/style.css">
-
+<link rel="alternate" hreflang="en" href="https://llunatic-lab.vercel.app/tag/blue-team/"><link rel="alternate" hreflang="id" href="https://llunatic-lab.vercel.app/id/tag/blue-team/">
 </head>
 <body>
 <div class="progress"></div>
@@ -24,8 +24,9 @@
     <div class="nav-links">
       <a href="/arsip/">Archive</a>
       <a href="/tentang/">About</a>
-      <button class="icon-btn search-toggle" aria-label="Cari artikel"></button>
-      <button class="icon-btn theme-toggle" aria-label="Ganti tema"></button>
+      <a class="lang-toggle" href="/id/tag/blue-team/">ID</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
     </div>
   </div>
 </nav>
@@ -48,7 +49,7 @@
   <div class="wrap">
     <div class="foot-giant">LLUNATIC—LAB</div>
     <div class="foot-row">
-      <span>© <span class="js-year">2026</span> llunaticsys — written by <b>kou</b></span>
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
       <span>security notes from the dark side of the internet</span>
       <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
     </div>
@@ -57,9 +58,9 @@
 
 <div class="search-overlay">
   <div class="search-box">
-    <input type="text" placeholder="search articles…" aria-label="Search articles">
+    <input type="text" placeholder="search articles…" aria-label="search">
     <div class="search-hint">type at least 2 characters · esc to close · ctrl+k anywhere</div>
-    <div class="search-results"></div>
+    <div class="search-results" data-empty="nothing found — try another keyword."></div>
   </div>
 </div>
 

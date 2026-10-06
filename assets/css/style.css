@@ -701,3 +701,32 @@ footer {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   html { scroll-behavior: auto; }
 }
+
+/* ============ LANG TOGGLE + AUTHOR BOX ============ */
+.lang-toggle {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 8px 15px;
+  color: var(--ink-dim);
+  transition: all 0.25s;
+}
+.lang-toggle:hover { border-color: var(--acid); color: var(--acid); }
+
+.author-box {
+  margin-top: 60px;
+  padding: 30px 32px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--glow);
+}
+.author-box p {
+  margin-top: 14px;
+  color: var(--ink-dim);
+  font-size: 15.5px;
+  line-height: 1.7;
+}
+.author-box p strong { color: var(--ink); }

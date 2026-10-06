@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>About — llunatic-lab</title>
-<meta name="description" content="About llunatic-lab and kou.">
+<meta name="description" content="About llunatic-lab.">
 <meta property="og:title" content="About">
-<meta property="og:description" content="About llunatic-lab and kou.">
+<meta property="og:description" content="About llunatic-lab.">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/style.css">
-
+<link rel="alternate" hreflang="en" href="https://llunatic-lab.vercel.app/tentang/"><link rel="alternate" hreflang="id" href="https://llunatic-lab.vercel.app/id/tentang/">
 </head>
 <body>
 <div class="progress"></div>
@@ -24,43 +24,37 @@
     <div class="nav-links">
       <a href="/arsip/">Archive</a>
       <a href="/tentang/">About</a>
-      <button class="icon-btn search-toggle" aria-label="Cari artikel"></button>
-      <button class="icon-btn theme-toggle" aria-label="Ganti tema"></button>
+      <a class="lang-toggle" href="/id/tentang/">ID</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
     </div>
   </div>
 </nav>
 
 <main>
 
-    <div class="page-head"><div class="wrap">
-      <div class="kicker"><span class="dot"></span>about</div>
-      <h1>A small lab for <em>cybersecurity.</em></h1>
-    </div></div>
-    <div class="wrap"><div class="about-grid"><div>
-      <p class="big">llunatic-lab is the public notebook of <b>kou</b> — a place to
-      document what&apos;s learned about cybersecurity: threat intelligence, attack
-      surface, ethical hacking, and defense.</p>
-      <p style="margin-top:20px;color:var(--ink-dim)">Written in a style beginners can
-      follow but practitioners still find useful. Every technical term has a hover
-      explanation — nothing is left hanging.</p>
-    </div><div>
-      <p style="color:var(--ink-dim)">Every article on this site is written and published
-      through an automated pipeline: research → write → review → publish, 3–4 times
-      a week. If anything is technically wrong, that&apos;s on the author — and
-      corrections are always welcome.</p>
-    </div></div>
-    <div class="stat-row">
-      <div class="stat"><b>01</b><span>articles published</span></div>
-      <div class="stat"><b>03</b><span>topics covered</span></div>
-      <div class="stat"><b>3–4×</b><span>published per week</span></div>
-    </div></div>
+        <div class="page-head"><div class="wrap">
+          <div class="kicker"><span class="dot"></span>about</div>
+          <h1>A small lab for <em>cybersecurity.</em></h1>
+        </div></div>
+        <div class="wrap"><div class="about-grid"><div>
+          <p class="big">llunatic-lab is a public notebook for cybersecurity: threat intelligence, attack surface, ethical hacking, and defense.</p>
+          <p style="margin-top:20px;color:var(--ink-dim)">Written in a style beginners can follow but practitioners still find useful. Every technical term has a hover explanation — nothing is left hanging.</p>
+        </div><div>
+          <p style="color:var(--ink-dim)">Every article here is written and published through an automated pipeline: research → write → review → publish, 3–4 times a week, in English and Indonesian. If anything is technically wrong, that’s on the author — corrections are always welcome.</p>
+        </div></div>
+        <div class="stat-row">
+          <div class="stat"><b>01</b><span>articles published</span></div>
+          <div class="stat"><b>03</b><span>topics covered</span></div>
+          <div class="stat"><b>3–4×</b><span>published per week</span></div>
+        </div></div>
 </main>
 
 <footer>
   <div class="wrap">
     <div class="foot-giant">LLUNATIC—LAB</div>
     <div class="foot-row">
-      <span>© <span class="js-year">2026</span> llunaticsys — written by <b>kou</b></span>
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
       <span>security notes from the dark side of the internet</span>
       <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
     </div>
@@ -69,9 +63,9 @@
 
 <div class="search-overlay">
   <div class="search-box">
-    <input type="text" placeholder="search articles…" aria-label="Search articles">
+    <input type="text" placeholder="search articles…" aria-label="search">
     <div class="search-hint">type at least 2 characters · esc to close · ctrl+k anywhere</div>
-    <div class="search-results"></div>
+    <div class="search-results" data-empty="nothing found — try another keyword."></div>
   </div>
 </div>
 

@@ -133,7 +133,8 @@
     results.innerHTML = "";
     setTimeout(function () { input.focus(); }, 60);
     if (!index) {
-      fetch("/search.json").then(function (r) { return r.json(); })
+      var searchUrl = document.documentElement.lang === "id" ? "/id/search.json" : "/search.json";
+      fetch(searchUrl).then(function (r) { return r.json(); })
         .then(function (j) { index = j; });
     }
   }
@@ -164,7 +165,7 @@
             return '<a href="' + a.url + '"><div class="t">' + a.title + '</div>' +
               '<div class="m">' + a.date + " · " + a.tags.join(" · ") + "</div></a>";
           }).join("")
-        : '<div class="empty">nothing found — try another keyword.</div>';
+        : '<div class="empty">' + results.getAttribute("data-empty") + "</div>";
     });
   }
 

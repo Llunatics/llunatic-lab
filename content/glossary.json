@@ -1,1 +1,49 @@
-{"Amass":"Open-source tool for subdomain enumeration and attack surface mapping.","CVE":"Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.","Censys":"Internet-wide scanning platform that maps certificates, hosts, and publicly exposed services.","DDoS":"Distributed Denial of Service — an attack that floods a server with traffic until it collapses.","EASM":"External Attack Surface Management — the practice of discovering and monitoring every internet-exposed digital asset before attackers do.","MFA":"Multi-Factor Authentication — layered verification beyond a password, e.g. OTP codes or hardware keys.","OSINT":"Open-Source Intelligence — gathering information from public sources for security research.","SOC":"Security Operations Center — the team that monitors and responds to security incidents around the clock.","Shodan":"A search engine for internet-connected devices — finds publicly exposed servers, cameras, and databases.","attack surface":"The sum of all points (servers, apps, APIs, subdomains) that can be attacked from the outside.","blue team":"The defenders — the side that protects, monitors, and responds to attacks on systems.","encryption":"The process of turning data into scrambled code that can't be read without the right key.","exploit":"A piece of code or technique that takes advantage of a vulnerability.","firewall":"A system that filters network traffic based on defined security rules.","malware":"Malicious software: viruses, worms, trojans, ransomware, and the like.","penetration testing":"An authorized simulated attack against systems to find holes before criminals do.","phishing":"Fraud via email or messages impersonating a trusted party to steal credentials.","ransomware":"Malware that encrypts victim data and demands payment for its return.","red team":"The attackers — the side that simulates attacks to test defenses (ethical hacking).","subdomain":"Part of a main domain; e.g. blog.example.com is a subdomain of example.com. Often a forgotten entry point.","threat intelligence":"Structured information about attacker tactics, techniques, and behavior.","vulnerability":"A weakness in a system or application that attackers can exploit.","zero-day":"A security flaw unknown to the public and the vendor — no patch exists when it's exploited."}
+{
+ "Amass": "Open-source tool for subdomain enumeration and attack surface mapping.",
+ "CVE": "Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.",
+ "Censys": "Internet-wide scanning platform that maps certificates, hosts, and publicly exposed services.",
+ "DDoS": "Distributed Denial of Service — an attack that floods a server with traffic until it collapses.",
+ "EASM": "External Attack Surface Management — the practice of discovering and monitoring every internet-exposed digital asset before attackers do.",
+ "MFA": "Multi-Factor Authentication — layered verification beyond a password, e.g. OTP codes or hardware keys.",
+ "OSINT": "Open-Source Intelligence — gathering information from public sources for security research.",
+ "SOC": "Security Operations Center — the team that monitors and responds to security incidents around the clock.",
+ "Shodan": "A search engine for internet-connected devices — finds publicly exposed servers, cameras, and databases.",
+ "attack surface": "The sum of all points (servers, apps, APIs, subdomains) that can be attacked from the outside.",
+ "blue team": "The defenders — the side that protects, monitors, and responds to attacks on systems.",
+ "encryption": "The process of turning data into scrambled code that can't be read without the right key.",
+ "exploit": "A piece of code or technique that takes advantage of a vulnerability.",
+ "firewall": "A system that filters network traffic based on defined security rules.",
+ "malware": "Malicious software: viruses, worms, trojans, ransomware, and the like.",
+ "penetration testing": "An authorized simulated attack against systems to find holes before criminals do.",
+ "phishing": "Fraud via email or messages impersonating a trusted party to steal credentials.",
+ "ransomware": "Malware that encrypts victim data and demands payment for its return.",
+ "red team": "The attackers — the side that simulates attacks to test defenses (ethical hacking).",
+ "subdomain": "Part of a main domain; e.g. blog.example.com is a subdomain of example.com. Often a forgotten entry point.",
+ "threat intelligence": "Structured information about attacker tactics, techniques, and behavior.",
+ "vulnerability": "A weakness in a system or application that attackers can exploit.",
+ "zero-day": "A security flaw unknown to the public and the vendor — no patch exists when it's exploited.",
+ "Mythos": {
+  "en": "Anthropic's restricted-access AI model built for vulnerability research, used by vetted security partners under Project Glasswing to find exploitable flaws in critical software.",
+  "id": "Model AI akses-terbatas dari Anthropic yang dibuat untuk riset kerentanan; dipakai mitra keamanan terverifikasi di bawah Project Glasswing untuk menemukan celah yang bisa dieksploitasi pada perangkat lunak kritis."
+ },
+ "Project Glasswing": {
+  "en": "Anthropic's initiative granting vetted security researchers access to its Mythos vulnerability-hunting model in order to secure critical software.",
+  "id": "Inisiatif Anthropic yang memberi peneliti keamanan terverifikasi akses ke model pemburu kerentanan Mythos untuk mengamankan perangkat lunak kritis."
+ },
+ "PRNG": {
+  "en": "Pseudorandom number generator — an algorithm producing number sequences that look random but are fully determined by an internal state (seed). Non-cryptographic PRNGs must never be used for security secrets.",
+  "id": "Pseudorandom number generator — algoritma yang menghasilkan deretan angka yang terlihat acak tetapi sepenuhnya ditentukan oleh state internal (seed). PRNG non-kriptografis tidak boleh dipakai untuk rahasia keamanan."
+ },
+ "Z3": {
+  "en": "An SMT (satisfiability modulo theories) solver developed by Microsoft Research, used for software verification, program analysis, and constraint solving — in the Mythos case, for recovering a PRNG's internal state.",
+  "id": "Solver SMT (satisfiability modulo theories) yang dikembangkan Microsoft Research, dipakai untuk verifikasi perangkat lunak, analisis program, dan pemecahan constraint — dalam kasus Mythos, untuk memulihkan state internal sebuah PRNG."
+ },
+ "xorshift128+": {
+  "en": "A fast, non-cryptographic PRNG algorithm used by the V8 JavaScript engine's Math.random(). Its outputs are reversible, so observing enough values lets an attacker recover its internal state.",
+  "id": "Algoritma PRNG non-kriptografis yang cepat, dipakai Math.random() pada engine JavaScript V8. Output-nya bisa dibalik, sehingga pengamat yang melihat cukup banyak nilai dapat memulihkan state internal-nya."
+ },
+ "proof of concept": {
+  "en": "A working demonstration that a vulnerability can actually be exploited, usually published to pressure vendors and warn defenders.",
+  "id": "Demonstrasi yang menunjukkan bahwa sebuah kerentanan benar-benar bisa dieksploitasi, biasanya dipublikasikan untuk menekan vendor dan memperingatkan defender."
+ }
+}

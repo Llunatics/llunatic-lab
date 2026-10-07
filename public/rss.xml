@@ -4,7 +4,11 @@
 <title>llunatic-lab (en)</title><link>https://lab.llunaticsys.web.id/</link>
 <description>Security notes from the dark side of the internet</description>
 <language>en</language>
-<item><title>EASM: Mapping Your Attack Surface Before Attackers Do</title>
+<item><title>Mythos: The AI That Hunts Zero-Days</title>
+            <link>https://lab.llunaticsys.web.id/artikel/mythos-ai-vulnerability-hunter/</link>
+            <description>Anthropic&#x27;s secretive Mythos model chained two ordinary-looking bugs into a critical auth bypass — then attackers exploited it within 24 hours of disclosure. This is what machine-speed vulnerability research looks like.</description>
+            <pubDate>Wed, 07 Oct 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/artikel/mythos-ai-vulnerability-hunter/</guid></item><item><title>EASM: Mapping Your Attack Surface Before Attackers Do</title>
             <link>https://lab.llunaticsys.web.id/artikel/easm-memetakan-permukaan-serangan/</link>
             <description>Most organizations aren&#x27;t breached through the front door, but through assets they didn&#x27;t even know existed. EASM is the discipline of finding them first.</description>
             <pubDate>Tue, 06 Oct 2026 00:00:00 -0000</pubDate>

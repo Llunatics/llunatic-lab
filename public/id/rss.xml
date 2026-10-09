@@ -4,7 +4,11 @@
 <title>llunatic-lab (id)</title><link>https://lab.llunaticsys.web.id/id/</link>
 <description>Catatan keamanan dari sisi gelap internet</description>
 <language>id</language>
-<item><title>Mythos: AI Pemburu Zero-Day</title>
+<item><title>CVE-2026-21589: Satu Bug Atlassian di Delapan Produk, Dieksploitasi dalam Hitungan Jam</title>
+            <link>https://lab.llunaticsys.web.id/id/artikel/atlassian-cve-2026-21589-exploited-hours/</link>
+            <description>Satu shared library mengubah delapan produk Atlassian Data Center menjadi satu target raksasa — dan penyerang mulai menggedor honeypot di hari yang sama write-up teknisnya terbit.</description>
+            <pubDate>Fri, 09 Oct 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/atlassian-cve-2026-21589-exploited-hours/</guid></item><item><title>Mythos: AI Pemburu Zero-Day</title>
             <link>https://lab.llunaticsys.web.id/id/artikel/mythos-ai-vulnerability-hunter/</link>
             <description>Model rahasia Anthropic bernama Mythos merangkai dua bug yang terlihat biasa menjadi auth bypass kritis — lalu penyerang mengeksploitasinya dalam 24 jam setelah publikasi. Beginilah riset kerentanan berkecepatan mesin.</description>
             <pubDate>Wed, 07 Oct 2026 00:00:00 -0000</pubDate>

@@ -4,7 +4,11 @@
 <title>llunatic-lab (en)</title><link>https://lab.llunaticsys.web.id/</link>
 <description>Security notes from the dark side of the internet</description>
 <language>en</language>
-<item><title>Mythos: The AI That Hunts Zero-Days</title>
+<item><title>CVE-2026-21589: Atlassian&#x27;s Eight-Product Bug, Exploited Within Hours</title>
+            <link>https://lab.llunaticsys.web.id/artikel/atlassian-cve-2026-21589-exploited-hours/</link>
+            <description>A single shared library turned eight Atlassian Data Center products into one giant target — and attackers started probing honeypots the same day the technical write-up dropped.</description>
+            <pubDate>Fri, 09 Oct 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/artikel/atlassian-cve-2026-21589-exploited-hours/</guid></item><item><title>Mythos: The AI That Hunts Zero-Days</title>
             <link>https://lab.llunaticsys.web.id/artikel/mythos-ai-vulnerability-hunter/</link>
             <description>Anthropic&#x27;s secretive Mythos model chained two ordinary-looking bugs into a critical auth bypass — then attackers exploited it within 24 hours of disclosure. This is what machine-speed vulnerability research looks like.</description>
             <pubDate>Wed, 07 Oct 2026 00:00:00 -0000</pubDate>

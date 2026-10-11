@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hunting Stealth Cryptominers: A Hands-On Lab From the AhsayCBS XMRig Campaign — llunatic-lab</title>
+<meta name="description" content="Attackers chained two AhsayCBS zero-days, dropped an XMRig miner disguised as Microsoft Edge, and deployed an AI-assisted script that kills Task Manager the moment it opens. Here is how to hunt every stage of that campaign on your own network.">
+<meta property="og:title" content="Hunting Stealth Cryptominers: A Hands-On Lab From the AhsayCBS XMRig Campaign">
+<meta property="og:description" content="Attackers chained two AhsayCBS zero-days, dropped an XMRig miner disguised as Microsoft Edge, and deployed an AI-assisted script that kills Task Manager the moment it opens. Here is how to hunt every stage of that campaign on your own network.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="/assets/covers/hunting-ahsaycbs-xmrig-campaign.jpg"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/hunting-ahsaycbs-xmrig-campaign/"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/hunting-ahsaycbs-xmrig-campaign/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/arsip/">Archive</a>
+      <a href="/tentang/">About</a>
+      <a class="lang-toggle" href="/id/artikel/hunting-ahsaycbs-xmrig-campaign/">ID</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>article</div>
+              <h1>Hunting Stealth Cryptominers: A Hands-On Lab From the AhsayCBS XMRig Campaign</h1>
+              <div class="meta"><span>11 October 2026</span><span>·</span>
+              <span>8 min read</span><a class="tag" href="/tag/blue-team/">blue-team</a> <a class="tag" href="/tag/threat-hunting/">threat-hunting</a> <a class="tag" href="/tag/cryptojacking/">cryptojacking</a> <a class="tag" href="/tag/hands-on/">hands-on</a></div>
+              <img class="cover" src="/assets/covers/hunting-ahsaycbs-xmrig-campaign.jpg" alt="Hunting Stealth Cryptominers: A Hands-On Lab From the AhsayCBS XMRig Campaign">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Imagine this: a server&#x27;s CPU is pegged at 90 percent around the clock, the electricity bill quietly climbs — and every time someone opens Task Manager to investigate, the spike vanishes. Task Manager itself closes. Reopen it, and it&#x27;s gone again. The culprit is not haunted hardware. It is a cryptominer that watches you watching it.</p>
+<p>That is not a hypothetical. On October 7, 2026, attackers began exploiting two flaws in AhsayCBS — the backup management platform used by MSPs and system integrators — and turned compromised backup servers into <span class="gterm" data-term="Monero" data-def="A privacy-focused cryptocurrency designed to hide sender, receiver, and amount — the preferred coin for illicit mining malware because transactions are hard to trace.">Monero</span> mines. The payload, dubbed the &quot;edge.exe&quot; campaign by researchers at Huntress, packs four layers of evasion that read like a checklist of every stealth trick in the <span class="gterm" data-term="cryptojacking" data-def="Unauthorized use of someone else&#x27;s computing resources to mine cryptocurrency — silent theft of CPU cycles and electricity.">cryptojacking</span> playbook. Let&#x27;s take it apart, piece by piece, and turn each trick into something you can hunt for.</p>
+<h2 id="the-30-second-campaign-brief"><span class="hnum">01</span>The 30-second campaign brief</h2>
+<p>The two vulnerabilities are tracked as <span class="gterm" data-term="CVE" data-def="Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.">CVE</span>-2026-105133 (an improper authentication flaw in the <code>checkSysPwd()</code> function, scored 5.5) and <span class="gterm" data-term="CVE" data-def="Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.">CVE</span>-2026-105134 (an operating system command injection bug in the Replication Receiver, scored 9.3). Chained together, they let a remote, unauthenticated attacker execute commands with SYSTEM privileges. The CVE identifiers were only published on October 4, 2026 — and the first exploitation attempts hit at 11:20 p.m. UTC on October 7. At least five organizations were affected within a day.</p>
+<p>Here is the twist that makes this a <span class="gterm" data-term="zero-day" data-def="A security flaw unknown to the public and the vendor — no patch exists when it&#x27;s exploited.">zero-day</span> story: the NVD lists the flaws as fixed in AhsayCBS 10.3.4, but Huntress confirmed the latest version is also vulnerable. No real patch existed at the time of writing — treat every version as exposed.</p>
+<p>Post-exploitation, Huntress observed the attackers running reconnaissance, dropping Java Server Pages <span class="gterm" data-term="webshell" data-def="A malicious script uploaded to a web server that gives an attacker remote command execution through the browser — a permanent backdoor disguised as a web page.">webshell</span>s, and then pulling payloads from an Alibaba Cloud object storage host. The files landed in <code>%TEMP%</code> or <code>AppData/Local/Temp</code>, spawned as child processes of the AhsayCBS service binary <code>cbssvcX64.exe</code>: <code>edge.exe</code>, <code>msedge.exe</code>, <code>config.json</code>, and a PowerShell script called <code>Taskgmr.ps1</code>. That process tree — a backup service spawning random binaries from Temp — is the first thing we will hunt.</p>
+<h2 id="trick-1-name-masquerade"><span class="hnum">02</span>Trick 1: name masquerade</h2>
+<p>The XMRig miner — a legitimate open-source <span class="gterm" data-term="Monero" data-def="A privacy-focused cryptocurrency designed to hide sender, receiver, and amount — the preferred coin for illicit mining malware because transactions are hard to trace.">Monero</span> miner frequently abused by criminals — arrived renamed as <code>edge.exe</code>, impersonating Microsoft Edge. When an analyst glances at a process list, a process called Edge barely registers. This is MITRE ATT&amp;CK technique T1036.004, &quot;masquerade task or service,&quot; and its cousin T1036.005, &quot;match legitimate resource name.&quot;</p>
+<p>Names lie. Paths and signatures don&#x27;t. A real Edge browser binary lives under <code>C:\Program Files (x86)\Microsoft\Edge\Application</code> and is signed by Microsoft. The attacker&#x27;s copy ran from a Temp folder with no valid signature. Your hunt:</p>
+<pre><code class="language-powershell"># Find every &quot;edge.exe&quot; running from a suspicious location
+Get-CimInstance Win32_Process -Filter &quot;Name = &#x27;edge.exe&#x27;&quot; |
+  Select-Object Name, ProcessId, ExecutablePath, CommandLine
+
+# Verify digital signatures — unsigned or wrong-signer binaries stick out
+Get-ChildItem C:\Users\*\AppData\Local\Temp\*.exe -ErrorAction SilentlyContinue |
+  Get-AuthenticodeSignature | Where-Object { $_.Status -ne &#x27;Valid&#x27; }</code></pre>
+<p>In a <span class="gterm" data-term="SIEM" data-def="Security Information and Event Management — a platform that collects logs from across the network and correlates them to detect attacks in real time.">SIEM</span>, the equivalent detection is simple: alert on any process whose name matches a well-known application but whose image path sits in a Temp directory or whose signature status is not Microsoft. Huntress published four <span class="gterm" data-term="Sigma" data-def="An open, vendor-neutral format for writing detection rules that can be converted to queries for SIEMs like Splunk, Elastic, or Sentinel — shareable blue-team knowledge.">Sigma</span> rules covering exactly this pattern, including edge-named binaries carrying XMRig&#x27;s tell-tale daemon flags.</p>
+<h2 id="trick-2-persistence-that-mimics-the-real-updater"><span class="hnum">03</span>Trick 2: persistence that mimics the real updater</h2>
+<p>Killing the miner is not enough — you have to kill its <span class="gterm" data-term="persistence" data-def="Techniques an attacker uses to survive reboots and cleanup — services, scheduled tasks, registry keys — so access remains after the initial foothold.">persistence</span> mechanism. The attackers installed a Windows service named <code>MicrosoftEdgeUpdateSvc</code>, deliberately close to the legitimate Edge update service (<code>edgeupdate</code>). The service ran <code>msedge.exe</code>, which Huntress identified as a modified copy of the Non-Sucking Service Manager (<span class="gterm" data-term="NSSM" data-def="Non-Sucking Service Manager — a legitimate open-source tool that runs any program as a Windows service and restarts it on crash or reboot; frequently abused for malware persistence.">NSSM</span>) — a legitimate open-source utility that runs any program as a Windows service and restarts it after crashes or reboots.</p>
+<p>So the chain is: NSSM wrapper (SYSTEM privileges) → restarts <code>edge.exe</code> forever. Remove the service, the miner dies. Leave it, and it respawns on every boot. Your hunt:</p>
+<pre><code class="language-powershell"># List services with suspicious display-name / binary-path mismatches
+Get-Service | Where-Object { $_.Name -like &#x27;*Edge*&#x27; -or $_.Name -like &#x27;*Update*&#x27; } |
+  ForEach-Object { Get-CimInstance Win32_Service -Filter &quot;Name = &#x27;$($_.Name)&#x27;&quot; } |
+  Select-Object Name, DisplayName, PathName, StartMode
+
+# Flag services whose binaries live in Temp or user-writable folders
+Get-CimInstance Win32_Service |
+  Where-Object { $_.PathName -match &#x27;(?i)(temp|appdata)&#x27; } |
+  Select-Object Name, DisplayName, PathName</code></pre>
+<p>Also compare the service list against a known-good baseline. The fake <code>MicrosoftEdgeUpdateSvc</code> differs from the real Edge updater by name, binary path (Temp instead of <code>Program Files</code>), and publisher metadata. On a fleet, any one of those mismatches is a hunt hit.</p>
+<h2 id="trick-3-the-script-that-watches-you-back"><span class="hnum">04</span>Trick 3: the script that watches you back</h2>
+<p>This is the campaign&#x27;s signature move. <code>Taskgmr.ps1</code> — fetched over <code>curl</code> — monitored Windows Task Manager and took action when an analyst got curious: if Task Manager opened, the script stopped the mining service to hide the CPU spike, then restarted it when Task Manager closed. Worse, it force-killed Task Manager at 6:00 p.m. local time, and again if Task Manager stayed open for more than an hour overnight. Huntress suspects the script was AI-assisted, based on its heavily commented code style — an unsettling sign of where commodity attacker tooling is headed.</p>
+<p>Your hunt for this one has two halves. First, find the script&#x27;s footprint: PowerShell execution events that poll for processes or call <code>Stop-Service</code>/<code>Stop-Process</code> on <code>taskmgr</code>:</p>
+<pre><code class="language-powershell"># Search PowerShell script-block logging (Event ID 4104) for Task Manager tampering
+Get-WinEvent -FilterHashtable @{LogName=&#x27;Microsoft-Windows-PowerShell/Operational&#x27;; Id=4104} |
+  Where-Object { $_.Message -match &#x27;(?i)(taskmgr|Stop-Service|Stop-Process)&#x27; } |
+  Select-Object TimeCreated, @{n=&#x27;Snippet&#x27;;e={$_.Message.Substring(0,120)}}</code></pre>
+<p>Second, check for the persistence that keeps the script alive — scheduled tasks or registry Run keys pointing at <code>Taskgmr.ps1</code> or similar oddly named scripts. And remember the meta-lesson: when a machine&#x27;s Task Manager keeps closing itself, don&#x27;t dismiss it as a glitch. It is one of the most reliable user-visible indicators of anti-analysis <span class="gterm" data-term="malware" data-def="Malicious software: viruses, worms, trojans, ransomware, and the like.">malware</span> on a box.</p>
+<h2 id="trick-4-the-kernel-driver-shortcut"><span class="hnum">05</span>Trick 4: the kernel driver shortcut</h2>
+<p>In at least one intrusion, the attackers used <code>certutil.exe</code> — the built-in Windows certificate utility, a classic <span class="gterm" data-term="LOLBin" data-def="&#x27;Living Off the Land Binary&#x27; — a legitimate system tool (like certutil.exe or powershell.exe) that attackers abuse to blend in, since it is already trusted on the machine.">LOLBin</span> — to download <code>WinRing0x64.sys</code> to the Temp folder. This is a legitimate but vulnerable kernel driver. Attackers routinely abuse such drivers to disable endpoint security tools or, in this case, to gain low-level hardware access and squeeze more hashes out of the CPU.</p>
+<p>Any download via <code>certutil</code> deserves scrutiny, but a <code>.sys</code> file written to Temp by <code>certutil.exe</code> and then loaded is a five-alarm hunt hit:</p>
+<pre><code class="language-powershell"># certutil downloading executables or drivers = investigate immediately
+Get-WinEvent -FilterHashtable @{LogName=&#x27;Security&#x27;; Id=4688} |
+  Where-Object { $_.Message -match &#x27;(?i)certutil.*(urlcache|download)&#x27; -and $_.Message -match &#x27;(?i)\.(exe|sys|dll)&#x27; } |
+  Select-Object TimeCreated, @{n=&#x27;Detail&#x27;;e={$_.Message.Substring(0,150)}}</code></pre>
+<p>Also audit the driver store for unsigned or nonstandard drivers with <code>sigverif</code> or <code>driverquery /si</code>, and consider blocking known-vulnerable drivers with Microsoft&#x27;s vulnerable-driver blocklist.</p>
+<h2 id="the-full-hunt-checklist"><span class="hnum">06</span>The full hunt checklist</h2>
+<p>If you run AhsayCBS — or just want a practical exercise — work through this list in order. Treat it as a lab: each step maps to one evasion trick above.</p>
+<ol>
+<li><strong>Scope exposure</strong>: is the AhsayCBS management web interface reachable from the internet? Huntress&#x27;s core advice: restrict it to trusted IPs or require VPN, immediately. Remember 10.3.4 is also vulnerable — this is a <span class="gterm" data-term="zero-day" data-def="A security flaw unknown to the public and the vendor — no patch exists when it&#x27;s exploited.">zero-day</span> with no complete fix.</li>
+<li><strong>Child processes</strong>: hunt for unexpected children of <code>cbssvcX64.exe</code> or <code>cbssvcX86.exe</code> in your EDR or Sysmon logs (process creation, Event ID 1/4688).</li>
+<li><strong>Name masquerade</strong>: find Edge/Chrome-looking binaries running from Temp, unsigned or with mismatched signatures.</li>
+<li><strong>Fake services</strong>: diff your services against baseline; flag anything whose binary lives in a user-writable path.</li>
+<li><strong>Anti-analysis scripts</strong>: search PowerShell 4104 logs for <code>taskmgr</code> references; audit scheduled tasks and Run keys.</li>
+<li><strong>LOLBin downloads</strong>: look for <code>certutil</code> or <code>curl</code> pulling executables, and <code>.sys</code> files landing in Temp.</li>
+<li><strong>Network</strong>: watch for outbound connections to Monero pools — the campaign used <code>xmr.kryptex.network:8029</code> and <code>51.195.127.124:8029</code>.</li>
+<li><strong>Assume breach depth</strong>: if you find anything, Huntress recommends re-imaging the host from a trusted backup. Webshells and backdoors may be hiding alongside the miner.</li>
+</ol>
+<h2 id="closing-the-miner-is-the-least-of-your-problems"><span class="hnum">07</span>Closing: the miner is the least of your problems</h2>
+<p>Here is the part defenders sometimes miss. Cryptojacking feels like a nuisance — stolen electricity, slow servers. But this campaign started with a webshell on a backup server. Backup servers hold the keys to everything: credentials, repositories, storage systems for every customer an MSP protects. A miner that announces itself with 90 percent CPU is, perversely, a loud intruder. The quiet ones — the webshells, the stolen sessions, the backup data copied off in the background — are the real payload. Hunt the miner, but patch the assumption that mining is all they did.</p>
+<p>Sources: Huntress blog (primary, including published Sigma rules and IoCs), The Hacker News (Oct 9, 2026), BleepingComputer (Oct 9, 2026), Threadlinqs TL-2026-3109.</p><div class="author-box"><div class="kicker"><span class="dot"></span>written by</div><p><strong>kou</strong> documents what’s learned about threat intel, attack surface, and practical defense — from the dark side of the internet.</p></div><div class="pager"><a href="/artikel/atlassian-cve-2026-21589-exploited-hours/"><span class="dir">← previous</span><span class="t">CVE-2026-21589: Atlassian&#x27;s Eight-Product Bug, Exploited Within Hours</span></a><span></span></div></div>
+                <aside class="toc"><h4>Contents</h4><ol><li style="margin-left:0px"><a href="#the-30-second-campaign-brief">The 30-second campaign brief</a></li><li style="margin-left:0px"><a href="#trick-1-name-masquerade">Trick 1: name masquerade</a></li><li style="margin-left:0px"><a href="#trick-2-persistence-that-mimics-the-real-updater">Trick 2: persistence that mimics the real updater</a></li><li style="margin-left:0px"><a href="#trick-3-the-script-that-watches-you-back">Trick 3: the script that watches you back</a></li><li style="margin-left:0px"><a href="#trick-4-the-kernel-driver-shortcut">Trick 4: the kernel driver shortcut</a></li><li style="margin-left:0px"><a href="#the-full-hunt-checklist">The full hunt checklist</a></li><li style="margin-left:0px"><a href="#closing-the-miner-is-the-least-of-your-problems">Closing: the miner is the least of your problems</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>security notes from the dark side of the internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="search articles…" aria-label="search">
+    <div class="search-hint">type at least 2 characters · esc to close · ctrl+k anywhere</div>
+    <div class="search-results" data-empty="nothing found — try another keyword."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

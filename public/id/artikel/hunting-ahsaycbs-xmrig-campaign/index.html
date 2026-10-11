@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Berburu Cryptominer Siluman: Lab Praktis dari Kampanye XMRig AhsayCBS — llunatic-lab</title>
+<meta name="description" content="Penyerang merangkai dua zero-day AhsayCBS, menanam miner XMRig yang menyamar sebagai Microsoft Edge, lalu menyebar script berbantuan AI yang langsung mematikan Task Manager begitu dibuka. Berikut cara memburu setiap tahap kampanye itu di jaringan Anda sendiri.">
+<meta property="og:title" content="Berburu Cryptominer Siluman: Lab Praktis dari Kampanye XMRig AhsayCBS">
+<meta property="og:description" content="Penyerang merangkai dua zero-day AhsayCBS, menanam miner XMRig yang menyamar sebagai Microsoft Edge, lalu menyebar script berbantuan AI yang langsung mematikan Task Manager begitu dibuka. Berikut cara memburu setiap tahap kampanye itu di jaringan Anda sendiri.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="/assets/covers/hunting-ahsaycbs-xmrig-campaign.jpg"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/hunting-ahsaycbs-xmrig-campaign/"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/hunting-ahsaycbs-xmrig-campaign/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/id/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/id/arsip/">Arsip</a>
+      <a href="/id/tentang/">Tentang</a>
+      <a class="lang-toggle" href="/artikel/hunting-ahsaycbs-xmrig-campaign/">EN</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>artikel</div>
+              <h1>Berburu Cryptominer Siluman: Lab Praktis dari Kampanye XMRig AhsayCBS</h1>
+              <div class="meta"><span>11 Oktober 2026</span><span>·</span>
+              <span>7 mnt baca</span><a class="tag" href="/id/tag/blue-team/">blue-team</a> <a class="tag" href="/id/tag/threat-hunting/">threat-hunting</a> <a class="tag" href="/id/tag/cryptojacking/">cryptojacking</a> <a class="tag" href="/id/tag/hands-on/">hands-on</a></div>
+              <img class="cover" src="/assets/covers/hunting-ahsaycbs-xmrig-campaign.jpg" alt="Berburu Cryptominer Siluman: Lab Praktis dari Kampanye XMRig AhsayCBS">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Bayangkan ini: CPU sebuah server terpaku di angka 90 persen sepanjang hari, tagihan listrik diam-diam naik — dan setiap kali seseorang membuka Task Manager untuk menyelidiki, lonjakannya lenyap. Task Manager-nya sendiri ikut tertutup. Buka lagi, tertutup lagi. Pelakunya bukan hardware berhantu. Ia adalah cryptominer yang mengawasi Anda balik mengawasinya.</p>
+<p>Itu bukan skenario hipotetis. Pada 7 Oktober 2026, penyerang mulai mengeksploitasi dua celah di AhsayCBS — platform manajemen backup yang dipakai MSP dan integrator sistem — dan mengubah server backup yang diretas menjadi tambang <span class="gterm" data-term="Monero" data-def="Cryptocurrency yang fokus pada privasi dan menyembunyikan pengirim, penerima, serta jumlah — koin favorit malware mining ilegal karena transaksinya sulit dilacak.">Monero</span>. Payload-nya, yang oleh peneliti Huntress disebut kampanye &quot;edge.exe&quot;, membawa empat lapis teknik pengelakan yang seperti checklist lengkap trik-trik siluman ala <span class="gterm" data-term="cryptojacking" data-def="Penggunaan sumber daya komputasi milik orang lain secara diam-diam untuk menambang cryptocurrency — pencurian siklus CPU dan listrik tanpa izin.">cryptojacking</span>. Mari kita bongkar satu per satu, dan ubah setiap trik menjadi sesuatu yang bisa Anda buru.</p>
+<h2 id="ringkasan-kampanye-30-detik"><span class="hnum">01</span>Ringkasan kampanye 30 detik</h2>
+<p>Dua kerentanan tersebut tercatat sebagai <span class="gterm" data-term="CVE" data-def="Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.">CVE</span>-2026-105133 (cacat autentikasi di fungsi <code>checkSysPwd()</code>, skor 5,5) dan <span class="gterm" data-term="CVE" data-def="Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.">CVE</span>-2026-105134 (bug injeksi perintah OS di komponen Replication Receiver, skor 9,3). Dirangkai, keduanya memungkinkan penyerang jarak jauh tanpa autentikasi mengeksekusi perintah dengan hak SYSTEM. Nomor CVE-nya baru dipublikasikan pada 4 Oktober 2026 — dan upaya eksploitasi pertama tercatat pukul 11:20 malam UTC tanggal 7 Oktober. Setidaknya lima organisasi terdampak dalam sehari.</p>
+<p>Ada kejutan yang menjadikan ini kisah <span class="gterm" data-term="zero-day" data-def="A security flaw unknown to the public and the vendor — no patch exists when it&#x27;s exploited.">zero-day</span>: NVD menyatakan celah ini sudah diperbaiki di AhsayCBS 10.3.4, tetapi Huntress mengonfirmasi versi terbaru pun masih rentan. Saat tulisan ini dibuat, belum ada patch yang benar-benar menutup celah — anggap semua versi sebagai terpapar.</p>
+<p>Setelah masuk, menurut Huntress, penyerang melakukan reconnaissance, menanam <span class="gterm" data-term="webshell" data-def="Script jahat yang diunggah ke web server dan memberi penyerang eksekusi perintah jarak jauh lewat browser — backdoor permanen yang menyamar sebagai halaman web.">webshell</span> Java Server Pages, lalu mengunduh payload dari object storage Alibaba Cloud. File-file itu mendarat di <code>%TEMP%</code> atau <code>AppData/Local/Temp</code>, dijalankan sebagai child process dari biner service AhsayCBS <code>cbssvcX64.exe</code>: <code>edge.exe</code>, <code>msedge.exe</code>, <code>config.json</code>, dan sebuah script PowerShell bernama <code>Taskgmr.ps1</code>. Pohon proses itu — service backup yang tiba-tiba melahirkan biner asing dari folder Temp — adalah hal pertama yang akan kita buru.</p>
+<h2 id="trik-1-penyamaran-nama"><span class="hnum">02</span>Trik 1: penyamaran nama</h2>
+<p>Miner XMRig — penambang <span class="gterm" data-term="Monero" data-def="Cryptocurrency yang fokus pada privasi dan menyembunyikan pengirim, penerima, serta jumlah — koin favorit malware mining ilegal karena transaksinya sulit dilacak.">Monero</span> open-source yang sah tapi sering disalahgunakan kriminal — datang dengan nama <code>edge.exe</code>, menyamar sebagai Microsoft Edge. Bagi analis yang sekilas melirik daftar proses, proses bernama Edge hampir tak menimbulkan kecurigaan. Ini adalah teknik MITRE ATT&amp;CK T1036.004, &quot;masquerade task or service,&quot; dan sepupunya T1036.005, &quot;match legitimate resource name.&quot;</p>
+<p>Nama bisa berbohong. Path dan signature tidak. Biner Edge asli tinggal di <code>C:\Program Files (x86)\Microsoft\Edge\Application</code> dan ditandatangani Microsoft. Salinan milik penyerang berjalan dari folder Temp tanpa signature yang valid. Cara berburu:</p>
+<pre><code class="language-powershell"># Temukan semua &quot;edge.exe&quot; yang berjalan dari lokasi mencurigakan
+Get-CimInstance Win32_Process -Filter &quot;Name = &#x27;edge.exe&#x27;&quot; |
+  Select-Object Name, ProcessId, ExecutablePath, CommandLine
+
+# Verifikasi signature digital — biner tak bertanda atau salah penanda langsung menonjol
+Get-ChildItem C:\Users\*\AppData\Local\Temp\*.exe -ErrorAction SilentlyContinue |
+  Get-AuthenticodeSignature | Where-Object { $_.Status -ne &#x27;Valid&#x27; }</code></pre>
+<p>Di <span class="gterm" data-term="SIEM" data-def="Security Information and Event Management — platform yang mengumpulkan log dari seluruh jaringan dan mengorelasikannya untuk mendeteksi serangan secara real-time.">SIEM</span>, deteksi padanannya sederhana: buat alert untuk setiap proses yang namanya menyerupai aplikasi terkenal tetapi image path-nya berada di direktori Temp atau status signature-nya bukan Microsoft. Huntress merilis empat rule <span class="gterm" data-term="Sigma" data-def="Format terbuka dan netral-vendor untuk menulis rule deteksi yang bisa dikonversi menjadi query SIEM seperti Splunk, Elastic, atau Sentinel — pengetahuan blue-team yang bisa dibagikan.">Sigma</span> yang mencakup persis pola ini, termasuk biner bernama Edge yang membawa flag daemon khas XMRig.</p>
+<h2 id="trik-2-persistence-yang-meniru-updater-asli"><span class="hnum">03</span>Trik 2: persistence yang meniru updater asli</h2>
+<p>Sekadar membunuh miner tidak cukup — Anda harus membunuh mekanisme <span class="gterm" data-term="persistence" data-def="Teknik yang dipakai penyerang agar tetap bertahan melewati reboot dan pembersihan — service, scheduled task, registry key — sehingga akses tetap ada setelah pijakan awal.">persistence</span>-nya. Penyerang memasang Windows service bernama <code>MicrosoftEdgeUpdateSvc</code>, yang disengaja mirip dengan service update Edge yang asli (<code>edgeupdate</code>). Service itu menjalankan <code>msedge.exe</code>, yang menurut Huntress adalah salinan <span class="gterm" data-term="NSSM" data-def="Non-Sucking Service Manager — tool open-source yang sah untuk menjalankan program apa pun sebagai Windows service dan me-restart-nya saat crash atau reboot; sering disalahgunakan untuk persistence malware.">NSSM</span> (Non-Sucking Service Manager) yang dimodifikasi — utilitas open-source yang sah untuk menjalankan program apa pun sebagai Windows service dan me-restart-nya setelah crash atau reboot.</p>
+<p>Jadi rantainya: pembungkus NSSM (hak SYSTEM) → me-restart <code>edge.exe</code> selamanya. Hapus service-nya, miner mati. Biarkan, dan ia bangkit di setiap boot. Cara berburu:</p>
+<pre><code class="language-powershell"># Daftar service dengan ketidakcocokan nama tampilan vs path biner
+Get-Service | Where-Object { $_.Name -like &#x27;*Edge*&#x27; -or $_.Name -like &#x27;*Update*&#x27; } |
+  ForEach-Object { Get-CimInstance Win32_Service -Filter &quot;Name = &#x27;$($_.Name)&#x27;&quot; } |
+  Select-Object Name, DisplayName, PathName, StartMode
+
+# Tandai service yang binernya tinggal di Temp atau folder yang bisa ditulis user
+Get-CimInstance Win32_Service |
+  Where-Object { $_.PathName -match &#x27;(?i)(temp|appdata)&#x27; } |
+  Select-Object Name, DisplayName, PathName</code></pre>
+<p>Bandingkan juga daftar service dengan baseline yang sudah diketahui baik. <code>MicrosoftEdgeUpdateSvc</code> palsu berbeda dari updater Edge asli dalam nama, path biner (Temp, bukan <code>Program Files</code>), dan metadata publisher. Di satu fleet, satu saja ketidakcocokan itu sudah layak jadi temuan.</p>
+<h2 id="trik-3-script-yang-mengawasi-balik"><span class="hnum">04</span>Trik 3: script yang mengawasi balik</h2>
+<p>Ini adalah jurus khas kampanye ini. <code>Taskgmr.ps1</code> — diambil lewat <code>curl</code> — memantau Windows Task Manager dan bertindak begitu ada analis yang penasaran: jika Task Manager dibuka, script menghentikan service mining agar lonjakan CPU hilang, lalu menjalankannya lagi saat Task Manager ditutup. Lebih parah: script mematikan paksa Task Manager setiap pukul 18:00 waktu lokal, dan lagi jika Task Manager dibiarkan terbuka lebih dari satu jam di malam hari. Huntress menduga script ini dibantu AI, dilihat dari gaya kodenya yang penuh komentar — pertanda yang meresahkan tentang arah tooling penyerang komoditas.</p>
+<p>Perburuannya punya dua sisi. Pertama, temukan jejak script: event eksekusi PowerShell yang memantau proses atau memanggil <code>Stop-Service</code>/<code>Stop-Process</code> terhadap <code>taskmgr</code>:</p>
+<pre><code class="language-powershell"># Cari di PowerShell script-block logging (Event ID 4104) untuk manipulasi Task Manager
+Get-WinEvent -FilterHashtable @{LogName=&#x27;Microsoft-Windows-PowerShell/Operational&#x27;; Id=4104} |
+  Where-Object { $_.Message -match &#x27;(?i)(taskmgr|Stop-Service|Stop-Process)&#x27; } |
+  Select-Object TimeCreated, @{n=&#x27;Snippet&#x27;;e={$_.Message.Substring(0,120)}}</code></pre>
+<p>Kedua, periksa mekanisme persistence yang menjaga script tetap hidup — scheduled task atau registry Run key yang menunjuk ke <code>Taskgmr.ps1</code> atau script bernama aneh lainnya. Dan ingat pelajaran meta-nya: ketika Task Manager di sebuah mesin terus menutup sendiri, jangan anggap itu glitch. Itu adalah salah satu indikator paling andal — dan terlihat oleh user — bahwa ada <span class="gterm" data-term="malware" data-def="Malicious software: viruses, worms, trojans, ransomware, and the like.">malware</span> anti-analisis di mesin itu.</p>
+<h2 id="trik-4-jalan-pintas-via-kernel-driver"><span class="hnum">05</span>Trik 4: jalan pintas via kernel driver</h2>
+<p>Dalam setidaknya satu intrusi, penyerang memakai <code>certutil.exe</code> — utilitas sertifikat bawaan Windows, <span class="gterm" data-term="LOLBin" data-def="&#x27;Living Off the Land Binary&#x27; — tool sistem yang sah (seperti certutil.exe atau powershell.exe) yang disalahgunakan penyerang agar menyatu dengan aktivitas normal, karena tool tersebut memang dipercaya di mesin itu.">LOLBin</span> klasik — untuk mengunduh <code>WinRing0x64.sys</code> ke folder Temp. Ini adalah kernel driver yang sah tetapi rentan. Penyerang rutin menyalahgunakan driver semacam itu untuk melumpuhkan tool keamanan endpoint atau, dalam kasus ini, mendapatkan akses hardware level rendah demi memeras lebih banyak hash dari CPU.</p>
+<p>Unduhan apa pun via <code>certutil</code> layak dicurigai, tetapi file <code>.sys</code> yang mendarat di Temp via <code>certutil.exe</code> lalu di-load adalah temuan lima alarm:</p>
+<pre><code class="language-powershell"># certutil mengunduh executable atau driver = segera selidiki
+Get-WinEvent -FilterHashtable @{LogName=&#x27;Security&#x27;; Id=4688} |
+  Where-Object { $_.Message -match &#x27;(?i)certutil.*(urlcache|download)&#x27; -and $_.Message -match &#x27;(?i)\.(exe|sys|dll)&#x27; } |
+  Select-Object TimeCreated, @{n=&#x27;Detail&#x27;;e={$_.Message.Substring(0,150)}}</code></pre>
+<p>Audit juga driver store untuk driver tak bertanda atau nonstandar dengan <code>sigverif</code> atau <code>driverquery /si</code>, dan pertimbangkan memblokir driver rentan yang sudah dikenal dengan vulnerable-driver blocklist dari Microsoft.</p>
+<h2 id="checklist-berburu-lengkap"><span class="hnum">06</span>Checklist berburu lengkap</h2>
+<p>Jika Anda menjalankan AhsayCBS — atau sekadar ingin latihan praktis — kerjakan daftar ini berurutan. Anggap sebagai lab: setiap langkah memetakan ke satu trik pengelakan di atas.</p>
+<ol>
+<li><strong>Batasi eksposur</strong>: apakah web interface manajemen AhsayCBS bisa dijangkau dari internet? Saran inti Huntress: batasi ke IP tepercaya atau wajibkan VPN, segera. Ingat 10.3.4 pun rentan — ini <span class="gterm" data-term="zero-day" data-def="A security flaw unknown to the public and the vendor — no patch exists when it&#x27;s exploited.">zero-day</span> tanpa patch lengkap.</li>
+<li><strong>Child process</strong>: buru child process tak terduga dari <code>cbssvcX64.exe</code> atau <code>cbssvcX86.exe</code> di EDR atau log Sysmon (pembuatan proses, Event ID 1/4688).</li>
+<li><strong>Penyamaran nama</strong>: temukan biner mirip Edge/Chrome yang berjalan dari Temp, tak bertanda atau signature-nya janggal.</li>
+<li><strong>Service palsu</strong>: bandingkan daftar service dengan baseline; tandai yang binernya berada di path yang bisa ditulis user.</li>
+<li><strong>Script anti-analisis</strong>: cari referensi <code>taskmgr</code> di log PowerShell 4104; audit scheduled task dan Run key.</li>
+<li><strong>Unduhan LOLBin</strong>: cari <code>certutil</code> atau <code>curl</code> yang menarik executable, dan file <code>.sys</code> yang mendarat di Temp.</li>
+<li><strong>Jaringan</strong>: awasi koneksi keluar ke mining pool Monero — kampanye ini memakai <code>xmr.kryptex.network:8029</code> dan <code>51.195.127.124:8029</code>.</li>
+<li><strong>Asumsikan kedalaman breach</strong>: jika menemukan sesuatu, Huntress menyarankan re-image host dari backup tepercaya. Webshell dan backdoor mungkin bersembunyi di samping miner.</li>
+</ol>
+<h2 id="penutup-miner-adalah-masalah-terkecil"><span class="hnum">07</span>Penutup: miner adalah masalah terkecil</h2>
+<p>Ini bagian yang kadang luput dari defender. Cryptojacking terasa seperti gangguan — listrik dicuri, server lambat. Tapi kampanye ini berawal dari webshell di server backup. Server backup menyimpan kunci segalanya: kredensial, repositori, sistem penyimpanan untuk setiap pelanggan yang dilindungi MSP. Miner yang berisik dengan CPU 90 persen justru, ironisnya, adalah penyusup yang lantang. Yang sunyi — webshell, sesi yang dicuri, data backup yang disalin diam-diam — adalah payload sesungguhnya. Buru miner-nya, tapi tambal juga asumsi bahwa mining adalah satu-satunya yang mereka lakukan.</p>
+<p>Sumber: blog Huntress (primer, termasuk rule Sigma dan IoC yang dirilis), The Hacker News (9 Okt 2026), BleepingComputer (9 Okt 2026), Threadlinqs TL-2026-3109.</p><div class="author-box"><div class="kicker"><span class="dot"></span>ditulis oleh</div><p><strong>kou</strong> mendokumentasikan threat intel, attack surface, dan pertahanan praktis — dari sisi gelap internet.</p></div><div class="pager"><a href="/id/artikel/atlassian-cve-2026-21589-exploited-hours/"><span class="dir">← sebelumnya</span><span class="t">CVE-2026-21589: Satu Bug Atlassian di Delapan Produk, Dieksploitasi dalam Hitungan Jam</span></a><span></span></div></div>
+                <aside class="toc"><h4>Daftar isi</h4><ol><li style="margin-left:0px"><a href="#ringkasan-kampanye-30-detik">Ringkasan kampanye 30 detik</a></li><li style="margin-left:0px"><a href="#trik-1-penyamaran-nama">Trik 1: penyamaran nama</a></li><li style="margin-left:0px"><a href="#trik-2-persistence-yang-meniru-updater-asli">Trik 2: persistence yang meniru updater asli</a></li><li style="margin-left:0px"><a href="#trik-3-script-yang-mengawasi-balik">Trik 3: script yang mengawasi balik</a></li><li style="margin-left:0px"><a href="#trik-4-jalan-pintas-via-kernel-driver">Trik 4: jalan pintas via kernel driver</a></li><li style="margin-left:0px"><a href="#checklist-berburu-lengkap">Checklist berburu lengkap</a></li><li style="margin-left:0px"><a href="#penutup-miner-adalah-masalah-terkecil">Penutup: miner adalah masalah terkecil</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>catatan keamanan dari sisi gelap internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="cari artikel…" aria-label="search">
+    <div class="search-hint">ketik minimal 2 huruf · esc untuk tutup · ctrl+k dari mana saja</div>
+    <div class="search-results" data-empty="nggak ketemu — coba kata kunci lain."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

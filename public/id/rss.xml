@@ -4,7 +4,11 @@
 <title>llunatic-lab (id)</title><link>https://lab.llunaticsys.web.id/id/</link>
 <description>Catatan keamanan dari sisi gelap internet</description>
 <language>id</language>
-<item><title>CVE-2026-21589: Satu Bug Atlassian di Delapan Produk, Dieksploitasi dalam Hitungan Jam</title>
+<item><title>Berburu Cryptominer Siluman: Lab Praktis dari Kampanye XMRig AhsayCBS</title>
+            <link>https://lab.llunaticsys.web.id/id/artikel/hunting-ahsaycbs-xmrig-campaign/</link>
+            <description>Penyerang merangkai dua zero-day AhsayCBS, menanam miner XMRig yang menyamar sebagai Microsoft Edge, lalu menyebar script berbantuan AI yang langsung mematikan Task Manager begitu dibuka. Berikut cara memburu setiap tahap kampanye itu di jaringan Anda sendiri.</description>
+            <pubDate>Sun, 11 Oct 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/hunting-ahsaycbs-xmrig-campaign/</guid></item><item><title>CVE-2026-21589: Satu Bug Atlassian di Delapan Produk, Dieksploitasi dalam Hitungan Jam</title>
             <link>https://lab.llunaticsys.web.id/id/artikel/atlassian-cve-2026-21589-exploited-hours/</link>
             <description>Satu shared library mengubah delapan produk Atlassian Data Center menjadi satu target raksasa — dan penyerang mulai menggedor honeypot di hari yang sama write-up teknisnya terbit.</description>
             <pubDate>Fri, 09 Oct 2026 00:00:00 -0000</pubDate>

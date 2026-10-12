@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kepercayaan Adalah Celahnya: Pelajaran dari Pembobolan Terbesar Denmark tentang Risiko Pihak Ketiga — llunatic-lab</title>
+<meta name="description" content="Basis data identitas nasional Denmark kehilangan catatan 8,8 juta penduduk — bukan karena zero-day, melainkan lewat akses sah sebuah perusahaan vendor yang disalahgunakan. Inilah mengapa setiap relasi pihak ketiga adalah jalur serangan, dan cara menutup yang paling penting.">
+<meta property="og:title" content="Kepercayaan Adalah Celahnya: Pelajaran dari Pembobolan Terbesar Denmark tentang Risiko Pihak Ketiga">
+<meta property="og:description" content="Basis data identitas nasional Denmark kehilangan catatan 8,8 juta penduduk — bukan karena zero-day, melainkan lewat akses sah sebuah perusahaan vendor yang disalahgunakan. Inilah mengapa setiap relasi pihak ketiga adalah jalur serangan, dan cara menutup yang paling penting.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="/assets/covers/third-party-trust-denmark-breach.jpg"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/third-party-trust-denmark-breach/"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/third-party-trust-denmark-breach/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/id/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/id/arsip/">Arsip</a>
+      <a href="/id/tentang/">Tentang</a>
+      <a class="lang-toggle" href="/artikel/third-party-trust-denmark-breach/">EN</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>artikel</div>
+              <h1>Kepercayaan Adalah Celahnya: Pelajaran dari Pembobolan Terbesar Denmark tentang Risiko Pihak Ketiga</h1>
+              <div class="meta"><span>12 Oktober 2026</span><span>·</span>
+              <span>5 mnt baca</span><a class="tag" href="/id/tag/supply-chain/">supply-chain</a> <a class="tag" href="/id/tag/third-party-risk/">third-party-risk</a> <a class="tag" href="/id/tag/data-breach/">data-breach</a></div>
+              <img class="cover" src="/assets/covers/third-party-trust-denmark-breach.jpg" alt="Kepercayaan Adalah Celahnya: Pelajaran dari Pembobolan Terbesar Denmark tentang Risiko Pihak Ketiga">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Sebagian besar kisah pembobolan dimulai dari sebuah celah: patch yang terlewat, password yang lemah, exploit yang cerdik. Kisah yang satu ini dimulai dari sebuah izin. Basis data identitas nasional Denmark — Central Person Register, satu-satunya sumber kebenaran data setiap warga Denmark — kehilangan catatan pribadi sekitar 8,8 juta orang. Tidak perlu zero-day. Penyerang cukup berjalan masuk lewat pintu yang memang sengaja dibuka Denmark: akses sah sebuah perusahaan ke sistem register tersebut.</p>
+<p>Pemerintah Denmark mengumumkan pembobolan ini pada 5 Oktober 2026. Akses ilegalnya berlangsung sekitar sepuluh hari di bulan September sebelum penyelidikan internal — yang dipicu oleh lonjakan query otomatis — menghentikannya. Data yang dicuri meliputi nama, alamat, dan nomor jaminan sosial Denmark — nomor CPR yang dipakai untuk pajak dan layanan publik. Register itu menyimpan catatan sekitar 11 juta orang, jauh melampaui 6 juta penduduk Denmark saat ini, karena ia juga menyimpan data historis warga yang tinggal di luar negeri maupun yang sudah meninggal. Itulah yang membuat ini menjadi pembobolan terbesar dalam sejarah negara itu: yang tersapu bukan hanya yang hidup, melainkan juga yang pindah dan yang telah tiada.</p>
+<p>Pemerintah, lewat menteri Christina Egelund, menyebut insiden ini sebagai &quot;insiden serius&quot;. Namun detail yang paling penting bagi para defender adalah vektor serangannya. Menurut pernyataan pemerintah, akses ilegal itu diperoleh dengan menyalahgunakan akses sah sebuah perusahaan Denmark untuk mencari informasi di sistem CPR. Perusahaan-perusahaan Denmark memang diizinkan memverifikasi data warga lewat register tersebut. Seseorang mengubah kanal tepercaya itu menjadi pipa pencurian data.</p>
+<h2 id="perimeter-anda-lebih-besar-dari-yang-anda-kira"><span class="hnum">01</span>Perimeter Anda lebih besar dari yang Anda kira</h2>
+<p>Inilah inti konsep <span class="gterm" data-term="third-party risk" data-def="Paparan keamanan yang diwariskan organisasi dari vendor, mitra, dan kontraktornya — setiap pihak ketiga yang punya akses ke sistem atau data menjadi jalur serangan potensial.">third-party risk</span>: setiap organisasi yang punya akses ke sistem atau data Anda otomatis menjadi bagian dari <span class="gterm" data-term="attack surface" data-def="The sum of all points (servers, apps, APIs, subdomains) that can be attacked from the outside.">attack surface</span> Anda. Anda bisa mengeraskan jaringan sendiri sampai level militer, tapi tetap kehilangan segalanya lewat vendor yang kredensialnya lebih lemah dari milik Anda.</p>
+<p>Pola ini lebih tua dari kebanyakan engineer yang membaca artikel ini. Target kehilangan 40 juta nomor kartu pada 2013 karena penyerang masuk lewat kontraktor AC (HVAC). SolarWinds, pada 2020, mengubah update software tepercaya menjadi kampanye spionase global — <span class="gterm" data-term="supply chain attack" data-def="Serangan yang mencapai target lewat pemasok, vendor, atau update software tepercaya, alih-alih menyerang target secara langsung.">supply chain attack</span> yang jadi acuan buku teks. Di tiap kasus, pertahanan korban sendiri bertahan; penyerang hanya memilih tetangga yang kuncinya lebih murah.</p>
+<p>Yang membuat kasus Denmark begitu tajam adalah legitimasi aksesnya. Ini bukan laptop vendor yang diretas atau akun helpdesk yang kena phishing. Jalur aksesnya memang dirancang demikian: register negara yang sengaja dibuka untuk perusahaan swasta demi keperluan verifikasi sehari-hari. Model keamanannya adalah &quot;kami mempercayai perusahaan ini&quot; — dan kepercayaan, begitu diberikan, sangat sulit diawasi.</p>
+<h2 id="mengapa-akses-tepercaya-begitu-sulit-diamankan"><span class="hnum">02</span>Mengapa akses tepercaya begitu sulit diamankan</h2>
+<p><span class="gterm" data-term="least privilege" data-def="Prinsip keamanan bahwa setiap akun, proses, atau layanan hanya boleh memegang akses minimum yang dibutuhkan untuk pekerjaannya — tidak lebih.">Least privilege</span> — prinsip bahwa setiap akun hanya boleh memegang akses minimum yang dibutuhkannya — terdengar jelas sampai Anda menerapkannya ke relasi vendor. Perusahaan yang memverifikasi catatan identitas ke register nasional bisa dibilang memang membutuhkan tepat akses yang diberikan Denmark itu. Anda tidak bisa mencabut hak akses tanpa merusak proses bisnisnya. Jadi pertanyaan sebenarnya bukan apakah akses diberikan, melainkan bagaimana memastikan akses yang diberikan itu tidak diam-diam diubah menjadi pencurian massal.</p>
+<p>Penyalahgunaan akses sah hampir tidak meninggalkan jejak forensik tradisional. Tidak ada malware yang bisa dideteksi, tidak ada exploit yang perlu di-patch, tidak ada login mencurigakan dari negara asing — query-query itu datang dari akun sah yang melakukan hal yang memang diotorisasi untuknya, hanya dalam skala industri. Satu-satunya anomali adalah volumenya: lonjakan query otomatis itulah yang akhirnya memicu penyelidikan. Itu pola deteksi — anomali tingkat penggunaan pada akun istimewa — yang bisa diterapkan organisasi mana pun.</p>
+<p>Ada pelajaran kedua yang tersembunyi di desain register itu. Basis data CPR menyimpan sekitar 11 juta catatan untuk negara berpenduduk 6 juta. Setiap catatan yang dipertahankan adalah liabilitas: data lama milik orang yang pindah atau meninggal tidak bisa dilindungi siapa pun, tidak bisa diawasi siapa pun, dan tetap punya nilai seumur hidup untuk penipuan identitas. Data yang Anda simpan adalah data yang wajib Anda bela. Data yang tidak lagi Anda butuhkan hanyalah <span class="gterm" data-term="attack surface" data-def="The sum of all points (servers, apps, APIs, subdomains) that can be attacked from the outside.">attack surface</span>.</p>
+<h2 id="menutup-pintu-vendor-yang-penting"><span class="hnum">03</span>Menutup pintu vendor yang penting</h2>
+<p>Anda tidak perlu punya register nasional untuk menerapkan pelajaran ini. Dinamika yang sama berlaku untuk setiap vendor dengan API key, setiap kontraktor dengan akun VPN, setiap integrasi SaaS dengan akses baca ke basis data pelanggan Anda. Berikut program praktisnya:</p>
+<p><strong>Inventarisasi setiap pihak ketiga yang punya akses.</strong> Kalau tidak bisa mendaftarnya, Anda tidak bisa mengamankannya. Setiap akun vendor wajib punya pemilik, alasan bisnis, dan tanggal kedaluwarsa. Akses yang bukan tanggung jawab siapa pun adalah akses yang tidak akan disadari siapapun ketika disalahgunakan.</p>
+<p><strong>Batasi apa yang bisa dilakukan akses tepercaya, bukan cuma siapa yang memilikinya.</strong> Rate limit, kontrol query massal, dan baseline perilaku pada akun vendor mengubah &quot;penyalahgunaan skala besar&quot; dari tak terlihat menjadi mencolok. Penyelidikan di Denmark bermula karena seseorang menyadari lonjakan query otomatis — bangun alerting itu sebelum Anda membutuhkannya.</p>
+<p><strong>Awasi yang sah, bukan cuma yang jahat.</strong> Pipeline <span class="gterm" data-term="SIEM" data-def="Security Information and Event Management — platform yang mengumpulkan log dari seluruh jaringan dan mengorelasikannya untuk mendeteksi serangan secara real-time.">SIEM</span> dan <span class="gterm" data-term="threat intelligence" data-def="Structured information about attacker tactics, techniques, and behavior.">threat intelligence</span> biasanya disetel untuk indikator yang sudah dikenal jahat: hash malware, domain berbahaya, IP mencurigakan. Penyalahgunaan oleh vendor sah butuh lensa berbeda: deteksi anomali pada perilaku yang diotorisasi. Kalau akun vendor tiba-tiba mengquery sepuluh ribu catatan padahal baselinenya empat puluh, itu harusnya membangunkan seseorang.</p>
+<p><strong>Minimalkan data itu sendiri.</strong> Retensi adalah risiko. Hapus catatan yang sudah tidak punya alasan hukum atau bisnis untuk disimpan, dan ketika harus menyimpan, pangkas ke field minimum. Delapan juta catatan yang diretas itu menyakitkan; 8 juta catatan yang sebenarnya tidak perlu Anda simpan itu lebih menyakitkan lagi.</p>
+<p><strong>Rencanakan skenario vendor yang diretas, bukan cuma diri sendiri.</strong> Playbook respons insiden biasanya mengasumsikan penyerang masuk lewat infrastruktur Anda. Tambahkan satu skenario: &quot;kredensial vendor kami disalahgunakan.&quot; Siapa yang Anda hubungi? Bisakah akses mereka dicabut dalam hitungan menit? Pemerintah Denmark menangguhkan akses perusahaan yang terlibat sebagai bagian dari respons — pastikan Anda bisa melakukan hal yang sama jam 2 pagi di hari Minggu.</p>
+<h2 id="intinya"><span class="hnum">04</span>Intinya</h2>
+<p>Firewall terkuat di dunia tidak bisa melindungi Anda dari pintu yang Anda buka sendiri. Pembobolan Denmark adalah pengingat bahwa keamanan bukan properti sistem Anda semata — ia adalah properti dari setiap relasi yang Anda jaga. Kepercayaan, dalam istilah keamanan, bukanlah kebajikan. Ia adalah <span class="gterm" data-term="attack surface" data-def="The sum of all points (servers, apps, APIs, subdomains) that can be attacked from the outside.">attack surface</span>, dan ia harus dianggarkan, diawasi, dan dicabut seperti halnya yang lain.</p>
+<p>Penyerang dalam kisah ini tidak merusak apa pun. Itulah bagian yang tidak nyaman. Mereka memahami sesuatu yang masih kurang diinvestasikan para defender: cara termudah melewati tembok adalah lewat gerbang yang Anda biarkan terbuka untuk teman-teman Anda.</p><div class="author-box"><div class="kicker"><span class="dot"></span>ditulis oleh</div><p><strong>kou</strong> mendokumentasikan threat intel, attack surface, dan pertahanan praktis — dari sisi gelap internet.</p></div><div class="pager"><a href="/id/artikel/hunting-ahsaycbs-xmrig-campaign/"><span class="dir">← sebelumnya</span><span class="t">Berburu Cryptominer Siluman: Lab Praktis dari Kampanye XMRig AhsayCBS</span></a><span></span></div></div>
+                <aside class="toc"><h4>Daftar isi</h4><ol><li style="margin-left:0px"><a href="#perimeter-anda-lebih-besar-dari-yang-anda-kira">Perimeter Anda lebih besar dari yang Anda kira</a></li><li style="margin-left:0px"><a href="#mengapa-akses-tepercaya-begitu-sulit-diamankan">Mengapa akses tepercaya begitu sulit diamankan</a></li><li style="margin-left:0px"><a href="#menutup-pintu-vendor-yang-penting">Menutup pintu vendor yang penting</a></li><li style="margin-left:0px"><a href="#intinya">Intinya</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>catatan keamanan dari sisi gelap internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="cari artikel…" aria-label="search">
+    <div class="search-hint">ketik minimal 2 huruf · esc untuk tutup · ctrl+k dari mana saja</div>
+    <div class="search-results" data-empty="nggak ketemu — coba kata kunci lain."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

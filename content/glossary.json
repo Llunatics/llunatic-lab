@@ -81,5 +81,17 @@
   "LOLBin": {
     "en": "'Living Off the Land Binary' — a legitimate system tool (like certutil.exe or powershell.exe) that attackers abuse to blend in, since it is already trusted on the machine.",
     "id": "'Living Off the Land Binary' — tool sistem yang sah (seperti certutil.exe atau powershell.exe) yang disalahgunakan penyerang agar menyatu dengan aktivitas normal, karena tool tersebut memang dipercaya di mesin itu."
+  },
+  "third-party risk": {
+    "en": "The security exposure an organization inherits from its vendors, partners, and contractors — every third party with access to systems or data becomes a potential attack path.",
+    "id": "Paparan keamanan yang diwariskan organisasi dari vendor, mitra, dan kontraktornya — setiap pihak ketiga yang punya akses ke sistem atau data menjadi jalur serangan potensial."
+  },
+  "supply chain attack": {
+    "en": "An attack that reaches its target through a trusted supplier, vendor, or software update instead of attacking the target directly.",
+    "id": "Serangan yang mencapai target lewat pemasok, vendor, atau update software tepercaya, alih-alih menyerang target secara langsung."
+  },
+  "least privilege": {
+    "en": "The security principle that every account, process, or service should hold only the minimum access needed to do its job — nothing more.",
+    "id": "Prinsip keamanan bahwa setiap akun, proses, atau layanan hanya boleh memegang akses minimum yang dibutuhkan untuk pekerjaannya — tidak lebih."
   }
 }

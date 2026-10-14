@@ -93,5 +93,13 @@
   "least privilege": {
     "en": "The security principle that every account, process, or service should hold only the minimum access needed to do its job — nothing more.",
     "id": "Prinsip keamanan bahwa setiap akun, proses, atau layanan hanya boleh memegang akses minimum yang dibutuhkan untuk pekerjaannya — tidak lebih."
+  },
+  "spoofing": {
+    "en": "Sending crafted requests that falsely present themselves as already authenticated or trusted — the server skips its checks because the request 'looks' legitimate. CVE-2026-104935 abuses this to bypass authentication entirely.",
+    "id": "Mengirim permintaan yang dibuat-buat agar tampak sudah terotentikasi atau terpercaya — server melewatkan pemeriksaannya karena permintaan 'terlihat' sah. CVE-2026-104935 menyalahgunakan ini untuk melewati otentikasi sepenuhnya."
+  },
+  "KEV": {
+    "en": "CISA's Known Exploited Vulnerabilities catalog: a shortlist of flaws confirmed exploited in the wild. US federal agencies must remediate entries by a set deadline — practitioners treat every listing as 'patch now'.",
+    "id": "Katalog Known Exploited Vulnerabilities milik CISA: daftar singkat celah yang terbukti dieksploitasi di lapangan. Instansi federal AS wajib memperbaikinya sebelum tenggat tertentu — praktisi memperlakukan setiap entri sebagai 'patch sekarang'."
   }
 }

@@ -372,6 +372,9 @@ img { max-width: 100%; display: block; }
   gap: 60px;
   align-items: start;
 }
+/* grid items default to min-width:auto -> a long unbreakable code line
+   stretches the whole track on mobile. This is the classic grid blowout fix. */
+.article-grid > * { min-width: 0; }
 .prose { font-size: 17px; line-height: 1.85; color: var(--ink); }
 .prose > * + * { margin-top: 1.5em; }
 .prose > p:first-of-type::first-letter {
@@ -446,7 +449,11 @@ img { max-width: 100%; display: block; }
   border-radius: 12px;
   overflow: hidden;
   margin-top: 1.8em;
+  max-width: 100%;
 }
+/* long URLs / tokens inside inline code must wrap instead of
+   stretching the layout on narrow screens */
+.prose p code, .prose li code, .prose td code { overflow-wrap: anywhere; }
 [data-theme="light"] .prose pre { background: #141310; }
 .prose pre .code-head {
   display: flex; justify-content: space-between; align-items: center;
@@ -478,6 +485,26 @@ img { max-width: 100%; display: block; }
   overflow-x: auto;
   font-size: 13.5px; line-height: 1.7;
 }
+/* data tables: horizontal scroll on narrow screens instead of blowout */
+.prose .tbl-wrap {
+  overflow-x: auto;
+  margin-top: 1.8em;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+}
+.prose table { width: 100%; border-collapse: collapse; font-size: 0.92em; }
+.prose th, .prose td {
+  text-align: left; vertical-align: top;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+}
+.prose thead th {
+  font-family: var(--mono); font-size: 0.78em;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--acid); white-space: nowrap;
+  border-bottom: 1px solid var(--line-strong);
+}
+.prose tbody tr:last-child td { border-bottom: none; }
 .prose img {
   border-radius: var(--radius);
   border: 1px solid var(--line);

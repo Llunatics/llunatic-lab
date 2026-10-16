@@ -232,10 +232,30 @@ def md_to_html(body, glossary, lang):
             if not in_ol: out.append("<ol>"); in_ol = True
             out.append(f"<li>{inline_md(mo.group(1), glossary, lang)}</li>")
             i += 1; continue
+        # GFM-style table: header row + separator row, then body rows
+        if s.startswith("|") and i + 1 < len(lines) and re.match(
+                r"^\|?[\s:|\-]+\|?$", lines[i + 1].strip()) and "-" in lines[i + 1]:
+            close_lists()
+            def cells(row):
+                return [c.strip() for c in row.strip().strip("|").split("|")]
+            header = cells(s)
+            i += 2
+            body_rows = []
+            while i < len(lines) and lines[i].strip().startswith("|"):
+                body_rows.append(cells(lines[i].strip())); i += 1
+            thead = "<tr>" + "".join(
+                f"<th>{inline_md(c, glossary, lang)}</th>" for c in header) + "</tr>"
+            tbody = "".join(
+                "<tr>" + "".join(
+                    f"<td>{inline_md(c, glossary, lang)}</td>" for c in r
+                ) + "</tr>" for r in body_rows)
+            out.append(f'<div class="tbl-wrap"><table><thead>{thead}</thead>'
+                       f"<tbody>{tbody}</tbody></table></div>")
+            continue
         close_lists()
         buf = [s]; i += 1
         while i < len(lines) and lines[i].strip() and not re.match(
-                r"^(#{1,4}\s|```|[-*]\s|\d+[.)]\s|>|---+$|\x00CODE)", lines[i].strip()):
+                r"^(#{1,4}\s|```|[-*]\s|\d+[.)]\s|>|\||---+$|\x00CODE)", lines[i].strip()):
             buf.append(lines[i].strip()); i += 1
         out.append(f"<p>{inline_md(' '.join(buf), glossary, lang)}</p>")
 

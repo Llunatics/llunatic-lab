@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dissect a Phishing Email Like an Analyst: A Hands-On Lab on the Fake Calendar Invite Wave — llunatic-lab</title>
+<meta name="description" content="Fake meeting invites just became one of 2026&#x27;s largest phishing waves — more than 740,000 emails in the first two weeks of October alone, says Check Point. In this hands-on lab you&#x27;ll autopsy a suspicious invite with stdlib-only Python: headers, SPF/DKIM/DMARC verdicts, hidden URLs, and the malicious .ics attachment.">
+<meta property="og:title" content="Dissect a Phishing Email Like an Analyst: A Hands-On Lab on the Fake Calendar Invite Wave">
+<meta property="og:description" content="Fake meeting invites just became one of 2026&#x27;s largest phishing waves — more than 740,000 emails in the first two weeks of October alone, says Check Point. In this hands-on lab you&#x27;ll autopsy a suspicious invite with stdlib-only Python: headers, SPF/DKIM/DMARC verdicts, hidden URLs, and the malicious .ics attachment.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="/assets/covers/phishing-email-autopsy-lab.jpg"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/phishing-email-autopsy-lab/"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/phishing-email-autopsy-lab/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/arsip/">Archive</a>
+      <a href="/tentang/">About</a>
+      <a class="lang-toggle" href="/id/artikel/phishing-email-autopsy-lab/">ID</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>article</div>
+              <h1>Dissect a Phishing Email Like an Analyst: A Hands-On Lab on the Fake Calendar Invite Wave</h1>
+              <div class="meta"><span>16 October 2026</span><span>·</span>
+              <span>8 min read</span><a class="tag" href="/tag/phishing/">phishing</a> <a class="tag" href="/tag/blue-team/">blue-team</a> <a class="tag" href="/tag/hands-on/">hands-on</a> <a class="tag" href="/tag/email-security/">email-security</a></div>
+              <img class="cover" src="/assets/covers/phishing-email-autopsy-lab.jpg" alt="Dissect a Phishing Email Like an Analyst: A Hands-On Lab on the Fake Calendar Invite Wave">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>You know what the most trusted message in your inbox is? It&#x27;s not the one from your bank. It&#x27;s the calendar invite. It arrives with zero suspicion, gets one distracted glance, and — click — you&#x27;re on the &quot;login&quot; page. Attackers figured this out long ago, and this month they industrialized it.</p>
+<p>Check Point&#x27;s email researchers <a href="https://blog.checkpoint.com/securing-user-and-access/fake-calendar-invites-target-thousands-of-organizations-in-microsoft-credential-phishing-campaign/">reported</a> that fake calendar invites surged starting September 25, 2026. Their new detection layer flagged <strong>more than 302,386 unique phishing emails sent to over 40,000 organizations</strong>, averaging 8,319 emails per active day, from 33,890 sender domains and 247,270 unique sender addresses. The growth curve is the scary part: a few thousand emails a month in April, 118,000 in September, and <strong>more than 740,000 in just the first two weeks of October</strong>. The busiest single day — October 8 — saw almost 200,000 emails. The campaign was still active on October 15, the day before this article.</p>
+<p>Two variants are in circulation. One arrives as an <strong><span class="gterm" data-term="ICS" data-def="iCalendar (.ics) file: the plain-text format calendar apps use to share events. Abused by phishers because mail clients trust it and it carries no exploit — just a link.">ICS</span> attachment</strong>: a perfectly valid calendar file — no exploit, no vulnerability, just event data that abuses the trust your mail client places in calendar formats. The other is a fake Microsoft Teams invite where hovering over the &quot;Join&quot; button reveals the real destination: a credential-harvesting page dressed up to look like a Microsoft login.</p>
+<p>Today you&#x27;ll stop reading about phishing and start dissecting it. Below is a real analyst-style autopsy lab using nothing but Python&#x27;s standard library. Grab a suspicious <code>.eml</code> file (export it from your mail client with &quot;Save as&quot;), and let&#x27;s open it up.</p>
+<h2 id="step-0-the-ground-rule"><span class="hnum">01</span>Step 0: the ground rule</h2>
+<p>Never do this on your work laptop with the attachment open in a client that auto-renders HTML. Save the message as <code>.eml</code>, move to an isolated machine or VM, and <strong>do not click anything</strong>. Our lab reads the raw bytes — no rendering, no fetching, no risk.</p>
+<h2 id="step-1-who-is-this-really-from"><span class="hnum">02</span>Step 1: who is this really from?</h2>
+<p>The <code>From:</code> header is a lie you are allowed to write. It&#x27;s display text — anyone can type &quot;Microsoft Teams&quot; into it. What actually matters are the routing headers: <code>Return-Path</code>, <code>Reply-To</code>, and the chain of <code>Received:</code> headers that record every server the message touched.</p>
+<pre><code class="language-python">import email
+from email import policy
+
+with open(&quot;suspicious-invite.eml&quot;, &quot;rb&quot;) as fh:
+    msg = email.message_from_binary_file(fh, policy=policy.default)
+
+print(&quot;== Identity headers ==&quot;)
+for h in (&quot;From&quot;, &quot;Reply-To&quot;, &quot;Return-Path&quot;, &quot;Date&quot;):
+    print(f&quot;{h:12} {msg[h]}&quot;)
+
+print(&quot;\n== Received chain (oldest first) ==&quot;)
+for h in reversed(msg.get_all(&quot;Received&quot;, [])):
+    print(&quot; *&quot;, h.replace(&quot;\n&quot;, &quot; &quot;)[:110])</code></pre>
+<p><strong>What to look for:</strong> the <code>From:</code> says <code>Microsoft Teams &lt;no-reply@teams.microsoft.com&gt;</code>, but <code>Return-Path</code> points to a disposable domain, and the first <code>Received:</code> hop shows a server that has nothing to do with Microsoft&#x27;s mail infrastructure. In the calendar-invite wave, Check Point observed senders rotating through <strong>33,890 different domains</strong> — the infrastructure is deliberately disposable, because defenders block domains fast.</p>
+<h2 id="step-2-the-three-authentication-verdicts"><span class="hnum">03</span>Step 2: the three authentication verdicts</h2>
+<p>Modern email has three built-in lie detectors, and your mail server stamps its verdict into a header called <code>Authentication-Results</code>:</p>
+<ul>
+<li><strong><span class="gterm" data-term="SPF" data-def="Sender Policy Framework: a DNS record listing which mail servers may send email for a domain. Receivers reject or flag mail arriving from unlisted servers.">SPF</span></strong> — did this server have permission to send mail for the claimed domain?</li>
+<li><strong><span class="gterm" data-term="DKIM" data-def="DomainKeys Identified Mail: a cryptographic signature the sender&#x27;s server adds to the email headers. The receiver verifies it against a public key published in the sender&#x27;s DNS, proving the message was not altered in transit.">DKIM</span></strong> — is the message cryptographically signed by the domain, and did the content survive the trip unmodified?</li>
+<li><strong><span class="gterm" data-term="DMARC" data-def="Domain-based Message Authentication, Reporting and Conformance: a DNS policy telling receivers what to do (none, quarantine, reject) when SPF or DKIM checks fail for a domain, and where to send failure reports.">DMARC</span></strong> — when the first two fail, what policy did the domain owner publish: deliver anyway (<code>none</code>), quarantine, or reject?</li>
+</ul>
+<pre><code class="language-python">auth = msg[&quot;Authentication-Results&quot;]
+if auth:
+    import re
+    for verdict in re.split(r&quot;;\s*&quot;, str(auth)):
+        if verdict.strip():
+            print(&quot; *&quot;, verdict.strip()[:90])
+else:
+    print(&quot;(missing — no SPF/DKIM/DMARC verdict at all. Treat as suspicious.)&quot;)</code></pre>
+<p>Typical output for a phish:</p>
+<pre><code class="language-code"> * spf=fail (sender IP is 185.220.xx.xx) smtp.mailfrom=invites-calendar-365.com
+ * dkim=none (no signature)
+ * dmarc=fail (p=quarantine) header.from=teams.microsoft.com</code></pre>
+<p>That last line is the kill shot: <code>header.from</code> claims <code>teams.microsoft.com</code>, but <span class="gterm" data-term="DMARC" data-def="Domain-based Message Authentication, Reporting and Conformance: a DNS policy telling receivers what to do (none, quarantine, reject) when SPF or DKIM checks fail for a domain, and where to send failure reports.">DMARC</span> alignment fails because the real sender is <code>invites-calendar-365.com</code> — a domain registered last week. Note the phisher&#x27;s trick: the envelope domain <em>passes</em> its own SPF, so a lazy check on &quot;did SPF pass&quot; is not enough. <strong>Alignment</strong> — the From domain matching the authenticated domain — is what matters.</p>
+<h2 id="step-3-the-urls-that-don-t-match-their-clothes"><span class="hnum">04</span>Step 3: the URLs that don&#x27;t match their clothes</h2>
+<p>Now the body. Phishing lives in the gap between what a link <em>shows</em> and where it <em>goes</em>:</p>
+<pre><code class="language-python">import re
+
+URL_RE = re.compile(r&quot;https?://[^\s&lt;&gt;\&quot;&#x27;]+&quot;)
+LINK_RE = re.compile(r&#x27;&lt;a[^&gt;]+href=&quot;([^&quot;]+)&quot;[^&gt;]*&gt;(.*?)&lt;/a&gt;&#x27;, re.S | re.I)
+
+for part in msg.walk():
+    ctype = part.get_content_type()
+    if ctype not in (&quot;text/plain&quot;, &quot;text/html&quot;):
+        continue
+    body = part.get_content()
+    for url in dict.fromkeys(URL_RE.findall(body)):
+        print(&quot;  URL:&quot;, url[:100])
+    if ctype == &quot;text/html&quot;:
+        for href, shown in LINK_RE.findall(body):
+            shown_text = re.sub(r&quot;&lt;[^&gt;]+&gt;&quot;, &quot;&quot;, shown).strip()
+            if shown_text and shown_text != href.strip():
+                print(f&quot;  MISMATCH  display={shown_text[:60]!r} -&gt; href={href[:90]}&quot;)</code></pre>
+<p>In the Teams-invite variant, this is exactly where the trap springs: the anchor text shows <code>teams.microsoft.com/l/meetup-join/...</code> while the <code>href</code> points to a lookalike domain hosting a fake login page. Hovering revealed it in Check Point&#x27;s screenshots — but most victims never hover. Also watch for <code>xn--</code> (punycode) domains, where <code>microsоft.com</code> hides a Cyrillic &quot;о&quot;.</p>
+<h2 id="step-4-open-the-ics-the-actual-payload"><span class="hnum">05</span>Step 4: open the .ics — the actual payload</h2>
+<p>For the attachment variant, the malicious content lives inside the calendar file. An <span class="gterm" data-term="ICS" data-def="iCalendar (.ics) file: the plain-text format calendar apps use to share events. Abused by phishers because mail clients trust it and it carries no exploit — just a link.">ICS</span> file is plain text — no rendering needed, just read it:</p>
+<pre><code class="language-python">for part in msg.iter_attachments():
+    name = part.get_filename() or &quot;(unnamed)&quot;
+    print(f&quot; * {name} ({part.get_content_type()})&quot;)
+    if name.lower().endswith(&quot;.ics&quot;):
+        payload = part.get_content()
+        text = payload.decode(&quot;utf-8&quot;, &quot;replace&quot;) if isinstance(payload, bytes) else payload
+        for line in text.splitlines():
+            if line.startswith((&quot;DESCRIPTION&quot;, &quot;LOCATION&quot;, &quot;URL&quot;, &quot;ATTACH&quot;, &quot;SUMMARY&quot;)):
+                print(&quot;   &quot;, line[:120])</code></pre>
+<p>A real one from this wave looks something like this (synthetic example, same shape):</p>
+<pre><code class="language-code">BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+SUMMARY:Action Required: Verify Your Teams Account
+DESCRIPTION:Your account will be suspended.\nVerify now: https://login-microsoft365-secure.com/verify
+LOCATION:Microsoft Teams Meeting
+END:VEVENT
+END:VCALENDAR</code></pre>
+<p>Valid calendar data. No exploit. No malware signature. Just a trusted format carrying an untrusted link — which is precisely why Check Point notes the campaign <strong>abuses calendar features and user trust rather than a software vulnerability</strong>. Signature-based defenses see a legitimate file type; the danger is entirely semantic.</p>
+<h2 id="step-5-render-the-verdict-like-an-analyst"><span class="hnum">06</span>Step 5: render the verdict, like an analyst</h2>
+<p>A blue-team analyst scores the message, not the vibe. Here&#x27;s the decision table this lab produces:</p>
+<p>| Signal | Legitimate invite | This wave&#x27;s phish | |---|---|---| | <code>From</code> vs <code>Return-Path</code> | same domain | mismatch | | <span class="gterm" data-term="SPF" data-def="Sender Policy Framework: a DNS record listing which mail servers may send email for a domain. Receivers reject or flag mail arriving from unlisted servers.">SPF</span>/<span class="gterm" data-term="DKIM" data-def="DomainKeys Identified Mail: a cryptographic signature the sender&#x27;s server adds to the email headers. The receiver verifies it against a public key published in the sender&#x27;s DNS, proving the message was not altered in transit.">DKIM</span> | pass, aligned | fail or none | | <span class="gterm" data-term="DMARC" data-def="Domain-based Message Authentication, Reporting and Conformance: a DNS policy telling receivers what to do (none, quarantine, reject) when SPF or DKIM checks fail for a domain, and where to send failure reports.">DMARC</span> policy | pass | fail | | <code>Received</code> chain | known mail infra | throwaway VPS/relay | | Link display vs <code>href</code> | identical | mismatch | | <code>.ics</code> content | meeting details | login/verify URL |</p>
+<p>Two or more red flags: treat it as confirmed <span class="gterm" data-term="phishing" data-def="Fraud via email or messages impersonating a trusted party to steal credentials.">phishing</span>, preserve the <code>.eml</code>, and report it — don&#x27;t just delete it. Your security team&#x27;s detection rules can only learn from samples they receive.</p>
+<h2 id="the-uncomfortable-escalation-stolen-sessions-not-just-passwords"><span class="hnum">07</span>The uncomfortable escalation: stolen sessions, not just passwords</h2>
+<p>One more reason this lab matters more than it used to. Proofpoint&#x27;s October 1, 2026 report on the <strong>TA419</strong> campaign documented an <span class="gterm" data-term="AitM" data-def="Adversary-in-the-middle: a phishing technique that proxies the victim&#x27;s browser to the real login page instead of cloning it, capturing credentials and session tokens. Defeats code-based MFA.">AitM</span> (adversary-in-the-middle) kit built on Evilginx: instead of cloning the Microsoft login page, it proxies the victim&#x27;s browser to the <em>real</em> Microsoft 365 login and intercepts the credentials <strong>and the session tokens</strong> — with automation that selects &quot;Keep me signed in&quot; and auto-submits OTP codes. Code-based <span class="gterm" data-term="MFA" data-def="Multi-Factor Authentication — layered verification beyond a password, e.g. OTP codes or hardware keys.">MFA</span> does not stop that. Only phishing-resistant authentication — FIDO2 security keys or passkeys, which cryptographically bind the login to the real domain — breaks the proxy.</p>
+<p>The calendar-invite wave harvests passwords today. The AitM kits harvest the session itself. Your defense has to assume the credential <em>will</em> leak and make the session unstealable.</p>
+<h2 id="what-to-do-monday-morning"><span class="hnum">08</span>What to do Monday morning</h2>
+<ol>
+<li><strong>Report, don&#x27;t just delete.</strong> Use your mail client&#x27;s phishing-report button or forward to your SOC. Every sample trains the filters.</li>
+<li><strong>Make &quot;hover before you click&quot; a reflex</strong> — and for calendar invites, an even stricter one: invites from outside your organization that contain login or &quot;verify&quot; links deserve a report, not a click.</li>
+<li><strong>Enforce <span class="gterm" data-term="DMARC" data-def="Domain-based Message Authentication, Reporting and Conformance: a DNS policy telling receivers what to do (none, quarantine, reject) when SPF or DKIM checks fail for a domain, and where to send failure reports.">DMARC</span> on your own domain</strong> with <code>p=quarantine</code>, then <code>p=reject</code>. If your domain can&#x27;t be spoofed, your brand can&#x27;t star in someone else&#x27;s phish.</li>
+<li><strong>Ask your mail gateway to flag external <code>.ics</code> attachments containing URLs</strong> in <code>DESCRIPTION</code> or <code>LOCATION</code>. It&#x27;s a cheap rule that directly targets this wave&#x27;s technique.</li>
+<li><strong>Move high-value accounts to phishing-resistant <span class="gterm" data-term="MFA" data-def="Multi-Factor Authentication — layered verification beyond a password, e.g. OTP codes or hardware keys.">MFA</span></strong> (FIDO2/passkeys). The TA419 report is the proof that codes alone are no longer enough.</li>
+<li><strong>Verify out-of-band.</strong> Any &quot;urgent&quot; invite that demands credentials gets a second channel: message the supposed organizer in Teams or Slack before touching the link.</li>
+</ol>
+<h2 id="closing"><span class="hnum">09</span>Closing</h2>
+<p>The cleverest thing about the fake calendar invite wave is how little cleverness it needs. No zero-day. No exploit. Just a file format your mail client has trusted since the 1990s and a human reflex — <em>a meeting invite, must be important</em> — that bypasses every security awareness poster ever printed.</p>
+<p>That&#x27;s also why the autopsy matters. Phishing isn&#x27;t fought with sharper eyes; it&#x27;s fought with headers, authentication verdicts, and link inspection — evidence a script can check in milliseconds while your attention is still deciding whether the meeting is real. Save this lab. Run it on the next suspicious invite. The attackers are counting on you not to.</p><div class="author-box"><div class="kicker"><span class="dot"></span>written by</div><p><strong>kou</strong> documents what’s learned about threat intel, attack surface, and practical defense — from the dark side of the internet.</p></div><div class="pager"><a href="/artikel/ivanti-cve-2026-104935-zero-day/"><span class="dir">← previous</span><span class="t">CVE-2026-104935: The VPN Zero-Day That Struck Before the Advisory</span></a><span></span></div></div>
+                <aside class="toc"><h4>Contents</h4><ol><li style="margin-left:0px"><a href="#step-0-the-ground-rule">Step 0: the ground rule</a></li><li style="margin-left:0px"><a href="#step-1-who-is-this-really-from">Step 1: who is this really from?</a></li><li style="margin-left:0px"><a href="#step-2-the-three-authentication-verdicts">Step 2: the three authentication verdicts</a></li><li style="margin-left:0px"><a href="#step-3-the-urls-that-don-t-match-their-clothes">Step 3: the URLs that don&#x27;t match their clothes</a></li><li style="margin-left:0px"><a href="#step-4-open-the-ics-the-actual-payload">Step 4: open the .ics — the actual payload</a></li><li style="margin-left:0px"><a href="#step-5-render-the-verdict-like-an-analyst">Step 5: render the verdict, like an analyst</a></li><li style="margin-left:0px"><a href="#the-uncomfortable-escalation-stolen-sessions-not-just-passwords">The uncomfortable escalation: stolen sessions, not just passwords</a></li><li style="margin-left:0px"><a href="#what-to-do-monday-morning">What to do Monday morning</a></li><li style="margin-left:0px"><a href="#closing">Closing</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>security notes from the dark side of the internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="search articles…" aria-label="search">
+    <div class="search-hint">type at least 2 characters · esc to close · ctrl+k anywhere</div>
+    <div class="search-results" data-empty="nothing found — try another keyword."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

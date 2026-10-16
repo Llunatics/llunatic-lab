@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bedah Email Phishing Seperti Analis: Lab Hands-On dari Gelombang Undangan Kalender Palsu — llunatic-lab</title>
+<meta name="description" content="Undangan meeting palsu baru saja menjadi salah satu gelombang phishing terbesar tahun 2026 — lebih dari 740.000 email hanya dalam dua minggu pertama Oktober, menurut Check Point. Di lab hands-on ini kamu akan membedah undangan mencurigakan dengan Python stdlib: header, hasil verifikasi SPF/DKIM/DMARC, URL tersembunyi, dan lampiran .ics yang berbahaya.">
+<meta property="og:title" content="Bedah Email Phishing Seperti Analis: Lab Hands-On dari Gelombang Undangan Kalender Palsu">
+<meta property="og:description" content="Undangan meeting palsu baru saja menjadi salah satu gelombang phishing terbesar tahun 2026 — lebih dari 740.000 email hanya dalam dua minggu pertama Oktober, menurut Check Point. Di lab hands-on ini kamu akan membedah undangan mencurigakan dengan Python stdlib: header, hasil verifikasi SPF/DKIM/DMARC, URL tersembunyi, dan lampiran .ics yang berbahaya.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="/assets/covers/phishing-email-autopsy-lab.jpg"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/phishing-email-autopsy-lab/"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/phishing-email-autopsy-lab/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/id/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/id/arsip/">Arsip</a>
+      <a href="/id/tentang/">Tentang</a>
+      <a class="lang-toggle" href="/artikel/phishing-email-autopsy-lab/">EN</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>artikel</div>
+              <h1>Bedah Email Phishing Seperti Analis: Lab Hands-On dari Gelombang Undangan Kalender Palsu</h1>
+              <div class="meta"><span>16 Oktober 2026</span><span>·</span>
+              <span>8 mnt baca</span><a class="tag" href="/id/tag/phishing/">phishing</a> <a class="tag" href="/id/tag/blue-team/">blue-team</a> <a class="tag" href="/id/tag/hands-on/">hands-on</a> <a class="tag" href="/id/tag/email-security/">email-security</a></div>
+              <img class="cover" src="/assets/covers/phishing-email-autopsy-lab.jpg" alt="Bedah Email Phishing Seperti Analis: Lab Hands-On dari Gelombang Undangan Kalender Palsu">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Tahukah kamu pesan apa yang paling dipercaya di inbox? Bukan email dari bank. Melainkan undangan kalender. Ia datang tanpa kecurigaan, dilirik sekilas sambil lalu, dan — klik — kamu sudah mendarat di halaman &quot;login&quot;. Para penyerang sudah lama menyadari ini, dan bulan ini mereka mengindustrikan trik tersebut.</p>
+<p>Peneliti email Check Point <a href="https://blog.checkpoint.com/securing-user-and-access/fake-calendar-invites-target-thousands-of-organizations-in-microsoft-credential-phishing-campaign/">melaporkan</a> bahwa undangan kalender palsu melonjak mulai 25 September 2026. Lapisan deteksi baru mereka menandai <strong>lebih dari 302.386 email phishing unik yang dikirim ke 40.000+ organisasi</strong>, rata-rata 8.319 email per hari aktif, dari 33.890 domain pengirim dan 247.270 alamat pengirim unik. Kurva pertumbuhannya yang menakutkan: beberapa ribu email per bulan di bulan April, 118.000 di bulan September, dan <strong>lebih dari 740.000 hanya dalam dua minggu pertama Oktober</strong>. Hari tersibuk — 8 Oktober — mencatat hampir 200.000 email. Kampanye ini masih aktif pada 15 Oktober, sehari sebelum artikel ini ditulis.</p>
+<p>Ada dua varian yang beredar. Yang pertama datang sebagai <strong>lampiran <span class="gterm" data-term="ICS" data-def="File iCalendar (.ics): format teks polos yang dipakai aplikasi kalender untuk berbagi acara. Disalahgunakan phisher karena klien email mempercayainya dan ia tidak membawa exploit — hanya sebuah tautan.">ICS</span></strong>: file kalender yang sepenuhnya valid — tanpa exploit, tanpa kerentanan, hanya data event yang menyalahgunakan kepercayaan klien email terhadap format kalender. Yang kedua adalah undangan Microsoft Teams palsu, di mana mengarahkan kursor ke tombol &quot;Join&quot; memperlihatkan tujuan sebenarnya: halaman panen kredensial yang didandani menyerupai halaman login Microsoft.</p>
+<p>Hari ini kamu berhenti sekadar membaca tentang phishing dan mulai membedahnya. Di bawah ini adalah lab autopsi ala analis sungguhan yang hanya memakai standard library Python. Siapkan file <code>.eml</code> yang mencurigakan (ekspor dari klien email dengan &quot;Save as&quot;), lalu kita bedah.</p>
+<h2 id="langkah-0-aturan-dasar"><span class="hnum">01</span>Langkah 0: aturan dasar</h2>
+<p>Jangan lakukan ini di laptop kerja dengan lampiran dibuka di klien yang otomatis me-render HTML. Simpan pesan sebagai <code>.eml</code>, pindah ke mesin atau VM yang terisolasi, dan <strong>jangan klik apa pun</strong>. Lab kita membaca byte mentah — tanpa rendering, tanpa fetching, tanpa risiko.</p>
+<h2 id="langkah-1-sebenarnya-ini-dari-siapa"><span class="hnum">02</span>Langkah 1: sebenarnya ini dari siapa?</h2>
+<p>Header <code>From:</code> adalah kebohongan yang boleh ditulis siapa saja. Itu cuma teks tampilan — siapa pun bisa mengetik &quot;Microsoft Teams&quot; di sana. Yang benar-benar penting adalah header routing: <code>Return-Path</code>, <code>Reply-To</code>, dan rantai header <code>Received:</code> yang mencatat setiap server yang dilewati pesan tersebut.</p>
+<pre><code class="language-python">import email
+from email import policy
+
+with open(&quot;suspicious-invite.eml&quot;, &quot;rb&quot;) as fh:
+    msg = email.message_from_binary_file(fh, policy=policy.default)
+
+print(&quot;== Identity headers ==&quot;)
+for h in (&quot;From&quot;, &quot;Reply-To&quot;, &quot;Return-Path&quot;, &quot;Date&quot;):
+    print(f&quot;{h:12} {msg[h]}&quot;)
+
+print(&quot;\n== Received chain (oldest first) ==&quot;)
+for h in reversed(msg.get_all(&quot;Received&quot;, [])):
+    print(&quot; *&quot;, h.replace(&quot;\n&quot;, &quot; &quot;)[:110])</code></pre>
+<p><strong>Yang perlu diperhatikan:</strong> <code>From:</code> tertulis <code>Microsoft Teams &lt;no-reply@teams.microsoft.com&gt;</code>, tapi <code>Return-Path</code> menunjuk ke domain sekali pakai, dan hop <code>Received:</code> pertama menunjukkan server yang sama sekali bukan infrastruktur email Microsoft. Dalam gelombang undangan kalender ini, Check Point mengamati pengirim berputar lewat <strong>33.890 domain berbeda</strong> — infrastrukturnya memang sengaja sekali pakai, karena defender memblokir domain dengan cepat.</p>
+<h2 id="langkah-2-tiga-hasil-verifikasi-otentikasi"><span class="hnum">03</span>Langkah 2: tiga hasil verifikasi otentikasi</h2>
+<p>Email modern punya tiga pendeteksi kebohongan bawaan, dan server email kamu mencap hasil pemeriksaannya ke dalam header bernama <code>Authentication-Results</code>:</p>
+<ul>
+<li><strong><span class="gterm" data-term="SPF" data-def="Sender Policy Framework: catatan DNS yang mendaftarkan server email mana saja yang boleh mengirim email atas nama suatu domain. Penerima menolak atau menandai email yang datang dari server yang tidak terdaftar.">SPF</span></strong> — apakah server ini berizin mengirim email atas nama domain yang diklaim?</li>
+<li><strong><span class="gterm" data-term="DKIM" data-def="DomainKeys Identified Mail: tanda tangan kriptografis yang ditambahkan server pengirim ke header email. Penerima memverifikasinya terhadap kunci publik di DNS pengirim, membuktikan isi pesan tidak diubah dalam perjalanan.">DKIM</span></strong> — apakah pesan ditandatangani secara kriptografis oleh domain tersebut, dan apakah isinya sampai tanpa diubah?</li>
+<li><strong><span class="gterm" data-term="DMARC" data-def="Domain-based Message Authentication, Reporting and Conformance: kebijakan DNS yang memberi tahu penerima apa yang harus dilakukan (none, quarantine, reject) saat pemeriksaan SPF atau DKIM gagal untuk suatu domain, serta ke mana laporan kegagalan dikirim.">DMARC</span></strong> — ketika dua pemeriksaan di atas gagal, kebijakan apa yang dipublikasikan pemilik domain: tetap kirim (<code>none</code>), karantina, atau tolak?</li>
+</ul>
+<pre><code class="language-python">auth = msg[&quot;Authentication-Results&quot;]
+if auth:
+    import re
+    for verdict in re.split(r&quot;;\s*&quot;, str(auth)):
+        if verdict.strip():
+            print(&quot; *&quot;, verdict.strip()[:90])
+else:
+    print(&quot;(tidak ada — sama sekali tanpa hasil SPF/DKIM/DMARC. Anggap mencurigakan.)&quot;)</code></pre>
+<p>Contoh keluaran khas untuk phish:</p>
+<pre><code class="language-code"> * spf=fail (sender IP is 185.220.xx.xx) smtp.mailfrom=invites-calendar-365.com
+ * dkim=none (no signature)
+ * dmarc=fail (p=quarantine) header.from=teams.microsoft.com</code></pre>
+<p>Baris terakhir adalah tembakan mematikannya: <code>header.from</code> mengklaim <code>teams.microsoft.com</code>, tapi <span class="gterm" data-term="DMARC" data-def="Domain-based Message Authentication, Reporting and Conformance: kebijakan DNS yang memberi tahu penerima apa yang harus dilakukan (none, quarantine, reject) saat pemeriksaan SPF atau DKIM gagal untuk suatu domain, serta ke mana laporan kegagalan dikirim.">DMARC</span> gagal karena pengirim aslinya <code>invites-calendar-365.com</code> — domain yang didaftarkan minggu lalu. Perhatikan trik phisher: domain amplop <em>lolos</em> SPF-nya sendiri, jadi pemeriksaan malas &quot;SPF-nya lolos kan?&quot; tidak cukup. <strong>Alignment</strong> — domain di From harus cocok dengan domain yang terautentikasi — itulah yang penting.</p>
+<h2 id="langkah-3-url-yang-pakaiannya-tidak-cocok"><span class="hnum">04</span>Langkah 3: URL yang pakaiannya tidak cocok</h2>
+<p>Sekarang bagian body. Phishing hidup di celah antara apa yang <em>ditampilkan</em> sebuah tautan dan ke mana ia <em>pergi</em>:</p>
+<pre><code class="language-python">import re
+
+URL_RE = re.compile(r&quot;https?://[^\s&lt;&gt;\&quot;&#x27;]+&quot;)
+LINK_RE = re.compile(r&#x27;&lt;a[^&gt;]+href=&quot;([^&quot;]+)&quot;[^&gt;]*&gt;(.*?)&lt;/a&gt;&#x27;, re.S | re.I)
+
+for part in msg.walk():
+    ctype = part.get_content_type()
+    if ctype not in (&quot;text/plain&quot;, &quot;text/html&quot;):
+        continue
+    body = part.get_content()
+    for url in dict.fromkeys(URL_RE.findall(body)):
+        print(&quot;  URL:&quot;, url[:100])
+    if ctype == &quot;text/html&quot;:
+        for href, shown in LINK_RE.findall(body):
+            shown_text = re.sub(r&quot;&lt;[^&gt;]+&gt;&quot;, &quot;&quot;, shown).strip()
+            if shown_text and shown_text != href.strip():
+                print(f&quot;  TIDAK COCOK  display={shown_text[:60]!r} -&gt; href={href[:90]}&quot;)</code></pre>
+<p>Pada varian undangan Teams, di sinilah jebakan terbuka: teks anchor menampilkan <code>teams.microsoft.com/l/meetup-join/...</code> sementara <code>href</code>-nya menunjuk ke domain mirip-mirip yang menghosting halaman login palsu. Mengarahkan kursor mengungkapkannya di screenshot Check Point — tapi sebagian besar korban tidak pernah mengarahkan kursor. Waspadai juga domain <code>xn--</code> (punycode), di mana <code>microsоft.com</code> menyembunyikan huruf &quot;о&quot; dari alfabet Cyrillic.</p>
+<h2 id="langkah-4-buka-file-ics-payload-sebenarnya"><span class="hnum">05</span>Langkah 4: buka file .ics — payload sebenarnya</h2>
+<p>Untuk varian lampiran, konten berbahayanya berada di dalam file kalender. File <span class="gterm" data-term="ICS" data-def="File iCalendar (.ics): format teks polos yang dipakai aplikasi kalender untuk berbagi acara. Disalahgunakan phisher karena klien email mempercayainya dan ia tidak membawa exploit — hanya sebuah tautan.">ICS</span> adalah teks polos — tidak perlu rendering, cukup dibaca:</p>
+<pre><code class="language-python">for part in msg.iter_attachments():
+    name = part.get_filename() or &quot;(unnamed)&quot;
+    print(f&quot; * {name} ({part.get_content_type()})&quot;)
+    if name.lower().endswith(&quot;.ics&quot;):
+        payload = part.get_content()
+        text = payload.decode(&quot;utf-8&quot;, &quot;replace&quot;) if isinstance(payload, bytes) else payload
+        for line in text.splitlines():
+            if line.startswith((&quot;DESCRIPTION&quot;, &quot;LOCATION&quot;, &quot;URL&quot;, &quot;ATTACH&quot;, &quot;SUMMARY&quot;)):
+                print(&quot;   &quot;, line[:120])</code></pre>
+<p>Contoh nyata dari gelombang ini bentuknya kurang-lebih seperti ini (contoh sintetis, bentuknya sama):</p>
+<pre><code class="language-code">BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+SUMMARY:Action Required: Verify Your Teams Account
+DESCRIPTION:Your account will be suspended.\nVerify now: https://login-microsoft365-secure.com/verify
+LOCATION:Microsoft Teams Meeting
+END:VEVENT
+END:VCALENDAR</code></pre>
+<p>Data kalender yang valid. Tanpa exploit. Tanpa signature malware. Hanya format tepercaya yang membawa tautan tak tepercaya — dan tepat karena itulah Check Point mencatat kampanye ini <strong>menyalahgunakan fitur kalender dan kepercayaan pengguna, bukan kerentanan perangkat lunak</strong>. Pertahanan berbasis signature melihat tipe file yang sah; bahayanya sepenuhnya bersifat semantik.</p>
+<h2 id="langkah-5-buat-vonisnya-seperti-analis"><span class="hnum">06</span>Langkah 5: buat vonisnya, seperti analis</h2>
+<p>Analis blue-team menilai pesan berdasarkan skor, bukan firasat. Berikut tabel keputusan yang dihasilkan lab ini:</p>
+<p>| Sinyal | Undangan sah | Phish gelombang ini | |---|---|---| | <code>From</code> vs <code>Return-Path</code> | domain sama | tidak cocok | | <span class="gterm" data-term="SPF" data-def="Sender Policy Framework: catatan DNS yang mendaftarkan server email mana saja yang boleh mengirim email atas nama suatu domain. Penerima menolak atau menandai email yang datang dari server yang tidak terdaftar.">SPF</span>/<span class="gterm" data-term="DKIM" data-def="DomainKeys Identified Mail: tanda tangan kriptografis yang ditambahkan server pengirim ke header email. Penerima memverifikasinya terhadap kunci publik di DNS pengirim, membuktikan isi pesan tidak diubah dalam perjalanan.">DKIM</span> | lolos, selaras | gagal atau tidak ada | | Kebijakan <span class="gterm" data-term="DMARC" data-def="Domain-based Message Authentication, Reporting and Conformance: kebijakan DNS yang memberi tahu penerima apa yang harus dilakukan (none, quarantine, reject) saat pemeriksaan SPF atau DKIM gagal untuk suatu domain, serta ke mana laporan kegagalan dikirim.">DMARC</span> | lolos | gagal | | Rantai <code>Received</code> | infra email dikenal | VPS/relay sekali pakai | | Tampilan tautan vs <code>href</code> | identik | tidak cocok | | Isi <code>.ics</code> | detail meeting | URL login/verifikasi |</p>
+<p>Dua atau lebih bendera merah: perlakukan sebagai <span class="gterm" data-term="phishing" data-def="Fraud via email or messages impersonating a trusted party to steal credentials.">phishing</span> terkonfirmasi, simpan file <code>.eml</code>-nya, dan laporkan — jangan cuma dihapus. Aturan deteksi tim keamananmu hanya bisa belajar dari sampel yang mereka terima.</p>
+<h2 id="eskalasi-yang-tidak-nyaman-sesi-yang-dicuri-bukan-sekadar-password"><span class="hnum">07</span>Eskalasi yang tidak nyaman: sesi yang dicuri, bukan sekadar password</h2>
+<p>Ada satu alasan lagi kenapa lab ini lebih penting dari sebelumnya. Laporan Proofpoint 1 Oktober 2026 tentang kampanye <strong>TA419</strong> mendokumentasikan kit <span class="gterm" data-term="AitM" data-def="Adversary-in-the-middle: teknik phishing yang meneruskan browser korban ke halaman login asli alih-alih menirunya, menangkap kredensial dan token sesi. Mampu menembus MFA berbasis kode.">AitM</span> (adversary-in-the-middle) berbasis Evilginx: alih-alih meniru halaman login Microsoft, kit ini meneruskan browser korban ke login Microsoft 365 yang <em>asli</em> lalu mencegat kredensial <strong>beserta token sesinya</strong> — dengan otomasi yang memilih &quot;Keep me signed in&quot; dan mengirimkan kode OTP secara otomatis. <span class="gterm" data-term="MFA" data-def="Multi-Factor Authentication — layered verification beyond a password, e.g. OTP codes or hardware keys.">MFA</span> berbasis kode tidak menghentikan itu. Hanya otentikasi anti-phishing — security key FIDO2 atau passkey, yang mengikat login secara kriptografis ke domain aslinya — yang memutus proxy tersebut.</p>
+<p>Gelombang undangan kalender memanen password hari ini. Kit AitM memanen sesinya langsung. Pertahananmu harus berasumsi kredensial <em>akan</em> bocor dan membuat sesinya tidak bisa dicuri.</p>
+<h2 id="yang-harus-dilakukan-senin-pagi"><span class="hnum">08</span>Yang harus dilakukan Senin pagi</h2>
+<ol>
+<li><strong>Laporkan, jangan cuma hapus.</strong> Gunakan tombol lapor-phishing di klien email atau teruskan ke SOC. Setiap sampel melatih filter.</li>
+<li><strong>Jadikan &quot;arahkan kursor sebelum klik&quot; sebagai refleks</strong> — dan untuk undangan kalender, lebih ketat lagi: undangan dari luar organisasi yang berisi tautan login atau &quot;verifikasi&quot; layak dilaporkan, bukan diklik.</li>
+<li><strong>Terapkan <span class="gterm" data-term="DMARC" data-def="Domain-based Message Authentication, Reporting and Conformance: kebijakan DNS yang memberi tahu penerima apa yang harus dilakukan (none, quarantine, reject) saat pemeriksaan SPF atau DKIM gagal untuk suatu domain, serta ke mana laporan kegagalan dikirim.">DMARC</span> di domainmu sendiri</strong> dengan <code>p=quarantine</code>, lalu <code>p=reject</code>. Kalau domainmu tidak bisa dipalsukan, brand-mu tidak bisa membintangi phish orang lain.</li>
+<li><strong>Minta mail gateway menandai lampiran <code>.ics</code> eksternal yang mengandung URL</strong> di <code>DESCRIPTION</code> atau <code>LOCATION</code>. Aturan murah yang langsung menyasar teknik gelombang ini.</li>
+<li><strong>Pindahkan akun bernilai tinggi ke <span class="gterm" data-term="MFA" data-def="Multi-Factor Authentication — layered verification beyond a password, e.g. OTP codes or hardware keys.">MFA</span> anti-phishing</strong> (FIDO2/passkey). Laporan TA419 adalah buktinya bahwa kode saja tidak lagi cukup.</li>
+<li><strong>Verifikasi lewat kanal lain.</strong> Undangan &quot;mendesak&quot; apa pun yang meminta kredensial dapat kanal kedua: kirim pesan ke pengirim yang diklaim di Teams atau Slack sebelum menyentuh tautannya.</li>
+</ol>
+<h2 id="penutup"><span class="hnum">09</span>Penutup</h2>
+<p>Hal terpintar dari gelombang undangan kalender palsu adalah betapa sedikit kepintaran yang dibutuhkannya. Tanpa zero-day. Tanpa exploit. Hanya format file yang dipercaya klien emailmu sejak era 1990-an dan sebuah refleks manusia — <em>undangan meeting, pasti penting</em> — yang melewati semua poster security awareness yang pernah dicetak.</p>
+<p>Itu juga alasan kenapa autopsi ini penting. Phishing tidak dilawan dengan mata yang lebih tajam; ia dilawan dengan header, hasil verifikasi otentikasi, dan pemeriksaan tautan — bukti yang bisa dicek skrip dalam hitungan milidetik sementara perhatianmu masih memutuskan apakah meeting-nya nyata. Simpan lab ini. Jalankan pada undangan mencurigakan berikutnya. Para penyerang mengandalkan kamu untuk tidak melakukannya.</p><div class="author-box"><div class="kicker"><span class="dot"></span>ditulis oleh</div><p><strong>kou</strong> mendokumentasikan threat intel, attack surface, dan pertahanan praktis — dari sisi gelap internet.</p></div><div class="pager"><a href="/id/artikel/ivanti-cve-2026-104935-zero-day/"><span class="dir">← sebelumnya</span><span class="t">CVE-2026-104935: Zero-Day VPN yang Menyerang Sebelum Advisory Terbit</span></a><span></span></div></div>
+                <aside class="toc"><h4>Daftar isi</h4><ol><li style="margin-left:0px"><a href="#langkah-0-aturan-dasar">Langkah 0: aturan dasar</a></li><li style="margin-left:0px"><a href="#langkah-1-sebenarnya-ini-dari-siapa">Langkah 1: sebenarnya ini dari siapa?</a></li><li style="margin-left:0px"><a href="#langkah-2-tiga-hasil-verifikasi-otentikasi">Langkah 2: tiga hasil verifikasi otentikasi</a></li><li style="margin-left:0px"><a href="#langkah-3-url-yang-pakaiannya-tidak-cocok">Langkah 3: URL yang pakaiannya tidak cocok</a></li><li style="margin-left:0px"><a href="#langkah-4-buka-file-ics-payload-sebenarnya">Langkah 4: buka file .ics — payload sebenarnya</a></li><li style="margin-left:0px"><a href="#langkah-5-buat-vonisnya-seperti-analis">Langkah 5: buat vonisnya, seperti analis</a></li><li style="margin-left:0px"><a href="#eskalasi-yang-tidak-nyaman-sesi-yang-dicuri-bukan-sekadar-password">Eskalasi yang tidak nyaman: sesi yang dicuri, bukan sekadar password</a></li><li style="margin-left:0px"><a href="#yang-harus-dilakukan-senin-pagi">Yang harus dilakukan Senin pagi</a></li><li style="margin-left:0px"><a href="#penutup">Penutup</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>catatan keamanan dari sisi gelap internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="cari artikel…" aria-label="search">
+    <div class="search-hint">ketik minimal 2 huruf · esc untuk tutup · ctrl+k dari mana saja</div>
+    <div class="search-results" data-empty="nggak ketemu — coba kata kunci lain."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

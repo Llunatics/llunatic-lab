@@ -4,7 +4,11 @@
 <title>llunatic-lab (en)</title><link>https://lab.llunaticsys.web.id/</link>
 <description>Security notes from the dark side of the internet</description>
 <language>en</language>
-<item><title>CVE-2026-104935: The VPN Zero-Day That Struck Before the Advisory</title>
+<item><title>Dissect a Phishing Email Like an Analyst: A Hands-On Lab on the Fake Calendar Invite Wave</title>
+            <link>https://lab.llunaticsys.web.id/artikel/phishing-email-autopsy-lab/</link>
+            <description>Fake meeting invites just became one of 2026&#x27;s largest phishing waves — more than 740,000 emails in the first two weeks of October alone, says Check Point. In this hands-on lab you&#x27;ll autopsy a suspicious invite with stdlib-only Python: headers, SPF/DKIM/DMARC verdicts, hidden URLs, and the malicious .ics attachment.</description>
+            <pubDate>Fri, 16 Oct 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/artikel/phishing-email-autopsy-lab/</guid></item><item><title>CVE-2026-104935: The VPN Zero-Day That Struck Before the Advisory</title>
             <link>https://lab.llunaticsys.web.id/artikel/ivanti-cve-2026-104935-zero-day/</link>
             <description>Attackers chained an Ivanti Connect Secure authentication bypass with an unpatched privilege escalation, running commands in memory before the vendor even published the advisory. Here is why the VPN box at your network&#x27;s edge keeps becoming the front door — and what to do when the integrity checker can&#x27;t see the intruder.</description>
             <pubDate>Wed, 14 Oct 2026 00:00:00 -0000</pubDate>

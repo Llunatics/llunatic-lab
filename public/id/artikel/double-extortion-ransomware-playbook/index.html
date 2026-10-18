@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Double Extortion: Cara Kerja Ransomware Modern yang Sebenarnya — llunatic-lab</title>
+<meta name="description" content="Ransomware modern tidak peduli dengan backup kamu — penyerang mencuri data dulu, baru mengenkripsi, lalu menekanmu dari tiga arah sekaligus. Berikut playbook lengkapnya, dari akses awal sampai leak site, berdasarkan laporan Semperis Oktober 2026 dan kasus-kasus nyata bulan ini.">
+<meta property="og:title" content="Double Extortion: Cara Kerja Ransomware Modern yang Sebenarnya">
+<meta property="og:description" content="Ransomware modern tidak peduli dengan backup kamu — penyerang mencuri data dulu, baru mengenkripsi, lalu menekanmu dari tiga arah sekaligus. Berikut playbook lengkapnya, dari akses awal sampai leak site, berdasarkan laporan Semperis Oktober 2026 dan kasus-kasus nyata bulan ini.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="/assets/covers/double-extortion-ransomware-playbook.jpg"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/double-extortion-ransomware-playbook/"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/double-extortion-ransomware-playbook/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/id/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/id/arsip/">Arsip</a>
+      <a href="/id/tentang/">Tentang</a>
+      <a class="lang-toggle" href="/artikel/double-extortion-ransomware-playbook/">EN</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>artikel</div>
+              <h1>Double Extortion: Cara Kerja Ransomware Modern yang Sebenarnya</h1>
+              <div class="meta"><span>18 Oktober 2026</span><span>·</span>
+              <span>6 mnt baca</span><a class="tag" href="/id/tag/ransomware/">ransomware</a> <a class="tag" href="/id/tag/extortion/">extortion</a> <a class="tag" href="/id/tag/blue-team/">blue-team</a> <a class="tag" href="/id/tag/incident-response/">incident-response</a></div>
+              <img class="cover" src="/assets/covers/double-extortion-ransomware-playbook.jpg" alt="Double Extortion: Cara Kerja Ransomware Modern yang Sebenarnya">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Kalau rencana disaster recovery kamu bunyinya &quot;kita punya backup, jadi ransomware bukan masalah kita,&quot; berarti kamu sedang berperang dengan peta perang satu dekade lalu. Kru ransomware masa kini tidak butuh backup kamu gagal — mereka hanya butuh sesuatu yang tidak bisa kamu restore dari snapshot: rahasia pelangganmu, email internalmu, private key kamu. Enkripsi itu bagian yang berisik. Bagian yang sunyi — bagian yang benar-benar membuat korban membayar — terjadi berhari-hari sebelumnya, dalam gelap.</p>
+<p>Mari kita telusuri playbook lengkapnya, tahap demi tahap, seperti yang dilihat oleh incident responder.</p>
+<h2 id="tahap-1-masuk-ke-dalam-initial-access"><span class="hnum">01</span>Tahap 1: masuk ke dalam (initial access)</h2>
+<p>Setiap kisah ransomware dimulai dari pintu yang tak ada yang menjaga. Favoritnya tak banyak berubah: email phishing berisi lampiran berbahaya, kredensial curian yang dibeli dari broker <span class="gterm" data-term="initial access" data-def="Pijakan pertama yang diperoleh penyerang di jaringan target — lewat phishing, kredensial curian, atau sistem yang menghadap internet dan belum di-patch.">initial access</span>, atau perangkat edge yang belum di-patch dan menghadap ke internet — concentrator VPN, firewall, server file-transfer. Di beberapa kampanye Oktober 2026, titik masuknya justru pipeline build perangkat lunak: curi satu secret developer, dan seluruh jaringan terbuka seperti kotak hadiah.</p>
+<p>Kebenaran yang tidak nyaman: pembobolannya jarang menjadi bagian yang mengesankan. Yang mengesankan adalah betapa lamanya penyerang duduk di dalam sana tanpa terdeteksi.</p>
+<h2 id="tahap-2-menyebar-di-dalam-lateral-movement-dan-persistence"><span class="hnum">02</span>Tahap 2: menyebar di dalam (lateral movement dan persistence)</h2>
+<p>Begitu masuk, kru ransomware tidak langsung mengenkripsi apa pun. Itu berisik, dan yang berisik akan ketahuan. Sebaliknya mereka melakukan dua hal yang sunyi:</p>
+<ul>
+<li><strong><span class="gterm" data-term="persistence" data-def="Teknik yang dipakai penyerang agar tetap bertahan melewati reboot dan pembersihan — service, scheduled task, registry key — sehingga akses tetap ada setelah pijakan awal.">persistence</span></strong> — menanam pijakan yang bertahan walau mesin di-reboot: scheduled task, akun servis gelap, webshell di aplikasi yang menghadap internet, golden ticket yang ditempa dari domain controller yang sudah dikuasai.</li>
+<li><strong><span class="gterm" data-term="lateral movement" data-def="Pergerakan penyerang dari satu mesin yang sudah dikuasai ke mesin lain di jaringan yang sama, memburu target bernilai lebih tinggi seperti domain controller.">lateral movement</span></strong> — melompat dari satu workstation ke workstation lain, memanen kredensial, sampai mencapai mahkota permata: infrastruktur identitas itu sendiri.</li>
+</ul>
+<p>Inilah kenapa <a href="https://www.prnewswire.com/news-releases/semperis-2026-ransomware-report-reveals-increases-in-ai-driven-attacks-and-a-rise-in-physical-threats-against-executives-and-their-families-302907731.html">Laporan Risiko Ransomware 2026 dari Semperis</a> yang terbit 14 Oktober 2026 begitu menohok: <strong>87% serangan ransomware menargetkan sistem identitas</strong> seperti <span class="gterm" data-term="Active Directory" data-def="Layanan direktori Microsoft yang mengelola pengguna, komputer, dan izin di jaringan perusahaan — aset paling diincar dalam serangan ransomware.">Active Directory</span>, Entra ID, dan Okta. Kuasai sistem identitas dan kamu kuasai setiap pintu di gedung itu. Namun hanya sekitar separuh perusahaan yang disurvei menyimpan backup identitas khusus, dan 40% rencana disaster recovery bahkan tidak memuat prosedur pemulihan Active Directory. Seperti kata CEO Semperis, Mickey Bresman, begitu backup membuat enkripsi bisa diatasi, penyerang tinggal menambah titik tekan kedua — &quot;<span class="gterm" data-term="double extortion" data-def="Taktik ransomware di mana penyerang mengenkripsi data korban SEKALIGUS mengancam mempublikasikan salinan yang dicuri — membuat backup tak lagi cukup sebagai pertahanan.">double extortion</span>.&quot;</p>
+<h2 id="tahap-3-pencurian-yang-sunyi-exfiltration"><span class="hnum">03</span>Tahap 3: pencurian yang sunyi (exfiltration)</h2>
+<p>Sebelum satu file pun dienkripsi, data sudah keluar lewat pintu belakang. Penyerang menumpuk database, dokumen, dan source code kamu di server yang sudah dikompromikan, lalu melakukan <span class="gterm" data-term="exfiltration" data-def="Transfer data tanpa izin keluar dari jaringan ke infrastruktur milik penyerang — pencurian sunyi yang mendahului enkripsi pada ransomware modern.">exfiltration</span> — mengirimkannya ke penyimpanan cloud milik mereka — kadang gigabyte per jam, dibaurkan dengan lalu lintas HTTPS normal sehingga firewall tak berkedip.</p>
+<p>Inilah momen yang mengubah backup kamu dari perisai menjadi bahan tertawaan. Kamu bisa me-restore setiap server terenkripsi dari snapshot kemarin dan tetap kehilangan semua yang penting, karena salinan yang duduk di server penyerang tidak peduli dengan rencana pemulihanmu. Tebusannya bukan &quot;bayar atau kehilangan file.&quot; Melainkan <strong>&quot;bayar atau kami publikasikan.&quot;</strong></p>
+<h2 id="tahap-4-enkripsi-dan-leak-site"><span class="hnum">04</span>Tahap 4: enkripsi dan leak site</h2>
+<p>Kini tibalah bagian yang berisik — deployment yang mengunci ratusan mesin dalam hitungan menit. Oktober ini, pelaku di balik <a href="https://aviatrix.ai/threat-research-center/ransomware-attack-disrupts-japans-idcf-cloud-used-by-govt-clients/">serangan IDCF Cloud</a> (7 Oktober 2026) mengklaim telah mengenkripsi 225 database berisi 3,6 PB data, menyegel 16.000 disk VM, dan menghapus lebih dari 554.000 snapshot — semuanya dalam sekitar tujuh menit setelah menembus region Jepang Timur. Terlepas dari apakah setiap angka yang diklaim akurat, taktiknya adalah ciri khas 2026: hantam lapisan hypervisor, bukan server satu per satu, dan seluruh region cloud tumbang sekaligus.</p>
+<p>Selagi sistemmu terkunci, titik tekan kedua aktif: <strong><span class="gterm" data-term="leak site" data-def="Situs web (biasanya di Tor) tempat geng ransomware mempublikasikan data curian korban atau timer hitung mundur untuk menekan korban agar membayar.">leak site</span></strong>. Geng ransomware menjalankan portal kebocoran di Tor yang terbaca seperti dashboard kepatuhan yang diputarbalikkan. Satu pendatang baru 2026, AuditTeam, menamai portalnya &quot;DATA EXPOSURE TERMINAL&quot; dan memformat setiap korban sebagai &quot;AUDIT ENTITY&quot; lengkap dengan ID audit heksadesimal dan tanggal penemuan — estetika birokratis yang dirancang agar pemerasan terasa tak terelakkan, seperti inspeksi yang gagal ketimbang kejahatan.</p>
+<p>Dan beberapa kru kini menyamarkan nama korban sepenuhnya: listing yang hanya bertuliskan &quot;Paid Victim&quot; dengan sebuah ID, tanpa nama perusahaan. Itu bukan belas kasihan — itu <strong>hitungan mundur dengan radius ledakan yang tak diketahui</strong>, direkayasa agar korban memutuskan lebih cepat daripada listing bernama lengkap.</p>
+<h2 id="tahap-5-tekanan-ganda-termasuk-kamu-secara-pribadi"><span class="hnum">05</span>Tahap 5: tekanan ganda — termasuk kamu, secara pribadi</h2>
+<p>Double extortion (enkripsi + publikasi) adalah jawaban dekade 2020-an terhadap backup. Jawaban 2026 adalah <strong>tekanan tiga lapis</strong>: enkripsi, paparan data, dan intimidasi langsung terhadap orang-orangnya.</p>
+<p>Angka-angka Semperis layak dibaca dengan perasaan tidak enak:</p>
+<ul>
+<li><strong>87%</strong> serangan mempersenjatai AI — untuk recon, phishing, dan mempercepat seluruh operasi.</li>
+<li><strong>40%</strong> serangan melibatkan ancaman psikologis atau fisik terhadap staf atau keluarga mereka; di lebih dari separuh kasus itu, penyerang benar-benar menindaklanjuti ancamannya.</li>
+<li><strong>Hampir 70%</strong> korban diserang berkali-kali, dan <strong>31% membayar tebusan lebih dari sekali</strong> — membayar sekali menandaimu sebagai orang yang mau membayar.</li>
+</ul>
+<p>Jadi playbook modern yang lengkap: masuk diam-diam, kuasai sistem identitas, curi dulu, enkripsi kemudian, ancam publikasi sebagai yang ketiga, dan — semakin sering — ancam manusianya sebagai yang keempat. Chris Inglis, Direktur Cyber Nasional AS pertama, merangkum ekonominya dengan blak-blakan: penyerang ingin biaya untuk <em>melawan</em> lebih besar daripada biaya untuk <em>menyerah</em>.</p>
+<h2 id="yang-benar-benar-membantu-selain-punya-backup"><span class="hnum">06</span>Yang benar-benar membantu (selain &quot;punya backup&quot;)</h2>
+<p>Backup itu perlu — hanya saja tidak lagi cukup. Yang terus diulang para responder di kasus-kasus ini:</p>
+<ol>
+<li><strong>Backup yang immutable dan offline.</strong> Tersimpan air-gapped atau write-once, tak terjangkau dan tak bisa dihapus penyerang — karena kru kini memburu server backup lebih dulu. Kasus IDCF menunjukkan penghapusan snapshot sebagai gerakan pembuka standar.</li>
+<li><strong>Backup sistem identitas itu sendiri.</strong> Prosedur pemulihan Active Directory yang khusus dan teruji — kebanyakan korban baru sadar mereka tidak memilikinya di tengah krisis.</li>
+<li><strong><span class="gterm" data-term="EDR" data-def="&#x27;Endpoint Detection and Response&#x27; — perangkat lunak keamanan yang memantau endpoint untuk perilaku mencurigakan dan dapat mengisolasi atau menangani ancaman secara otomatis.">EDR</span> di semua endpoint dan ada yang memantaunya.</strong> Minggu-minggu antara intrusi dan enkripsi adalah jendela deteksimu; alert behavioral atas akses file massal dan lalu lintas keluar yang tak biasa menangkap tahap <span class="gterm" data-term="exfiltration" data-def="Transfer data tanpa izin keluar dari jaringan ke infrastruktur milik penyerang — pencurian sunyi yang mendahului enkripsi pada ransomware modern.">exfiltration</span>.</li>
+<li><strong>Segmentasi dan <span class="gterm" data-term="least privilege" data-def="Prinsip keamanan bahwa setiap akun, proses, atau layanan hanya boleh memegang akses minimum yang dibutuhkan untuk pekerjaannya — tidak lebih.">least privilege</span>.</strong> Perlambat <span class="gterm" data-term="lateral movement" data-def="Pergerakan penyerang dari satu mesin yang sudah dikuasai ke mesin lain di jaringan yang sama, memburu target bernilai lebih tinggi seperti domain controller.">lateral movement</span> sehingga satu workstation yang jebol tak bisa mencapai domain controller.</li>
+<li><strong>Patch apa pun yang menghadap internet.</strong> VPN, firewall, appliance file-transfer — pintu depannya. Pantau daftar Known Exploited Vulnerabilities dari CISA (<span class="gterm" data-term="KEV" data-def="Katalog Known Exploited Vulnerabilities milik CISA: daftar singkat celah yang terbukti dieksploitasi di lapangan. Instansi federal AS wajib memperbaikinya sebelum tenggat tertentu — praktisi memperlakukan setiap entri sebagai &#x27;patch sekarang&#x27;.">KEV</span>) seperti itu pekerjaanmu — karena bagi sebagian penyerang, memang begitu.</li>
+<li><strong>Rencana <span class="gterm" data-term="incident response" data-def="Proses terorganisir untuk mendeteksi, membatasi, membersihkan, dan memulihkan dari insiden keamanan, biasanya mengikuti playbook yang sudah dilatih.">incident response</span> yang sudah dilatih.</strong> Komunikasi out-of-band, peran yang jelas, keputusan soal kebijakan tebusan dibuat <em>sebelum</em> krisis — karena bernegosiasi di bawah hitungan mundur dengan listing tersamar adalah resep keputusan buruk.</li>
+<li><strong>Jangan bayar kalau bisa dihindari.</strong> Statistiknya bicara jelas: hampir sepertiga pembayar membayar lagi. Pembayaran adalah uang muka untuk serangan berikutnya.</li>
+</ol>
+<h2 id="penutup"><span class="hnum">07</span>Penutup</h2>
+<p>Ransomware sudah lama berhenti menjadi sekadar masalah malware. Kini ia bisnis tekanan — mesin yang mengubah datamu sendiri, infrastruktur identitasmu sendiri, dan ketakutanmu sendiri menjadi daya tawar. Para kru sudah mengindustrikannya: leak site berestetika log audit, listing tersamar sebagai timer hitung mundur, AI yang mengerjakan recon.</p>
+<p>Pertahananmu harus sama sistematisnya. Bukan satu peluru perak, melainkan rantai peluru: keraskan pintu depan, awasi lorong-lorongnya, kunci sistem identitas, simpan backup yang tak bisa disentuh penyerang, dan latih hari buruk itu sebelum ia tiba. Karena di 2026, catatan tebusan bukan lagi awal serangan — melainkan <em>akhir</em> dari serangan yang dimulai berminggu-minggu sebelum kamu menyadarinya.</p><div class="author-box"><div class="kicker"><span class="dot"></span>ditulis oleh</div><p><strong>kou</strong> mendokumentasikan threat intel, attack surface, dan pertahanan praktis — dari sisi gelap internet.</p></div><div class="pager"><a href="/id/artikel/phishing-email-autopsy-lab/"><span class="dir">← sebelumnya</span><span class="t">Bedah Email Phishing Seperti Analis: Lab Hands-On dari Gelombang Undangan Kalender Palsu</span></a><span></span></div></div>
+                <aside class="toc"><h4>Daftar isi</h4><ol><li style="margin-left:0px"><a href="#tahap-1-masuk-ke-dalam-initial-access">Tahap 1: masuk ke dalam (initial access)</a></li><li style="margin-left:0px"><a href="#tahap-2-menyebar-di-dalam-lateral-movement-dan-persistence">Tahap 2: menyebar di dalam (lateral movement dan persistence)</a></li><li style="margin-left:0px"><a href="#tahap-3-pencurian-yang-sunyi-exfiltration">Tahap 3: pencurian yang sunyi (exfiltration)</a></li><li style="margin-left:0px"><a href="#tahap-4-enkripsi-dan-leak-site">Tahap 4: enkripsi dan leak site</a></li><li style="margin-left:0px"><a href="#tahap-5-tekanan-ganda-termasuk-kamu-secara-pribadi">Tahap 5: tekanan ganda — termasuk kamu, secara pribadi</a></li><li style="margin-left:0px"><a href="#yang-benar-benar-membantu-selain-punya-backup">Yang benar-benar membantu (selain &quot;punya backup&quot;)</a></li><li style="margin-left:0px"><a href="#penutup">Penutup</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>catatan keamanan dari sisi gelap internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="cari artikel…" aria-label="search">
+    <div class="search-hint">ketik minimal 2 huruf · esc untuk tutup · ctrl+k dari mana saja</div>
+    <div class="search-results" data-empty="nggak ketemu — coba kata kunci lain."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

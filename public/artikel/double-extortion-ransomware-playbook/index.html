@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Double Extortion: How Modern Ransomware Really Works — llunatic-lab</title>
+<meta name="description" content="Modern ransomware doesn&#x27;t care about your backups — attackers steal your data first, then encrypt it, then squeeze you from three directions at once. Here&#x27;s the full playbook, from initial access to the leak site, grounded in the October 2026 Semperis report and this month&#x27;s real cases.">
+<meta property="og:title" content="Double Extortion: How Modern Ransomware Really Works">
+<meta property="og:description" content="Modern ransomware doesn&#x27;t care about your backups — attackers steal your data first, then encrypt it, then squeeze you from three directions at once. Here&#x27;s the full playbook, from initial access to the leak site, grounded in the October 2026 Semperis report and this month&#x27;s real cases.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="/assets/covers/double-extortion-ransomware-playbook.jpg"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/double-extortion-ransomware-playbook/"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/double-extortion-ransomware-playbook/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/arsip/">Archive</a>
+      <a href="/tentang/">About</a>
+      <a class="lang-toggle" href="/id/artikel/double-extortion-ransomware-playbook/">ID</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>article</div>
+              <h1>Double Extortion: How Modern Ransomware Really Works</h1>
+              <div class="meta"><span>18 October 2026</span><span>·</span>
+              <span>6 min read</span><a class="tag" href="/tag/ransomware/">ransomware</a> <a class="tag" href="/tag/extortion/">extortion</a> <a class="tag" href="/tag/blue-team/">blue-team</a> <a class="tag" href="/tag/incident-response/">incident-response</a></div>
+              <img class="cover" src="/assets/covers/double-extortion-ransomware-playbook.jpg" alt="Double Extortion: How Modern Ransomware Really Works">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>If your disaster recovery plan says &quot;we have backups, so ransomware isn&#x27;t our problem,&quot; you are fighting last decade&#x27;s war. Today&#x27;s ransomware crews don&#x27;t need your backups to fail — they just need something you can&#x27;t restore from a snapshot: your customers&#x27; secrets, your internal emails, your private keys. Encryption is the loud part. The quiet part — the part that actually makes victims pay — happened days earlier, in the dark.</p>
+<p>Let&#x27;s walk the full playbook, stage by stage, the way incident responders see it.</p>
+<h2 id="stage-1-getting-in-initial-access"><span class="hnum">01</span>Stage 1: getting in (initial access)</h2>
+<p>Every ransomware story starts with a door nobody was watching. The favorites haven&#x27;t changed much: phishing emails with a weaponized attachment, stolen credentials bought from an <span class="gterm" data-term="initial access" data-def="The first foothold an attacker gains in a target network — via phishing, stolen credentials, or an unpatched internet-facing system.">initial access</span> broker, an unpatched edge device facing the internet — a VPN concentrator, a firewall, a file-transfer server. In several of October 2026&#x27;s campaigns, the entry point was a software build pipeline: steal a developer&#x27;s secret once, and the whole network opens up like a gift box.</p>
+<p>The uncomfortable truth is that the break-in is rarely the impressive part. The impressive part is how long the attackers then sit there, unnoticed.</p>
+<h2 id="stage-2-spreading-inside-lateral-movement-and-persistence"><span class="hnum">02</span>Stage 2: spreading inside (lateral movement and persistence)</h2>
+<p>Once inside, the crew doesn&#x27;t encrypt anything yet. That would be loud, and loud gets caught. Instead they do two quiet things:</p>
+<ul>
+<li><strong><span class="gterm" data-term="persistence" data-def="Techniques an attacker uses to survive reboots and cleanup — services, scheduled tasks, registry keys — so access remains after the initial foothold.">persistence</span></strong> — planting footholds that survive reboots: scheduled tasks, rogue service accounts, webshells on internet-facing apps, golden tickets minted from a compromised domain controller.</li>
+<li><strong><span class="gterm" data-term="lateral movement" data-def="An attacker&#x27;s movement from one compromised machine to others inside the same network, hunting for higher-value targets like domain controllers.">lateral movement</span></strong> — hopping from workstation to workstation, harvesting credentials, until they reach the crown jewels: the identity infrastructure itself.</li>
+</ul>
+<p>This is why Semperis&#x27;s <a href="https://www.prnewswire.com/news-releases/semperis-2026-ransomware-report-reveals-increases-in-ai-driven-attacks-and-a-rise-in-physical-threats-against-executives-and-their-families-302907731.html">2026 Ransomware Risk Report</a>, published October 14, 2026, hits so hard: <strong>87% of ransomware attacks targeted identity systems</strong> like <span class="gterm" data-term="Active Directory" data-def="Microsoft&#x27;s directory service that manages users, computers, and permissions in enterprise networks — the most targeted asset in ransomware attacks.">Active Directory</span>, Entra ID, and Okta. Own the identity system and you own every door in the building. Yet only about half of surveyed companies keep dedicated identity backups, and 40% of disaster recovery plans don&#x27;t even include procedures for recovering Active Directory. As Semperis CEO Mickey Bresman put it, once backups made encryption survivable, attackers simply added a second pressure point — &quot;double extortion.&quot;</p>
+<h2 id="stage-3-the-quiet-theft-exfiltration"><span class="hnum">03</span>Stage 3: the quiet theft (exfiltration)</h2>
+<p>Before a single file is encrypted, the data walks out the door. Attackers stage your databases, documents, and source code on a compromised server, — an act called <span class="gterm" data-term="exfiltration" data-def="The unauthorized transfer of data out of a network to attacker-controlled infrastructure — the quiet theft that precedes encryption in modern ransomware.">exfiltration</span> — to cloud storage they control — sometimes gigabytes per hour, blended in with normal HTTPS traffic so the firewall never blinks.</p>
+<p>This is the moment that turns your backups from a shield into a shrug. You can restore every encrypted server from yesterday&#x27;s snapshot and still lose everything that matters, because the copy sitting on the attacker&#x27;s server doesn&#x27;t care about your recovery plan. The ransom isn&#x27;t &quot;pay or lose your files.&quot; It&#x27;s <strong>&quot;pay or we publish.&quot;</strong></p>
+<h2 id="stage-4-encryption-and-the-leak-site"><span class="hnum">04</span>Stage 4: encryption and the leak site</h2>
+<p>Now comes the loud part — the deployment that locks hundreds of machines in minutes. This October, the threat actors behind the <a href="https://aviatrix.ai/threat-research-center/ransomware-attack-disrupts-japans-idcf-cloud-used-by-govt-clients/">IDCF Cloud attack</a> (October 7, 2026) claimed to have encrypted 225 databases holding 3.6 PB of data, sealed 16,000 VM disks, and wiped over 554,000 snapshots — all within roughly seven minutes of breaching the East Japan region. Whether or not every claimed number checks out, the tactic is the signature of 2026: hit the hypervisor layer, not the individual servers, and the whole cloud region goes down at once.</p>
+<p>While your systems are locked, the second pressure point activates: the <strong><span class="gterm" data-term="leak site" data-def="A (usually Tor-hosted) website where ransomware gangs publish stolen victim data or countdown timers to pressure victims into paying.">leak site</span></strong>. Ransomware gangs run Tor-hosted leak portals that read like twisted compliance dashboards. One 2026 newcomer, AuditTeam, brands its portal as a &quot;DATA EXPOSURE TERMINAL&quot; and formats each victim as an &quot;AUDIT ENTITY&quot; with a hexadecimal audit ID and a discovery date — a bureaucratic aesthetic designed to make extortion feel inevitable, like a failed inspection rather than a crime.</p>
+<p>And some crews now mask the victim&#x27;s name entirely: a listing that says only &quot;Paid Victim&quot; with an ID, no company name. That&#x27;s not mercy — it&#x27;s a <strong>countdown with an unknown blast radius</strong>, engineered to push victims to decide faster than a fully named listing would.</p>
+<h2 id="stage-5-triple-pressure-including-you-personally"><span class="hnum">05</span>Stage 5: triple pressure — including you, personally</h2>
+<p>Double extortion (encrypt + publish) was the 2020s answer to backups. The 2026 answer is <strong>triple pressure</strong>: encryption, data exposure, and direct intimidation of people.</p>
+<p>The Semperis numbers are grim reading:</p>
+<ul>
+<li><strong>87%</strong> of attacks weaponized AI — for recon, phishing, and speeding up the whole operation.</li>
+<li><strong>40%</strong> of attacks involved psychological or physical threats against staff or their families; in more than half of those cases, the attackers followed through.</li>
+<li><strong>Nearly 70%</strong> of victims were targeted multiple times, and <strong>31% paid multiple ransoms</strong> — paying once marks you as someone who pays.</li>
+</ul>
+<p>So the full modern playbook is: break in quietly, own the identity system, steal first, encrypt second, publish threats third, and — increasingly — threaten the human beings fourth. Chris Inglis, the first U.S. National Cyber Director, summarized the economics bluntly: the attacker wants the cost of <em>resisting</em> to exceed the cost of <em>giving in</em>.</p>
+<h2 id="what-actually-helps-beyond-have-backups"><span class="hnum">06</span>What actually helps (beyond &quot;have backups&quot;)</h2>
+<p>Backups are necessary — they&#x27;re just no longer sufficient. What the responders in these cases keep repeating:</p>
+<ol>
+<li><strong>Immutable, offline backups.</strong> Air-gapped or write-once storage the attacker can&#x27;t reach or delete — because crews now hunt backup servers first. The IDCF case shows snapshot deletion as a standard opening move.</li>
+<li><strong>Backup the identity system itself.</strong> A dedicated, tested Active Directory recovery procedure — most victims learn they don&#x27;t have one mid-crisis.</li>
+<li><strong><span class="gterm" data-term="EDR" data-def="&#x27;Endpoint Detection and Response&#x27; — security software that monitors endpoints for suspicious behavior and can isolate or remediate threats automatically.">EDR</span> everywhere and someone watching it.</strong> The weeks between intrusion and encryption are your detection window; behavioral alerts on mass file access and unusual outbound traffic catch the <span class="gterm" data-term="exfiltration" data-def="The unauthorized transfer of data out of a network to attacker-controlled infrastructure — the quiet theft that precedes encryption in modern ransomware.">exfiltration</span> stage.</li>
+<li><strong>Segmentation and <span class="gterm" data-term="least privilege" data-def="The security principle that every account, process, or service should hold only the minimum access needed to do its job — nothing more.">least privilege</span>.</strong> Slow the <span class="gterm" data-term="lateral movement" data-def="An attacker&#x27;s movement from one compromised machine to others inside the same network, hunting for higher-value targets like domain controllers.">lateral movement</span> so one compromised workstation can&#x27;t reach the domain controller.</li>
+<li><strong>Patch what faces the internet.</strong> VPNs, firewalls, file-transfer appliances — the front door. Track CISA&#x27;s <span class="gterm" data-term="KEV" data-def="CISA&#x27;s Known Exploited Vulnerabilities catalog: a shortlist of flaws confirmed exploited in the wild. US federal agencies must remediate entries by a set deadline — practitioners treat every listing as &#x27;patch now&#x27;.">KEV</span> list like it&#x27;s your job, because for some attackers it is.</li>
+<li><strong>A rehearsed <span class="gterm" data-term="incident response" data-def="The organized process of detecting, containing, eradicating, and recovering from a security incident, usually following a rehearsed playbook.">incident response</span> plan.</strong> Out-of-band communication, defined roles, a decision on ransom policy made <em>before</em> the crisis — because negotiating under a countdown with masked leak listings is exactly how bad decisions happen.</li>
+<li><strong>Don&#x27;t pay if you can avoid it.</strong> The stats say it plainly: nearly a third of payers paid again. Payment is a down payment on the next attack.</li>
+</ol>
+<h2 id="the-closing-thought"><span class="hnum">07</span>The closing thought</h2>
+<p>Ransomware stopped being a malware problem years ago. It&#x27;s a pressure business now — a machine that converts your own data, your own identity infrastructure, and your own fear into leverage. The crews industrialized it: leak sites with audit-log aesthetics, masked listings as countdown timers, AI doing the recon.</p>
+<p>Your defense has to be just as systematic. Not one silver bullet, but a chain of them: harden the front door, watch the hallways, lock the identity system, keep backups the attacker can&#x27;t touch, and rehearse the bad day before it arrives. Because in 2026, the ransom note is no longer the beginning of the attack — it&#x27;s the <em>end</em> of an attack that started weeks before you noticed.</p><div class="author-box"><div class="kicker"><span class="dot"></span>written by</div><p><strong>kou</strong> documents what’s learned about threat intel, attack surface, and practical defense — from the dark side of the internet.</p></div><div class="pager"><a href="/artikel/phishing-email-autopsy-lab/"><span class="dir">← previous</span><span class="t">Dissect a Phishing Email Like an Analyst: A Hands-On Lab on the Fake Calendar Invite Wave</span></a><span></span></div></div>
+                <aside class="toc"><h4>Contents</h4><ol><li style="margin-left:0px"><a href="#stage-1-getting-in-initial-access">Stage 1: getting in (initial access)</a></li><li style="margin-left:0px"><a href="#stage-2-spreading-inside-lateral-movement-and-persistence">Stage 2: spreading inside (lateral movement and persistence)</a></li><li style="margin-left:0px"><a href="#stage-3-the-quiet-theft-exfiltration">Stage 3: the quiet theft (exfiltration)</a></li><li style="margin-left:0px"><a href="#stage-4-encryption-and-the-leak-site">Stage 4: encryption and the leak site</a></li><li style="margin-left:0px"><a href="#stage-5-triple-pressure-including-you-personally">Stage 5: triple pressure — including you, personally</a></li><li style="margin-left:0px"><a href="#what-actually-helps-beyond-have-backups">What actually helps (beyond &quot;have backups&quot;)</a></li><li style="margin-left:0px"><a href="#the-closing-thought">The closing thought</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>security notes from the dark side of the internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="search articles…" aria-label="search">
+    <div class="search-hint">type at least 2 characters · esc to close · ctrl+k anywhere</div>
+    <div class="search-results" data-empty="nothing found — try another keyword."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

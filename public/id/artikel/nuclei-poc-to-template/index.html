@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dari PoC ke Deteksi dalam Hitungan Menit: Template Nuclei Pertamamu — llunatic-lab</title>
+<meta name="description" content="Saat CVE kritis muncul, PoC exploit beredar di GitHub dalam hitungan jam — dan pemindaian massal menyusul. Nuclei memungkinkanmu memindai infrastrukturmu sendiri secepat itu, dengan mengubah proof of concept menjadi template YAML yang bisa dibagikan. Ini cara kerja tool-nya, cara menulis template pertamamu, dan pagar pengaman agar tidak berbalik menyerangmu.">
+<meta property="og:title" content="Dari PoC ke Deteksi dalam Hitungan Menit: Template Nuclei Pertamamu">
+<meta property="og:description" content="Saat CVE kritis muncul, PoC exploit beredar di GitHub dalam hitungan jam — dan pemindaian massal menyusul. Nuclei memungkinkanmu memindai infrastrukturmu sendiri secepat itu, dengan mengubah proof of concept menjadi template YAML yang bisa dibagikan. Ini cara kerja tool-nya, cara menulis template pertamamu, dan pagar pengaman agar tidak berbalik menyerangmu.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="/assets/covers/nuclei-poc-to-template.jpg"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/nuclei-poc-to-template/"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/nuclei-poc-to-template/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/id/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/id/arsip/">Arsip</a>
+      <a href="/id/tentang/">Tentang</a>
+      <a class="lang-toggle" href="/artikel/nuclei-poc-to-template/">EN</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>artikel</div>
+              <h1>Dari PoC ke Deteksi dalam Hitungan Menit: Template Nuclei Pertamamu</h1>
+              <div class="meta"><span>19 Oktober 2026</span><span>·</span>
+              <span>5 mnt baca</span><a class="tag" href="/id/tag/nuclei/">nuclei</a> <a class="tag" href="/id/tag/vulnerability-scanning/">vulnerability-scanning</a> <a class="tag" href="/id/tag/hands-on/">hands-on</a> <a class="tag" href="/id/tag/tools/">tools</a></div>
+              <img class="cover" src="/assets/covers/nuclei-poc-to-template.jpg" alt="Dari PoC ke Deteksi dalam Hitungan Menit: Template Nuclei Pertamamu">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Sebuah <span class="gterm" data-term="CVE" data-def="Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.">CVE</span> kritis muncul di Selasa pagi. Menjelang siang, seseorang sudah mempublikasikan <span class="gterm" data-term="proof of concept" data-def="Demonstrasi yang menunjukkan bahwa sebuah kerentanan benar-benar bisa dieksploitasi, biasanya dipublikasikan untuk menekan vendor dan memperingatkan defender.">proof of concept</span> exploit yang berfungsi. Menjelang malam, botnet sudah memindai internet secara massal untuk mencari korban. Di antara &quot;dipublikasikan&quot; dan &quot;dibobol&quot; ada jendela waktu yang dihitung dalam jam — dan satu-satunya pertanyaan yang penting adalah siapa yang memindai infrastrukturmu <em>lebih dulu</em>: kamu, atau mereka.</p>
+<p>Perlombaan itulah alasan <span class="gterm" data-term="Nuclei" data-def="Pemindai kerentanan open-source yang cepat dan berbasis template dari ProjectDiscovery — pemeriksaan keamanan ditulis sebagai template YAML yang bisa dibagikan, mencakup CVE, miskonfigurasi, dan exposure.">Nuclei</span> ada. Dibuat oleh ProjectDiscovery sebagai scanner open-source yang ditulis dalam Go, ia tidak datang dengan daftar pemeriksaan yang kaku. Ia datang dengan sebuah engine — dan pemeriksaannya sendiri berupa file YAML polos yang disebut template. Komunitas memelihara lebih dari 12.000 template yang mencakup CVE, miskonfigurasi, file yang terekspos, dan kredensial default, dan proyek ini meraih puluhan ribu bintang di GitHub justru karena modelnya berhasil: begitu sebuah vulnerability|kerentanan dipahami, siapa pun bisa mengenkripsinya menjadi template dan membagikannya.</p>
+<h2 id="idenya-kerentanan-sebagai-kode"><span class="hnum">01</span>Idenya: kerentanan sebagai kode</h2>
+<p>Template adalah deskripsi vulnerability|kerentanan yang bisa dieksekusi mesin. Ia berkata: kirim request <em>ini</em>, cari <em>itu</em> di responsnya, dan laporkan sebagai temuan jika cocok. Formatnya YAML, kurva belajarnya satu sore, dan hasilnya adalah logika deteksimu bisa berpindah — dari laptop satu analis ke pipeline CI, pemindaian malam hari, dan otomatisasi seluruh tim.</p>
+<p>Berikut contoh nyata yang bisa langsung dijalankan. Ia mendeteksi file <code>.git/HEAD</code> yang terekspos — kesalahan klasik &quot;repositorinya ikut ke-deploy&quot; yang membocorkan nama branch dan hash commit:</p>
+<pre><code class="language-yaml">id: git-head-exposure
+
+info:
+  name: Exposed Git HEAD Detection
+  author: llunatic
+  severity: medium
+  description: Detects publicly accessible .git/HEAD files leaking repository metadata.
+  tags: exposure,git,config
+
+http:
+  - method: GET
+    path:
+      - &quot;{{BaseURL}}/.git/HEAD&quot;
+
+    matchers:
+      - type: word
+        words:
+          - &quot;ref: refs/heads&quot;
+        condition: and</code></pre>
+<p>Baca dari atas ke bawah: <code>id</code> adalah slug unik, <code>info</code> membawa metadata yang dibutuhkan manusia (nama, severity, tags), dan blok <code>http</code> adalah bagian mesinnya — satu request GET, satu matcher yang hanya menyala ketika respons benar-benar mengandung <code>ref: refs/heads</code>. Disiplin matcher inilah yang membedakan scanner dari mesin penghasil noise: kondisinya harus menggambarkan keadaan yang rentan, bukan sekadar &quot;servernya menjawab.&quot;</p>
+<p>Matcher punya beberapa rasa — <code>word</code>, <code>regex</code>, <code>status</code>, <code>binary</code>, <code>dsl</code> — dan bisa digabung dengan <code>and</code>/<code>or</code>. Rasa DSL adalah senjata pamungkasnya: kamu bisa menulis ekspresi atas respons seperti <code>contains(body, &#x27;admin&#x27;) &amp;&amp; status_code == 200</code>, dan begitulah para peneliti mengenkripsi logika halus dari PoC exploit nyata.</p>
+<h2 id="menjalankannya-setup-lima-menit"><span class="hnum">02</span>Menjalankannya: setup lima menit</h2>
+<pre><code class="language-bash"># install (Go 1.24+)
+go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
+
+# tarik pustaka template komunitas
+nuclei -update-templates
+
+# pindai satu target, hanya temuan high dan critical
+nuclei -u https://your-target.example -severity high,critical -silent</code></pre>
+<p>Beberapa flag mengerjakan sebagian besar pekerjaan. <code>-t</code> memilih template mana yang dijalankan (direktori seperti <code>exposures/</code>, sebuah tag, atau satu file). <code>-severity</code> menyaring noise. <code>-tc</code> memungkinkanmu menulis kondisi template seperti <code>&quot;contains(tags, &#x27;xss&#x27;) &amp;&amp; contains(tags, &#x27;cve&#x27;)&quot;</code>. Dan <code>-as</code> menjalankan pemindaian otomatis yang lebih dulu mem-fingerprint technology stack target — ala Wappalyzer — lalu hanya menembakkan template yang relevan dengan temuannya, jadi kamu tidak menghujani aplikasi Django dengan pemeriksaan WordPress.</p>
+<p>Engine-nya cepat secara default — rate limit yang bisa disetel, host paralel, dan template paralel — dan justru karena itulah kamu hanya boleh mengarahkannya ke apa yang kamu miliki. Nuclei mengirim request dan probe sungguhan. Menjalankannya ke infrastruktur yang tidak kamu otorisasi untuk diuji bukanlah &quot;riset&quot;; di kebanyakan yurisdiksi itu masalah hukum. Tentukan scopenya, minta sign-off, catat apa yang kamu pindai.</p>
+<h2 id="pipeline-nya-recon-masuk-ke-scanning"><span class="hnum">03</span>Pipeline-nya: recon masuk ke scanning</h2>
+<p>Nuclei jarang berjalan sendirian. Pola standar komunitas merangkainya di belakang reconnaissance, tiap tool menyuapi tool berikutnya lewat stdin:</p>
+<pre><code class="language-bash">subfinder -d example.com -silent \
+  | httpx -silent \
+  | nuclei -t exposures/ -severity medium,high,critical -o findings.txt</code></pre>
+<p><code>subfinder</code> mengenumerasi subdomain, <code>httpx</code> hanya menyimpan yang hidup, dan Nuclei memeriksa yang selamat untuk exposure. Jangan pernah memindai daftar subdomain mentah secara langsung — host yang mati hanya membakar waktu dan kuota. Hasilnya tersedia dalam JSON, JSONL, SARIF, atau Markdown, siap di-triase dengan <code>jq</code> atau diteruskan ke sistem ticketing.</p>
+<h2 id="dari-poc-ke-template-konversinya"><span class="hnum">04</span>Dari PoC ke template: konversinya</h2>
+<p>Inilah workflow yang memenangkan perlombaan Selasa pagi. Seorang peneliti mempublikasikan PoC untuk CVE baru — misalnya path traversal di mana request ke <code>/download?file=../../../../etc/passwd</code> mengembalikan isi file. Mengonversinya bersifat mekanis:</p>
+<ol>
+<li><strong>Reproduksi</strong> PoC-nya terhadap target lab dan tangkap request serta respons persisnya.</li>
+<li><strong>Identifikasi invarian</strong> — bagian respons yang hanya dihasilkan server yang rentan (misalnya string <code>root:x:0:0</code>).</li>
+<li><strong>Enkripsi</strong>: satu blok request <code>http</code> berisi path payload, satu matcher <code>word</code> pada invarian, metadata severity dan CVE di <code>info</code>.</li>
+<li><strong>Validasi</strong> terhadap target yang diketahui rentan dan yang diketahui sudah di-patch. Template yang menyala di keduanya lebih buruk daripada tidak ada template sama sekali.</li>
+</ol>
+<p>Ketika invarian-nya bersifat behavioral bukan tekstual — jeda waktu, callback DNS — integrasi <code>interactsh</code> di Nuclei menangani deteksi out-of-band: template menanam URL callback yang unik dan temuan menyala saat target &quot;menelepon pulang&quot;.</p>
+<h2 id="pagar-pengamannya-dipelajari-dengan-cara-yang-keras"><span class="hnum">05</span>Pagar pengamannya (dipelajari dengan cara yang keras)</h2>
+<p>Dua advisory dari rilis Nuclei v3.8.0 (18 April 2026) layak diperhatikan setiap operator scanner: GHSA-29rg-wmcw-hpf4, di mana template berprotokol JavaScript bisa membaca file lokal di luar sandbox-nya, dan GHSA-jm34-66cf-qpvr, di mana ekspresi yang dievaluasi dari sumber non-template membuka vektor remote-code-execution dari template jahat. Pelajarannya blak-blakan: <strong>template adalah kode, dan kode dari orang asing berjalan dengan hak aksesmu.</strong> Tarik template dari sumber yang kamu percaya, pin versi yang kamu audit, dan upgrade segera — rilis yang sama juga membawa ekspor hasil ke PDF, penganalisis konteks refleksi XSS, dan pendeteksi honeypot, jadi tetap mutakhir membayar dua kali lipat.</p>
+<p>Dan pagar pengaman tertua tetap berlaku: scanner memberitahumu <em>ke mana harus melihat</em>, bukan <em>apa yang benar</em>. Setiap temuan layak diverifikasi manual sebelum menjadi tiket, laporan, atau page jam 2 pagi.</p>
+<h2 id="yang-bisa-dibangun-minggu-ini"><span class="hnum">06</span>Yang bisa dibangun minggu ini</h2>
+<p>Kalau kamu di sisi defensif, langkah dengan leverage tertinggi itu membosankan: pemindaian Nuclei tiap malam terhadap daftar aset eksternalmu, disilangkan dengan feed <span class="gterm" data-term="KEV" data-def="Katalog Known Exploited Vulnerabilities milik CISA: daftar singkat celah yang terbukti dieksploitasi di lapangan. Instansi federal AS wajib memperbaikinya sebelum tenggat tertentu — praktisi memperlakukan setiap entri sebagai &#x27;patch sekarang&#x27;.">KEV</span> terbaru, dengan temuan yang dirutekan ke tempat yang dibaca manusia. Kesenjangan yang membuat organisasi dibobol jarang soal kecanggihan exploit — melainkan soal berminggu-minggu sistem yang diketahui rentan dibiarkan terekspos antara pengungkapan dan seseorang yang benar-benar memeriksa. Scanner yang berjalan tiap malam menutup kesenjangan itu. Yang berjalan tiap kuartal tidak.</p>
+<p>Jam exploit mulai berdetak saat PoC dipublikasikan. Dengan template engine di tanganmu, jam deteksimu bisa mulai di saat yang sama. Tulis templatenya, pindai estatemu, patch sebelum makan siang — dan CVE Selasa pagi menjadi sekadar hari Selasa biasa, bukan insiden.</p><div class="author-box"><div class="kicker"><span class="dot"></span>ditulis oleh</div><p><strong>kou</strong> mendokumentasikan threat intel, attack surface, dan pertahanan praktis — dari sisi gelap internet.</p></div><div class="pager"><a href="/id/artikel/double-extortion-ransomware-playbook/"><span class="dir">← sebelumnya</span><span class="t">Double Extortion: Cara Kerja Ransomware Modern yang Sebenarnya</span></a><span></span></div></div>
+                <aside class="toc"><h4>Daftar isi</h4><ol><li style="margin-left:0px"><a href="#idenya-kerentanan-sebagai-kode">Idenya: kerentanan sebagai kode</a></li><li style="margin-left:0px"><a href="#menjalankannya-setup-lima-menit">Menjalankannya: setup lima menit</a></li><li style="margin-left:0px"><a href="#pipeline-nya-recon-masuk-ke-scanning">Pipeline-nya: recon masuk ke scanning</a></li><li style="margin-left:0px"><a href="#dari-poc-ke-template-konversinya">Dari PoC ke template: konversinya</a></li><li style="margin-left:0px"><a href="#pagar-pengamannya-dipelajari-dengan-cara-yang-keras">Pagar pengamannya (dipelajari dengan cara yang keras)</a></li><li style="margin-left:0px"><a href="#yang-bisa-dibangun-minggu-ini">Yang bisa dibangun minggu ini</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>catatan keamanan dari sisi gelap internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="cari artikel…" aria-label="search">
+    <div class="search-hint">ketik minimal 2 huruf · esc untuk tutup · ctrl+k dari mana saja</div>
+    <div class="search-results" data-empty="nggak ketemu — coba kata kunci lain."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

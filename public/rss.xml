@@ -4,7 +4,11 @@
 <title>llunatic-lab (en)</title><link>https://lab.llunaticsys.web.id/</link>
 <description>Security notes from the dark side of the internet</description>
 <language>en</language>
-<item><title>Double Extortion: How Modern Ransomware Really Works</title>
+<item><title>From PoC to Detection in Minutes: Your First Nuclei Template</title>
+            <link>https://lab.llunaticsys.web.id/artikel/nuclei-poc-to-template/</link>
+            <description>When a critical CVE drops, exploit PoCs hit GitHub within hours — and mass scanning follows. Nuclei lets you scan your own estate just as fast by turning a proof of concept into a shareable YAML template. Here&#x27;s how the tool works, how to write your first template, and the guardrails that keep it from burning you.</description>
+            <pubDate>Mon, 19 Oct 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/artikel/nuclei-poc-to-template/</guid></item><item><title>Double Extortion: How Modern Ransomware Really Works</title>
             <link>https://lab.llunaticsys.web.id/artikel/double-extortion-ransomware-playbook/</link>
             <description>Modern ransomware doesn&#x27;t care about your backups — attackers steal your data first, then encrypt it, then squeeze you from three directions at once. Here&#x27;s the full playbook, from initial access to the leak site, grounded in the October 2026 Semperis report and this month&#x27;s real cases.</description>
             <pubDate>Sun, 18 Oct 2026 00:00:00 -0000</pubDate>

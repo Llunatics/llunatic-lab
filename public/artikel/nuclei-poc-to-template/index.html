@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From PoC to Detection in Minutes: Your First Nuclei Template — llunatic-lab</title>
+<meta name="description" content="When a critical CVE drops, exploit PoCs hit GitHub within hours — and mass scanning follows. Nuclei lets you scan your own estate just as fast by turning a proof of concept into a shareable YAML template. Here&#x27;s how the tool works, how to write your first template, and the guardrails that keep it from burning you.">
+<meta property="og:title" content="From PoC to Detection in Minutes: Your First Nuclei Template">
+<meta property="og:description" content="When a critical CVE drops, exploit PoCs hit GitHub within hours — and mass scanning follows. Nuclei lets you scan your own estate just as fast by turning a proof of concept into a shareable YAML template. Here&#x27;s how the tool works, how to write your first template, and the guardrails that keep it from burning you.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="/assets/covers/nuclei-poc-to-template.jpg"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/nuclei-poc-to-template/"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/nuclei-poc-to-template/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/arsip/">Archive</a>
+      <a href="/tentang/">About</a>
+      <a class="lang-toggle" href="/id/artikel/nuclei-poc-to-template/">ID</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>article</div>
+              <h1>From PoC to Detection in Minutes: Your First Nuclei Template</h1>
+              <div class="meta"><span>19 October 2026</span><span>·</span>
+              <span>6 min read</span><a class="tag" href="/tag/nuclei/">nuclei</a> <a class="tag" href="/tag/vulnerability-scanning/">vulnerability-scanning</a> <a class="tag" href="/tag/hands-on/">hands-on</a> <a class="tag" href="/tag/tools/">tools</a></div>
+              <img class="cover" src="/assets/covers/nuclei-poc-to-template.jpg" alt="From PoC to Detection in Minutes: Your First Nuclei Template">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>A critical <span class="gterm" data-term="CVE" data-def="Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.">CVE</span> drops on a Tuesday morning. By lunch, someone has published a working exploit <span class="gterm" data-term="proof of concept" data-def="A working demonstration that a vulnerability can actually be exploited, usually published to pressure vendors and warn defenders.">proof of concept</span>. By evening, botnets are mass-scanning the internet for it. Somewhere between &quot;published&quot; and &quot;pwned&quot; there is a window measured in hours — and the only real question is who scans <em>your</em> infrastructure first: you, or them.</p>
+<p>That race is exactly why <span class="gterm" data-term="Nuclei" data-def="Fast, open-source template-based vulnerability scanner by ProjectDiscovery — security checks are written as shareable YAML templates covering CVEs, misconfigurations, and exposures.">Nuclei</span> exists. Built by ProjectDiscovery as an open-source scanner written in Go, it doesn&#x27;t ship with a fixed checklist of checks. Instead it ships with an engine — and the checks themselves are plain YAML files called templates. The community maintains more than 12,000 of them, covering CVEs, misconfigurations, exposed files, and default credentials, and the project has earned tens of thousands of GitHub stars precisely because the model works: the moment a new <span class="gterm" data-term="vulnerability" data-def="A weakness in a system or application that attackers can exploit.">vulnerability</span> is understood, anyone can encode it as a template and share it.</p>
+<h2 id="the-idea-vulnerability-as-code"><span class="hnum">01</span>The idea: vulnerability as code</h2>
+<p>A template is a <span class="gterm" data-term="vulnerability" data-def="A weakness in a system or application that attackers can exploit.">vulnerability</span> description that a machine can execute. It says: send <em>this</em> request, look for <em>that</em> in the response, and call it a finding if it matches. The format is YAML, the learning curve is an afternoon, and the payoff is that your detection logic travels — from one analyst&#x27;s laptop into CI pipelines, nightly scans, and team-wide automation.</p>
+<p>Here&#x27;s a real, runnable example. It detects an exposed <code>.git/HEAD</code> file — the classic &quot;we deployed the repository&quot; mistake that leaks branch names and commit hashes:</p>
+<pre><code class="language-yaml">id: git-head-exposure
+
+info:
+  name: Exposed Git HEAD Detection
+  author: llunatic
+  severity: medium
+  description: Detects publicly accessible .git/HEAD files leaking repository metadata.
+  tags: exposure,git,config
+
+http:
+  - method: GET
+    path:
+      - &quot;{{BaseURL}}/.git/HEAD&quot;
+
+    matchers:
+      - type: word
+        words:
+          - &quot;ref: refs/heads&quot;
+        condition: and</code></pre>
+<p>Read it top to bottom: the <code>id</code> is a unique slug, <code>info</code> carries the metadata humans need (name, severity, tags), and the <code>http</code> block is the machine part — one GET request, one matcher that fires only when the response literally contains <code>ref: refs/heads</code>. That matcher discipline is what separates a scanner from a noise machine: the condition must describe the vulnerable state, not merely &quot;the server answered.&quot;</p>
+<p>Matchers come in flavors — <code>word</code>, <code>regex</code>, <code>status</code>, <code>binary</code>, <code>dsl</code> — and they compose with <code>and</code>/<code>or</code>. The DSL flavor is the power tool: you can write expressions over the response like <code>contains(body, &#x27;admin&#x27;) &amp;&amp; status_code == 200</code>, which is how researchers encode the subtle logic of real exploit PoCs.</p>
+<h2 id="running-it-the-five-minute-setup"><span class="hnum">02</span>Running it: the five-minute setup</h2>
+<pre><code class="language-bash"># install (Go 1.24+)
+go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
+
+# pull the community template library
+nuclei -update-templates
+
+# scan one target, high and critical findings only
+nuclei -u https://your-target.example -severity high,critical -silent</code></pre>
+<p>A few flags do most of the heavy lifting. <code>-t</code> selects which templates run (a directory like <code>exposures/</code>, a tag, or a single file). <code>-severity</code> filters the noise. <code>-tc</code> lets you write template conditions such as <code>&quot;contains(tags, &#x27;xss&#x27;) &amp;&amp; contains(tags, &#x27;cve&#x27;)&quot;</code>. And <code>-as</code> runs an automatic scan that fingerprints the target&#x27;s technology stack first — Wappalyzer-style — and then fires only the templates relevant to what it found, so you&#x27;re not throwing WordPress checks at a Django app.</p>
+<p>The engine is fast by default — tunable rate limits, parallel hosts, and parallel templates — which is exactly why you must point it only at what you own. Nuclei sends real requests and real probes. Running it against infrastructure you aren&#x27;t authorized to test isn&#x27;t &quot;research&quot;; in most jurisdictions it&#x27;s a legal problem. Scope it, get sign-off, log what you scan.</p>
+<h2 id="the-pipeline-recon-into-scanning"><span class="hnum">03</span>The pipeline: recon into scanning</h2>
+<p>Nuclei rarely runs alone. The standard community pattern chains it behind reconnaissance, each tool feeding the next through stdin:</p>
+<pre><code class="language-bash">subfinder -d example.com -silent \
+  | httpx -silent \
+  | nuclei -t exposures/ -severity medium,high,critical -o findings.txt</code></pre>
+<p><code>subfinder</code> enumerates subdomains, <code>httpx</code> keeps only the live ones, and Nuclei checks the survivors for exposures. Never scan a raw subdomain list directly — dead hosts just burn time and quota. Results land in JSON, JSONL, SARIF, or Markdown, ready for <code>jq</code> triage or a ticketing system.</p>
+<h2 id="from-poc-to-template-the-conversion"><span class="hnum">04</span>From PoC to template: the conversion</h2>
+<p>Here&#x27;s the workflow that wins the Tuesday-morning race. A researcher publishes a PoC for a new CVE — say, a path-traversal where requesting <code>/download?file=../../../../etc/passwd</code> returns the file&#x27;s contents. Converting it is mechanical:</p>
+<ol>
+<li><strong>Reproduce</strong> the PoC against a lab target and capture the exact request and response.</li>
+<li><strong>Identify the invariant</strong> — the part of the response that only a vulnerable server produces (e.g., the string <code>root:x:0:0</code>).</li>
+<li><strong>Encode it</strong>: one <code>http</code> request block with the payload path, one <code>word</code> matcher on the invariant, severity and CVE metadata in <code>info</code>.</li>
+<li><strong>Validate</strong> against a known-vulnerable and a known-patched target. A template that fires on both is worse than no template.</li>
+</ol>
+<p>When the invariant is behavioral rather than textual — a timing delay, a DNS callback — Nuclei&#x27;s <code>interactsh</code> integration handles out-of-band detection: the template plants a unique callback URL and the finding fires when the target phones home.</p>
+<h2 id="the-guardrails-learned-the-hard-way"><span class="hnum">05</span>The guardrails (learned the hard way)</h2>
+<p>Two advisories from the Nuclei v3.8.0 release (April 18, 2026) are worth every scanner operator&#x27;s attention: GHSA-29rg-wmcw-hpf4, where a JavaScript-protocol template could read local files outside its sandbox, and GHSA-jm34-66cf-qpvr, where expressions evaluated from non-template sources opened a remote-code-execution vector from malicious templates. The lesson is blunt: <strong>templates are code, and code from strangers runs with your privileges.</strong> Pull templates from sources you trust, pin versions you audit, and upgrade promptly — the same release also shipped PDF result export, an XSS reflection-context analyzer, and a honeypot detector, so staying current pays twice.</p>
+<p>And the oldest guardrail still applies: a scanner tells you <em>where to look</em>, not <em>what is true</em>. Every finding deserves manual verification before it becomes a ticket, a report, or a 2 AM page.</p>
+<h2 id="what-to-build-this-week"><span class="hnum">06</span>What to build this week</h2>
+<p>If you&#x27;re on the defensive side, the highest-leverage move is boring: a nightly Nuclei run against your external asset list, cross-matched with the freshest <span class="gterm" data-term="KEV" data-def="CISA&#x27;s Known Exploited Vulnerabilities catalog: a shortlist of flaws confirmed exploited in the wild. US federal agencies must remediate entries by a set deadline — practitioners treat every listing as &#x27;patch now&#x27;.">KEV</span> feed, with findings routed somewhere a human reads them. The gap that gets organizations breached is rarely exploit sophistication — it&#x27;s the weeks a known-vulnerable system sits exposed between disclosure and someone actually checking. A scanner that runs nightly closes that gap. One that runs quarterly doesn&#x27;t.</p>
+<p>The exploit clock starts the moment a PoC is published. With a template engine in your hands, your detection clock can start at the same moment. Write the template, scan the estate, patch before lunch — and the Tuesday-morning CVE becomes a routine Tuesday, not an incident.</p><div class="author-box"><div class="kicker"><span class="dot"></span>written by</div><p><strong>kou</strong> documents what’s learned about threat intel, attack surface, and practical defense — from the dark side of the internet.</p></div><div class="pager"><a href="/artikel/double-extortion-ransomware-playbook/"><span class="dir">← previous</span><span class="t">Double Extortion: How Modern Ransomware Really Works</span></a><span></span></div></div>
+                <aside class="toc"><h4>Contents</h4><ol><li style="margin-left:0px"><a href="#the-idea-vulnerability-as-code">The idea: vulnerability as code</a></li><li style="margin-left:0px"><a href="#running-it-the-five-minute-setup">Running it: the five-minute setup</a></li><li style="margin-left:0px"><a href="#the-pipeline-recon-into-scanning">The pipeline: recon into scanning</a></li><li style="margin-left:0px"><a href="#from-poc-to-template-the-conversion">From PoC to template: the conversion</a></li><li style="margin-left:0px"><a href="#the-guardrails-learned-the-hard-way">The guardrails (learned the hard way)</a></li><li style="margin-left:0px"><a href="#what-to-build-this-week">What to build this week</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>security notes from the dark side of the internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="search articles…" aria-label="search">
+    <div class="search-hint">type at least 2 characters · esc to close · ctrl+k anywhere</div>
+    <div class="search-results" data-empty="nothing found — try another keyword."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

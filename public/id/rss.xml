@@ -4,7 +4,11 @@
 <title>llunatic-lab (id)</title><link>https://lab.llunaticsys.web.id/id/</link>
 <description>Catatan keamanan dari sisi gelap internet</description>
 <language>id</language>
-<item><title>Double Extortion: Cara Kerja Ransomware Modern yang Sebenarnya</title>
+<item><title>Dari PoC ke Deteksi dalam Hitungan Menit: Template Nuclei Pertamamu</title>
+            <link>https://lab.llunaticsys.web.id/id/artikel/nuclei-poc-to-template/</link>
+            <description>Saat CVE kritis muncul, PoC exploit beredar di GitHub dalam hitungan jam — dan pemindaian massal menyusul. Nuclei memungkinkanmu memindai infrastrukturmu sendiri secepat itu, dengan mengubah proof of concept menjadi template YAML yang bisa dibagikan. Ini cara kerja tool-nya, cara menulis template pertamamu, dan pagar pengaman agar tidak berbalik menyerangmu.</description>
+            <pubDate>Mon, 19 Oct 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/nuclei-poc-to-template/</guid></item><item><title>Double Extortion: Cara Kerja Ransomware Modern yang Sebenarnya</title>
             <link>https://lab.llunaticsys.web.id/id/artikel/double-extortion-ransomware-playbook/</link>
             <description>Ransomware modern tidak peduli dengan backup kamu — penyerang mencuri data dulu, baru mengenkripsi, lalu menekanmu dari tiga arah sekaligus. Berikut playbook lengkapnya, dari akses awal sampai leak site, berdasarkan laporan Semperis Oktober 2026 dan kasus-kasus nyata bulan ini.</description>
             <pubDate>Sun, 18 Oct 2026 00:00:00 -0000</pubDate>

@@ -3,6 +3,7 @@
   <url><loc>https://lab.llunaticsys.web.id/</loc><lastmod>2026-10-06</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/arsip/</loc><lastmod>2026-10-06</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/tentang/</loc><lastmod>2026-10-06</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/artikel/nuclei-poc-to-template/</loc><lastmod>2026-10-19</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/artikel/double-extortion-ransomware-playbook/</loc><lastmod>2026-10-18</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/artikel/phishing-email-autopsy-lab/</loc><lastmod>2026-10-16</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/artikel/ivanti-cve-2026-104935-zero-day/</loc><lastmod>2026-10-14</lastmod></url>
@@ -24,6 +25,7 @@
   <url><loc>https://lab.llunaticsys.web.id/tag/extortion/</loc><lastmod>2026-10-06</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/tag/hands-on/</loc><lastmod>2026-10-06</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/tag/incident-response/</loc><lastmod>2026-10-06</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/nuclei/</loc><lastmod>2026-10-06</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/tag/phishing/</loc><lastmod>2026-10-06</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/tag/ransomware/</loc><lastmod>2026-10-06</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/tag/supply-chain/</loc><lastmod>2026-10-06</lastmod></url>
@@ -33,10 +35,12 @@
   <url><loc>https://lab.llunaticsys.web.id/tag/tools/</loc><lastmod>2026-10-06</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/tag/vulnerability/</loc><lastmod>2026-10-06</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/tag/vulnerability-research/</loc><lastmod>2026-10-06</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/vulnerability-scanning/</loc><lastmod>2026-10-06</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/tag/zero-day/</loc><lastmod>2026-10-06</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/id/</loc><lastmod>2026-10-06</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/id/arsip/</loc><lastmod>2026-10-06</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/id/tentang/</loc><lastmod>2026-10-06</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/artikel/nuclei-poc-to-template/</loc><lastmod>2026-10-19</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/id/artikel/double-extortion-ransomware-playbook/</loc><lastmod>2026-10-18</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/id/artikel/phishing-email-autopsy-lab/</loc><lastmod>2026-10-16</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/id/artikel/ivanti-cve-2026-104935-zero-day/</loc><lastmod>2026-10-14</lastmod></url>
@@ -58,6 +62,7 @@
   <url><loc>https://lab.llunaticsys.web.id/id/tag/extortion/</loc><lastmod>2026-10-06</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/id/tag/hands-on/</loc><lastmod>2026-10-06</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/id/tag/incident-response/</loc><lastmod>2026-10-06</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/nuclei/</loc><lastmod>2026-10-06</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/id/tag/phishing/</loc><lastmod>2026-10-06</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/id/tag/ransomware/</loc><lastmod>2026-10-06</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/id/tag/supply-chain/</loc><lastmod>2026-10-06</lastmod></url>
@@ -67,5 +72,6 @@
   <url><loc>https://lab.llunaticsys.web.id/id/tag/tools/</loc><lastmod>2026-10-06</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/id/tag/vulnerability/</loc><lastmod>2026-10-06</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/id/tag/vulnerability-research/</loc><lastmod>2026-10-06</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/vulnerability-scanning/</loc><lastmod>2026-10-06</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/id/tag/zero-day/</loc><lastmod>2026-10-06</lastmod></url>
 </urlset>

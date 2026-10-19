@@ -1,111 +1,16 @@
 {
+  "Active Directory": {
+    "en": "Microsoft's directory service that manages users, computers, and permissions in enterprise networks — the most targeted asset in ransomware attacks.",
+    "id": "Layanan direktori Microsoft yang mengelola pengguna, komputer, dan izin di jaringan perusahaan — aset paling diincar dalam serangan ransomware."
+  },
+  "AitM": {
+    "en": "Adversary-in-the-middle: a phishing technique that proxies the victim's browser to the real login page instead of cloning it, capturing credentials and session tokens. Defeats code-based MFA.",
+    "id": "Adversary-in-the-middle: teknik phishing yang meneruskan browser korban ke halaman login asli alih-alih menirunya, menangkap kredensial dan token sesi. Mampu menembus MFA berbasis kode."
+  },
   "Amass": "Open-source tool for subdomain enumeration and attack surface mapping.",
   "CVE": "Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.",
   "Censys": "Internet-wide scanning platform that maps certificates, hosts, and publicly exposed services.",
   "DDoS": "Distributed Denial of Service — an attack that floods a server with traffic until it collapses.",
-  "EASM": "External Attack Surface Management — the practice of discovering and monitoring every internet-exposed digital asset before attackers do.",
-  "MFA": "Multi-Factor Authentication — layered verification beyond a password, e.g. OTP codes or hardware keys.",
-  "OSINT": "Open-Source Intelligence — gathering information from public sources for security research.",
-  "SOC": "Security Operations Center — the team that monitors and responds to security incidents around the clock.",
-  "Shodan": "A search engine for internet-connected devices — finds publicly exposed servers, cameras, and databases.",
-  "attack surface": "The sum of all points (servers, apps, APIs, subdomains) that can be attacked from the outside.",
-  "blue team": "The defenders — the side that protects, monitors, and responds to attacks on systems.",
-  "encryption": "The process of turning data into scrambled code that can't be read without the right key.",
-  "exploit": "A piece of code or technique that takes advantage of a vulnerability.",
-  "firewall": "A system that filters network traffic based on defined security rules.",
-  "malware": "Malicious software: viruses, worms, trojans, ransomware, and the like.",
-  "penetration testing": "An authorized simulated attack against systems to find holes before criminals do.",
-  "phishing": "Fraud via email or messages impersonating a trusted party to steal credentials.",
-  "ransomware": "Malware that encrypts victim data and demands payment for its return.",
-  "red team": "The attackers — the side that simulates attacks to test defenses (ethical hacking).",
-  "subdomain": "Part of a main domain; e.g. blog.example.com is a subdomain of example.com. Often a forgotten entry point.",
-  "threat intelligence": "Structured information about attacker tactics, techniques, and behavior.",
-  "vulnerability": "A weakness in a system or application that attackers can exploit.",
-  "zero-day": "A security flaw unknown to the public and the vendor — no patch exists when it's exploited.",
-  "Mythos": {
-    "en": "Anthropic's restricted-access AI model built for vulnerability research, used by vetted security partners under Project Glasswing to find exploitable flaws in critical software.",
-    "id": "Model AI akses-terbatas dari Anthropic yang dibuat untuk riset kerentanan; dipakai mitra keamanan terverifikasi di bawah Project Glasswing untuk menemukan celah yang bisa dieksploitasi pada perangkat lunak kritis."
-  },
-  "Project Glasswing": {
-    "en": "Anthropic's initiative granting vetted security researchers access to its Mythos vulnerability-hunting model in order to secure critical software.",
-    "id": "Inisiatif Anthropic yang memberi peneliti keamanan terverifikasi akses ke model pemburu kerentanan Mythos untuk mengamankan perangkat lunak kritis."
-  },
-  "PRNG": {
-    "en": "Pseudorandom number generator — an algorithm producing number sequences that look random but are fully determined by an internal state (seed). Non-cryptographic PRNGs must never be used for security secrets.",
-    "id": "Pseudorandom number generator — algoritma yang menghasilkan deretan angka yang terlihat acak tetapi sepenuhnya ditentukan oleh state internal (seed). PRNG non-kriptografis tidak boleh dipakai untuk rahasia keamanan."
-  },
-  "Z3": {
-    "en": "An SMT (satisfiability modulo theories) solver developed by Microsoft Research, used for software verification, program analysis, and constraint solving — in the Mythos case, for recovering a PRNG's internal state.",
-    "id": "Solver SMT (satisfiability modulo theories) yang dikembangkan Microsoft Research, dipakai untuk verifikasi perangkat lunak, analisis program, dan pemecahan constraint — dalam kasus Mythos, untuk memulihkan state internal sebuah PRNG."
-  },
-  "xorshift128+": {
-    "en": "A fast, non-cryptographic PRNG algorithm used by the V8 JavaScript engine's Math.random(). Its outputs are reversible, so observing enough values lets an attacker recover its internal state.",
-    "id": "Algoritma PRNG non-kriptografis yang cepat, dipakai Math.random() pada engine JavaScript V8. Output-nya bisa dibalik, sehingga pengamat yang melihat cukup banyak nilai dapat memulihkan state internal-nya."
-  },
-  "proof of concept": {
-    "en": "A working demonstration that a vulnerability can actually be exploited, usually published to pressure vendors and warn defenders.",
-    "id": "Demonstrasi yang menunjukkan bahwa sebuah kerentanan benar-benar bisa dieksploitasi, biasanya dipublikasikan untuk menekan vendor dan memperingatkan defender."
-  },
-  "Monero": {
-    "en": "A privacy-focused cryptocurrency designed to hide sender, receiver, and amount — the preferred coin for illicit mining malware because transactions are hard to trace.",
-    "id": "Cryptocurrency yang fokus pada privasi dan menyembunyikan pengirim, penerima, serta jumlah — koin favorit malware mining ilegal karena transaksinya sulit dilacak."
-  },
-  "cryptojacking": {
-    "en": "Unauthorized use of someone else's computing resources to mine cryptocurrency — silent theft of CPU cycles and electricity.",
-    "id": "Penggunaan sumber daya komputasi milik orang lain secara diam-diam untuk menambang cryptocurrency — pencurian siklus CPU dan listrik tanpa izin."
-  },
-  "webshell": {
-    "en": "A malicious script uploaded to a web server that gives an attacker remote command execution through the browser — a permanent backdoor disguised as a web page.",
-    "id": "Script jahat yang diunggah ke web server dan memberi penyerang eksekusi perintah jarak jauh lewat browser — backdoor permanen yang menyamar sebagai halaman web."
-  },
-  "MITRE ATT&CK": {
-    "en": "A public knowledge base of adversary tactics and techniques, organized from initial access to impact — the common language defenders use to describe attacker behavior.",
-    "id": "Basis pengetahuan publik berisi taktik dan teknik penyerang, tersusun dari akses awal hingga dampak — bahasa umum yang dipakai defender untuk mendeskripsikan perilaku penyerang."
-  },
-  "SIEM": {
-    "en": "Security Information and Event Management — a platform that collects logs from across the network and correlates them to detect attacks in real time.",
-    "id": "Security Information and Event Management — platform yang mengumpulkan log dari seluruh jaringan dan mengorelasikannya untuk mendeteksi serangan secara real-time."
-  },
-  "Sigma": {
-    "en": "An open, vendor-neutral format for writing detection rules that can be converted to queries for SIEMs like Splunk, Elastic, or Sentinel — shareable blue-team knowledge.",
-    "id": "Format terbuka dan netral-vendor untuk menulis rule deteksi yang bisa dikonversi menjadi query SIEM seperti Splunk, Elastic, atau Sentinel — pengetahuan blue-team yang bisa dibagikan."
-  },
-  "persistence": {
-    "en": "Techniques an attacker uses to survive reboots and cleanup — services, scheduled tasks, registry keys — so access remains after the initial foothold.",
-    "id": "Teknik yang dipakai penyerang agar tetap bertahan melewati reboot dan pembersihan — service, scheduled task, registry key — sehingga akses tetap ada setelah pijakan awal."
-  },
-  "NSSM": {
-    "en": "Non-Sucking Service Manager — a legitimate open-source tool that runs any program as a Windows service and restarts it on crash or reboot; frequently abused for malware persistence.",
-    "id": "Non-Sucking Service Manager — tool open-source yang sah untuk menjalankan program apa pun sebagai Windows service dan me-restart-nya saat crash atau reboot; sering disalahgunakan untuk persistence malware."
-  },
-  "LOLBin": {
-    "en": "'Living Off the Land Binary' — a legitimate system tool (like certutil.exe or powershell.exe) that attackers abuse to blend in, since it is already trusted on the machine.",
-    "id": "'Living Off the Land Binary' — tool sistem yang sah (seperti certutil.exe atau powershell.exe) yang disalahgunakan penyerang agar menyatu dengan aktivitas normal, karena tool tersebut memang dipercaya di mesin itu."
-  },
-  "third-party risk": {
-    "en": "The security exposure an organization inherits from its vendors, partners, and contractors — every third party with access to systems or data becomes a potential attack path.",
-    "id": "Paparan keamanan yang diwariskan organisasi dari vendor, mitra, dan kontraktornya — setiap pihak ketiga yang punya akses ke sistem atau data menjadi jalur serangan potensial."
-  },
-  "supply chain attack": {
-    "en": "An attack that reaches its target through a trusted supplier, vendor, or software update instead of attacking the target directly.",
-    "id": "Serangan yang mencapai target lewat pemasok, vendor, atau update software tepercaya, alih-alih menyerang target secara langsung."
-  },
-  "least privilege": {
-    "en": "The security principle that every account, process, or service should hold only the minimum access needed to do its job — nothing more.",
-    "id": "Prinsip keamanan bahwa setiap akun, proses, atau layanan hanya boleh memegang akses minimum yang dibutuhkan untuk pekerjaannya — tidak lebih."
-  },
-  "spoofing": {
-    "en": "Sending crafted requests that falsely present themselves as already authenticated or trusted — the server skips its checks because the request 'looks' legitimate. CVE-2026-104935 abuses this to bypass authentication entirely.",
-    "id": "Mengirim permintaan yang dibuat-buat agar tampak sudah terotentikasi atau terpercaya — server melewatkan pemeriksaannya karena permintaan 'terlihat' sah. CVE-2026-104935 menyalahgunakan ini untuk melewati otentikasi sepenuhnya."
-  },
-  "KEV": {
-    "en": "CISA's Known Exploited Vulnerabilities catalog: a shortlist of flaws confirmed exploited in the wild. US federal agencies must remediate entries by a set deadline — practitioners treat every listing as 'patch now'.",
-    "id": "Katalog Known Exploited Vulnerabilities milik CISA: daftar singkat celah yang terbukti dieksploitasi di lapangan. Instansi federal AS wajib memperbaikinya sebelum tenggat tertentu — praktisi memperlakukan setiap entri sebagai 'patch sekarang'."
-  },
-  "SPF": {
-    "en": "Sender Policy Framework: a DNS record listing which mail servers may send email for a domain. Receivers reject or flag mail arriving from unlisted servers.",
-    "id": "Sender Policy Framework: catatan DNS yang mendaftarkan server email mana saja yang boleh mengirim email atas nama suatu domain. Penerima menolak atau menandai email yang datang dari server yang tidak terdaftar."
-  },
   "DKIM": {
     "en": "DomainKeys Identified Mail: a cryptographic signature the sender's server adds to the email headers. The receiver verifies it against a public key published in the sender's DNS, proving the message was not altered in transit.",
     "id": "DomainKeys Identified Mail: tanda tangan kriptografis yang ditambahkan server pengirim ke header email. Penerima memverifikasinya terhadap kunci publik di DNS pengirim, membuktikan isi pesan tidak diubah dalam perjalanan."
@@ -114,17 +19,91 @@
     "en": "Domain-based Message Authentication, Reporting and Conformance: a DNS policy telling receivers what to do (none, quarantine, reject) when SPF or DKIM checks fail for a domain, and where to send failure reports.",
     "id": "Domain-based Message Authentication, Reporting and Conformance: kebijakan DNS yang memberi tahu penerima apa yang harus dilakukan (none, quarantine, reject) saat pemeriksaan SPF atau DKIM gagal untuk suatu domain, serta ke mana laporan kegagalan dikirim."
   },
+  "EASM": "External Attack Surface Management — the practice of discovering and monitoring every internet-exposed digital asset before attackers do.",
+  "EDR": {
+    "en": "'Endpoint Detection and Response' — security software that monitors endpoints for suspicious behavior and can isolate or remediate threats automatically.",
+    "id": "'Endpoint Detection and Response' — perangkat lunak keamanan yang memantau endpoint untuk perilaku mencurigakan dan dapat mengisolasi atau menangani ancaman secara otomatis."
+  },
   "ICS": {
     "en": "iCalendar (.ics) file: the plain-text format calendar apps use to share events. Abused by phishers because mail clients trust it and it carries no exploit — just a link.",
     "id": "File iCalendar (.ics): format teks polos yang dipakai aplikasi kalender untuk berbagi acara. Disalahgunakan phisher karena klien email mempercayainya dan ia tidak membawa exploit — hanya sebuah tautan."
   },
-  "AitM": {
-    "en": "Adversary-in-the-middle: a phishing technique that proxies the victim's browser to the real login page instead of cloning it, capturing credentials and session tokens. Defeats code-based MFA.",
-    "id": "Adversary-in-the-middle: teknik phishing yang meneruskan browser korban ke halaman login asli alih-alih menirunya, menangkap kredensial dan token sesi. Mampu menembus MFA berbasis kode."
+  "KEV": {
+    "en": "CISA's Known Exploited Vulnerabilities catalog: a shortlist of flaws confirmed exploited in the wild. US federal agencies must remediate entries by a set deadline — practitioners treat every listing as 'patch now'.",
+    "id": "Katalog Known Exploited Vulnerabilities milik CISA: daftar singkat celah yang terbukti dieksploitasi di lapangan. Instansi federal AS wajib memperbaikinya sebelum tenggat tertentu — praktisi memperlakukan setiap entri sebagai 'patch sekarang'."
+  },
+  "LOLBin": {
+    "en": "'Living Off the Land Binary' — a legitimate system tool (like certutil.exe or powershell.exe) that attackers abuse to blend in, since it is already trusted on the machine.",
+    "id": "'Living Off the Land Binary' — tool sistem yang sah (seperti certutil.exe atau powershell.exe) yang disalahgunakan penyerang agar menyatu dengan aktivitas normal, karena tool tersebut memang dipercaya di mesin itu."
+  },
+  "MFA": "Multi-Factor Authentication — layered verification beyond a password, e.g. OTP codes or hardware keys.",
+  "MITRE ATT&CK": {
+    "en": "A public knowledge base of adversary tactics and techniques, organized from initial access to impact — the common language defenders use to describe attacker behavior.",
+    "id": "Basis pengetahuan publik berisi taktik dan teknik penyerang, tersusun dari akses awal hingga dampak — bahasa umum yang dipakai defender untuk mendeskripsikan perilaku penyerang."
+  },
+  "Monero": {
+    "en": "A privacy-focused cryptocurrency designed to hide sender, receiver, and amount — the preferred coin for illicit mining malware because transactions are hard to trace.",
+    "id": "Cryptocurrency yang fokus pada privasi dan menyembunyikan pengirim, penerima, serta jumlah — koin favorit malware mining ilegal karena transaksinya sulit dilacak."
+  },
+  "Mythos": {
+    "en": "Anthropic's restricted-access AI model built for vulnerability research, used by vetted security partners under Project Glasswing to find exploitable flaws in critical software.",
+    "id": "Model AI akses-terbatas dari Anthropic yang dibuat untuk riset kerentanan; dipakai mitra keamanan terverifikasi di bawah Project Glasswing untuk menemukan celah yang bisa dieksploitasi pada perangkat lunak kritis."
+  },
+  "NSSM": {
+    "en": "Non-Sucking Service Manager — a legitimate open-source tool that runs any program as a Windows service and restarts it on crash or reboot; frequently abused for malware persistence.",
+    "id": "Non-Sucking Service Manager — tool open-source yang sah untuk menjalankan program apa pun sebagai Windows service dan me-restart-nya saat crash atau reboot; sering disalahgunakan untuk persistence malware."
+  },
+  "Nuclei": {
+    "en": "Fast, open-source template-based vulnerability scanner by ProjectDiscovery — security checks are written as shareable YAML templates covering CVEs, misconfigurations, and exposures.",
+    "id": "Pemindai kerentanan open-source yang cepat dan berbasis template dari ProjectDiscovery — pemeriksaan keamanan ditulis sebagai template YAML yang bisa dibagikan, mencakup CVE, miskonfigurasi, dan exposure."
+  },
+  "OSINT": "Open-Source Intelligence — gathering information from public sources for security research.",
+  "PRNG": {
+    "en": "Pseudorandom number generator — an algorithm producing number sequences that look random but are fully determined by an internal state (seed). Non-cryptographic PRNGs must never be used for security secrets.",
+    "id": "Pseudorandom number generator — algoritma yang menghasilkan deretan angka yang terlihat acak tetapi sepenuhnya ditentukan oleh state internal (seed). PRNG non-kriptografis tidak boleh dipakai untuk rahasia keamanan."
+  },
+  "Project Glasswing": {
+    "en": "Anthropic's initiative granting vetted security researchers access to its Mythos vulnerability-hunting model in order to secure critical software.",
+    "id": "Inisiatif Anthropic yang memberi peneliti keamanan terverifikasi akses ke model pemburu kerentanan Mythos untuk mengamankan perangkat lunak kritis."
+  },
+  "SIEM": {
+    "en": "Security Information and Event Management — a platform that collects logs from across the network and correlates them to detect attacks in real time.",
+    "id": "Security Information and Event Management — platform yang mengumpulkan log dari seluruh jaringan dan mengorelasikannya untuk mendeteksi serangan secara real-time."
+  },
+  "SOC": "Security Operations Center — the team that monitors and responds to security incidents around the clock.",
+  "SPF": {
+    "en": "Sender Policy Framework: a DNS record listing which mail servers may send email for a domain. Receivers reject or flag mail arriving from unlisted servers.",
+    "id": "Sender Policy Framework: catatan DNS yang mendaftarkan server email mana saja yang boleh mengirim email atas nama suatu domain. Penerima menolak atau menandai email yang datang dari server yang tidak terdaftar."
+  },
+  "Shodan": "A search engine for internet-connected devices — finds publicly exposed servers, cameras, and databases.",
+  "Sigma": {
+    "en": "An open, vendor-neutral format for writing detection rules that can be converted to queries for SIEMs like Splunk, Elastic, or Sentinel — shareable blue-team knowledge.",
+    "id": "Format terbuka dan netral-vendor untuk menulis rule deteksi yang bisa dikonversi menjadi query SIEM seperti Splunk, Elastic, atau Sentinel — pengetahuan blue-team yang bisa dibagikan."
+  },
+  "Z3": {
+    "en": "An SMT (satisfiability modulo theories) solver developed by Microsoft Research, used for software verification, program analysis, and constraint solving — in the Mythos case, for recovering a PRNG's internal state.",
+    "id": "Solver SMT (satisfiability modulo theories) yang dikembangkan Microsoft Research, dipakai untuk verifikasi perangkat lunak, analisis program, dan pemecahan constraint — dalam kasus Mythos, untuk memulihkan state internal sebuah PRNG."
+  },
+  "attack surface": "The sum of all points (servers, apps, APIs, subdomains) that can be attacked from the outside.",
+  "blue team": "The defenders — the side that protects, monitors, and responds to attacks on systems.",
+  "cryptojacking": {
+    "en": "Unauthorized use of someone else's computing resources to mine cryptocurrency — silent theft of CPU cycles and electricity.",
+    "id": "Penggunaan sumber daya komputasi milik orang lain secara diam-diam untuk menambang cryptocurrency — pencurian siklus CPU dan listrik tanpa izin."
   },
   "double extortion": {
     "en": "Ransomware tactic where attackers both encrypt the victim's data and threaten to publish stolen copies — defeating backups as a defense.",
     "id": "Taktik ransomware di mana penyerang mengenkripsi data korban SEKALIGUS mengancam mempublikasikan salinan yang dicuri — membuat backup tak lagi cukup sebagai pertahanan."
+  },
+  "encryption": "The process of turning data into scrambled code that can't be read without the right key.",
+  "exfiltration": {
+    "en": "The unauthorized transfer of data out of a network to attacker-controlled infrastructure — the quiet theft that precedes encryption in modern ransomware.",
+    "id": "Transfer data tanpa izin keluar dari jaringan ke infrastruktur milik penyerang — pencurian sunyi yang mendahului enkripsi pada ransomware modern."
+  },
+  "exploit": "A piece of code or technique that takes advantage of a vulnerability.",
+  "firewall": "A system that filters network traffic based on defined security rules.",
+  "incident response": {
+    "en": "The organized process of detecting, containing, eradicating, and recovering from a security incident, usually following a rehearsed playbook.",
+    "id": "Proses terorganisir untuk mendeteksi, membatasi, membersihkan, dan memulihkan dari insiden keamanan, biasanya mengikuti playbook yang sudah dilatih."
   },
   "initial access": {
     "en": "The first foothold an attacker gains in a target network — via phishing, stolen credentials, or an unpatched internet-facing system.",
@@ -134,24 +113,49 @@
     "en": "An attacker's movement from one compromised machine to others inside the same network, hunting for higher-value targets like domain controllers.",
     "id": "Pergerakan penyerang dari satu mesin yang sudah dikuasai ke mesin lain di jaringan yang sama, memburu target bernilai lebih tinggi seperti domain controller."
   },
-  "exfiltration": {
-    "en": "The unauthorized transfer of data out of a network to attacker-controlled infrastructure — the quiet theft that precedes encryption in modern ransomware.",
-    "id": "Transfer data tanpa izin keluar dari jaringan ke infrastruktur milik penyerang — pencurian sunyi yang mendahului enkripsi pada ransomware modern."
-  },
-  "Active Directory": {
-    "en": "Microsoft's directory service that manages users, computers, and permissions in enterprise networks — the most targeted asset in ransomware attacks.",
-    "id": "Layanan direktori Microsoft yang mengelola pengguna, komputer, dan izin di jaringan perusahaan — aset paling diincar dalam serangan ransomware."
-  },
   "leak site": {
     "en": "A (usually Tor-hosted) website where ransomware gangs publish stolen victim data or countdown timers to pressure victims into paying.",
     "id": "Situs web (biasanya di Tor) tempat geng ransomware mempublikasikan data curian korban atau timer hitung mundur untuk menekan korban agar membayar."
   },
-  "EDR": {
-    "en": "'Endpoint Detection and Response' — security software that monitors endpoints for suspicious behavior and can isolate or remediate threats automatically.",
-    "id": "'Endpoint Detection and Response' — perangkat lunak keamanan yang memantau endpoint untuk perilaku mencurigakan dan dapat mengisolasi atau menangani ancaman secara otomatis."
+  "least privilege": {
+    "en": "The security principle that every account, process, or service should hold only the minimum access needed to do its job — nothing more.",
+    "id": "Prinsip keamanan bahwa setiap akun, proses, atau layanan hanya boleh memegang akses minimum yang dibutuhkan untuk pekerjaannya — tidak lebih."
   },
-  "incident response": {
-    "en": "The organized process of detecting, containing, eradicating, and recovering from a security incident, usually following a rehearsed playbook.",
-    "id": "Proses terorganisir untuk mendeteksi, membatasi, membersihkan, dan memulihkan dari insiden keamanan, biasanya mengikuti playbook yang sudah dilatih."
-  }
+  "malware": "Malicious software: viruses, worms, trojans, ransomware, and the like.",
+  "penetration testing": "An authorized simulated attack against systems to find holes before criminals do.",
+  "persistence": {
+    "en": "Techniques an attacker uses to survive reboots and cleanup — services, scheduled tasks, registry keys — so access remains after the initial foothold.",
+    "id": "Teknik yang dipakai penyerang agar tetap bertahan melewati reboot dan pembersihan — service, scheduled task, registry key — sehingga akses tetap ada setelah pijakan awal."
+  },
+  "phishing": "Fraud via email or messages impersonating a trusted party to steal credentials.",
+  "proof of concept": {
+    "en": "A working demonstration that a vulnerability can actually be exploited, usually published to pressure vendors and warn defenders.",
+    "id": "Demonstrasi yang menunjukkan bahwa sebuah kerentanan benar-benar bisa dieksploitasi, biasanya dipublikasikan untuk menekan vendor dan memperingatkan defender."
+  },
+  "ransomware": "Malware that encrypts victim data and demands payment for its return.",
+  "red team": "The attackers — the side that simulates attacks to test defenses (ethical hacking).",
+  "spoofing": {
+    "en": "Sending crafted requests that falsely present themselves as already authenticated or trusted — the server skips its checks because the request 'looks' legitimate. CVE-2026-104935 abuses this to bypass authentication entirely.",
+    "id": "Mengirim permintaan yang dibuat-buat agar tampak sudah terotentikasi atau terpercaya — server melewatkan pemeriksaannya karena permintaan 'terlihat' sah. CVE-2026-104935 menyalahgunakan ini untuk melewati otentikasi sepenuhnya."
+  },
+  "subdomain": "Part of a main domain; e.g. blog.example.com is a subdomain of example.com. Often a forgotten entry point.",
+  "supply chain attack": {
+    "en": "An attack that reaches its target through a trusted supplier, vendor, or software update instead of attacking the target directly.",
+    "id": "Serangan yang mencapai target lewat pemasok, vendor, atau update software tepercaya, alih-alih menyerang target secara langsung."
+  },
+  "third-party risk": {
+    "en": "The security exposure an organization inherits from its vendors, partners, and contractors — every third party with access to systems or data becomes a potential attack path.",
+    "id": "Paparan keamanan yang diwariskan organisasi dari vendor, mitra, dan kontraktornya — setiap pihak ketiga yang punya akses ke sistem atau data menjadi jalur serangan potensial."
+  },
+  "threat intelligence": "Structured information about attacker tactics, techniques, and behavior.",
+  "vulnerability": "A weakness in a system or application that attackers can exploit.",
+  "webshell": {
+    "en": "A malicious script uploaded to a web server that gives an attacker remote command execution through the browser — a permanent backdoor disguised as a web page.",
+    "id": "Script jahat yang diunggah ke web server dan memberi penyerang eksekusi perintah jarak jauh lewat browser — backdoor permanen yang menyamar sebagai halaman web."
+  },
+  "xorshift128+": {
+    "en": "A fast, non-cryptographic PRNG algorithm used by the V8 JavaScript engine's Math.random(). Its outputs are reversible, so observing enough values lets an attacker recover its internal state.",
+    "id": "Algoritma PRNG non-kriptografis yang cepat, dipakai Math.random() pada engine JavaScript V8. Output-nya bisa dibalik, sehingga pengamat yang melihat cukup banyak nilai dapat memulihkan state internal-nya."
+  },
+  "zero-day": "A security flaw unknown to the public and the vendor — no patch exists when it's exploited."
 }

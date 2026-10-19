@@ -76,6 +76,9 @@
       navigator.clipboard.writeText(code.innerText).then(function () {
         btn.textContent = "copied ✓";
         setTimeout(function () { btn.textContent = "copy"; }, 1600);
+      }).catch(function () {
+        btn.textContent = "copy failed";
+        setTimeout(function () { btn.textContent = "copy"; }, 1600);
       });
     });
     head.appendChild(btn);
@@ -89,7 +92,13 @@
   var hideTimer = null;
 
   function showPop(term, def, anchor) {
-    pop.innerHTML = "<b>" + term + "</b>" + def;
+    // textContent, bukan innerHTML: data-def berasal dari glossary.json dan
+    // tidak boleh bisa menyuntik HTML.
+    pop.textContent = "";
+    var b = document.createElement("b");
+    b.textContent = term;
+    pop.appendChild(b);
+    pop.appendChild(document.createTextNode(def));
     pop.classList.add("show");
     var r = anchor.getBoundingClientRect();
     var pw = Math.min(300, window.innerWidth - 32);
@@ -103,11 +112,12 @@
   function hidePop() { pop.classList.remove("show"); }
 
   document.querySelectorAll(".gterm").forEach(function (el) {
-    var term = el.getAttribute("data-term");
-    var def = el.getAttribute("data-def");
+    var show = function () {
+      showPop(el.getAttribute("data-term"), el.getAttribute("data-def"), el);
+    };
     el.addEventListener("mouseenter", function () {
       clearTimeout(hideTimer);
-      showPop(term, def, el);
+      show();
     });
     el.addEventListener("mouseleave", function () {
       hideTimer = setTimeout(hidePop, 180);
@@ -115,7 +125,7 @@
     el.addEventListener("click", function (e) {
       e.preventDefault();
       if (pop.classList.contains("show")) hidePop();
-      else showPop(term, def, el);
+      else show();
     });
   });
   pop.addEventListener("mouseenter", function () { clearTimeout(hideTimer); });
@@ -160,12 +170,28 @@
       var hits = index.filter(function (a) {
         return (a.title + " " + a.excerpt + " " + a.tags.join(" ")).toLowerCase().indexOf(q) !== -1;
       }).slice(0, 8);
-      results.innerHTML = hits.length
-        ? hits.map(function (a) {
-            return '<a href="' + a.url + '"><div class="t">' + a.title + '</div>' +
-              '<div class="m">' + a.date + " · " + a.tags.join(" · ") + "</div></a>";
-          }).join("")
-        : '<div class="empty">' + results.getAttribute("data-empty") + "</div>";
+      results.textContent = "";
+      if (hits.length) {
+        // DOM API, bukan innerHTML: judul di search.json adalah teks mentah.
+        hits.forEach(function (a) {
+          var link = document.createElement("a");
+          link.href = a.url;
+          var t = document.createElement("div");
+          t.className = "t";
+          t.textContent = a.title;
+          var m = document.createElement("div");
+          m.className = "m";
+          m.textContent = a.date + " · " + a.tags.join(" · ");
+          link.appendChild(t);
+          link.appendChild(m);
+          results.appendChild(link);
+        });
+      } else {
+        var empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = results.getAttribute("data-empty");
+        results.appendChild(empty);
+      }
     });
   }
 

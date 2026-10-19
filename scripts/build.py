@@ -156,8 +156,23 @@ def inline_md(s, glossary, lang):
     s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
     s = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", s)
     s = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<em>\1</em>", s)
-    s = re.sub(r"!\[([^\]]*)\]\(([^)]+)\)", r'<img src="\2" alt="\1" loading="lazy">', s)
-    s = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r'<a href="\2">\1</a>', s)
+    # URL: tolak scheme berbahaya (javascript:, data:, vbscript:, …) — http/https,
+    # path relatif, dan anchor tetap boleh. URL jahat -> jadi teks polos.
+    def _safe_url(u):
+        u = u.strip()
+        m = re.match(r"(?i)^([a-z][a-z0-9+.-]*):", u)
+        if m and m.group(1).lower() not in ("http", "https"):
+            return ""
+        return u
+    def _img(m):
+        src = _safe_url(m.group(2))
+        return (f'<img src="{src}" alt="{m.group(1)}" loading="lazy">' if src
+                else m.group(1))
+    def _link(m):
+        href = _safe_url(m.group(2))
+        return f'<a href="{href}">{m.group(1)}</a>' if href else m.group(1)
+    s = re.sub(r"!\[([^\]]*)\]\(([^)]+)\)", _img, s)
+    s = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", _link, s)
     return s
 
 def slugify(t):
@@ -177,6 +192,7 @@ def md_to_html(body, glossary, lang):
     lines = body.split("\n")
     i, h2n = 0, 0
     in_ul, in_ol = False, False
+    seen_ids = {}
 
     def close_lists():
         nonlocal in_ul, in_ol
@@ -202,6 +218,10 @@ def md_to_html(body, glossary, lang):
             close_lists()
             lvl, txt = len(mh.group(1)), mh.group(2)
             hid = slugify(txt)
+            # heading kembar -> id unik agar TOC & anchor tidak tabrakan
+            seen_ids[hid] = seen_ids.get(hid, 0) + 1
+            if seen_ids[hid] > 1:
+                hid = f"{hid}-{seen_ids[hid]}"
             inner = inline_md(txt, glossary, lang)
             if lvl == 2:
                 h2n += 1
@@ -413,7 +433,7 @@ def main():
             page._cur = art_url(slug, lang)
             (d / "index.html").write_text(
                 page(a["title"], a["excerpt"], art, lang, lang_url=lang_url,
-                     extra=(f'<meta property="og:image" content="{a["cover"]}">' if a["cover"] else "")),
+                     extra=(f'<meta property="og:image" content="{SITE_URL}{a["cover"]}">' if a["cover"] else "")),
                 encoding="utf-8")
 
         # ---- archive ----
@@ -494,15 +514,16 @@ def main():
 
     # ---- sitemap (both langs) ----
     urls = []
+    build_day = datetime.now().strftime("%Y-%m-%d")
     for lang in ("en", "id"):
         arts = [pairs[s][lang] for s in slugs if lang in pairs[s]]
         if not arts:
             continue
-        urls.append((f"{pfx(lang)}", "2026-10-06"))
-        urls.append((f"{pfx(lang)}arsip/", "2026-10-06"))
-        urls.append((f"{pfx(lang)}tentang/", "2026-10-06"))
+        urls.append((f"{pfx(lang)}", build_day))
+        urls.append((f"{pfx(lang)}arsip/", build_day))
+        urls.append((f"{pfx(lang)}tentang/", build_day))
         urls += [(f"{pfx(lang)}artikel/{a['slug']}/", a["date"]) for a in arts]
-        urls += [(f"{pfx(lang)}tag/{t}/", "2026-10-06")
+        urls += [(f"{pfx(lang)}tag/{t}/", build_day)
                  for t in sorted({t for a in arts for t in a["tags"]})]
     sm = ('<?xml version="1.0" encoding="UTF-8"?>\n<urlset '
           'xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(

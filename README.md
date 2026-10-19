@@ -28,6 +28,15 @@ public/                  deploy-ready output (committed)
 4. Run `python3 scripts/build.py`, check `public/`, commit + push.
    Vercel auto-deploys from the main branch.
 
+## Tests
+
+```bash
+python3 scripts/test_build.py   # 27 asersi: parsing, markdown, XSS, sitemap/RSS/search
+# uji interaksi UI (butuh jsdom + server lokal):
+python3 -m http.server 8125 --directory public &
+LAB_PORT=8125 node scripts/test_ui.js   # 18 asersi: search, tooltip, theme, copy, TOC
+```
+
 ## Writing standards
 
 - English, 800–1500 words, mixed audience (beginners to practitioners).

@@ -67,8 +67,10 @@ sj = json.loads((pub / "search.json").read_text(encoding="utf-8"))
 ok(len(sj) == 9 and all("url" in a and a["url"].startswith("/artikel/") for a in sj),
    "search.json 9 artikel EN, url valid")
 sm = (pub / "sitemap.xml").read_text(encoding="utf-8")
-today = datetime.now().strftime("%Y-%m-%d")
-ok(f"<lastmod>{today}</lastmod>" in sm, "sitemap lastmod = hari build")
+# deep-5 (2026-10-20): lastmod halaman indeks = tanggal artikel terbaru
+# (deterministik), bukan hari build.
+newest = max(build.parse_md(md)["date"] for md in p.glob("*.md"))
+ok(f"<lastmod>{newest}</lastmod>" in sm, "sitemap lastmod = artikel terbaru")
 ok("https://lab.llunaticsys.web.id/artikel/" in sm, "sitemap URL absolut")
 rss = (pub / "id" / "rss.xml").read_text(encoding="utf-8")
 ok(rss.count("<item>") == 9 and "<language>id</language>" in rss, "RSS ID 9 item")
@@ -93,5 +95,28 @@ for md in p.glob("*.md"):
     if c: covers.add(c.lstrip("/"))
 missing = [c for c in covers if not (pub / c).exists()]
 ok(not missing, "semua cover ada: " + str(missing[:3]))
+
+# --- deep-5 (2026-10-20): slug & tag sanitization ---
+# slug/tag mengalir ke path filesystem (pre/"artikel"/slug) dan atribut href
+# yang tidak di-escape -> hostile frontmatter tidak boleh lolos.
+import tempfile
+def _parse_tmp(fm_lines):
+    d = Path(tempfile.mkdtemp())
+    f = d / "2026-10-20-x.md"
+    f.write_text("---\n" + "\n".join(fm_lines) + "\n---\n\nHai.\n", encoding="utf-8")
+    return build.parse_md(f)
+
+a = _parse_tmp(['title: T', 'slug: \'><script>alert(1)</script>', 'tags: [ok-tag]'])
+ok(a["slug"] == "script-alert-1---script", "slug hostile di-sanitize: " + a["slug"])
+ok(re.fullmatch(r"[a-z0-9-]+", a["slug"]) is not None, "slug hanya [a-z0-9-]")
+a = _parse_tmp(['title: T', 'slug: ../../etc/pwned', 'tags: [ok]'])
+ok(".." not in a["slug"] and "/" not in a["slug"], "slug traversal diblok: " + a["slug"])
+a = _parse_tmp(['title: T', 'tags: ["><svg onload=alert(1)>, Blue Team, a/b]'])
+ok(a["tags"] == ["svg-onload-alert-1", "blue-team", "a-b"], "tag hostile di-sanitize: " + str(a["tags"]))
+ok(all(re.fullmatch(r"[a-z0-9-]+", t) for t in a["tags"]), "semua tag [a-z0-9-]")
+a = _parse_tmp(['title: T'])
+ok(a["slug"] == "x", "slug default dari filename tetap")
+u = build.art_url(a["slug"], "en")
+ok(u == "/artikel/x/" and '"' not in u and "<" not in u, "art_url aman: " + u)
 
 print(f"\n{n} asersi lolos.")

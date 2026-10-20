@@ -120,7 +120,16 @@ def parse_md(path):
     if lang == "id":
         stem = stem[:-3]
     tags = [t.strip() for t in fm.get("tags", "").strip("[]").split(",") if t.strip()]
+    # deep-5 (2026-10-20): tags flow into unescaped href attributes and
+    # anchor text (tag_url / chips). Same allowlist as slugs.
+    tags = [re.sub(r"[^a-z0-9-]", "-", t.lower()).strip("-") for t in tags]
+    tags = [t for t in tags if t]
     slug = fm.get("slug") or re.sub(r"^\d{4}-\d{2}-\d{2}-", "", stem)
+    # deep-5 (2026-10-20): slug flows into filesystem paths
+    # (pre/"artikel"/slug) and unescaped href attributes. Restrict to
+    # [a-z0-9-] so a hostile frontmatter slug can neither traverse
+    # directories nor break out of HTML attributes.
+    slug = re.sub(r"[^a-z0-9-]", "-", slug.lower()).strip("-") or "untitled"
     return {"slug": slug, "lang": lang, "date": fm.get("date", "2026-01-01"),
             "title": fm.get("title", slug), "tags": tags,
             "excerpt": fm.get("excerpt", ""), "cover": fm.get("cover", ""),
@@ -514,16 +523,20 @@ def main():
 
     # ---- sitemap (both langs) ----
     urls = []
-    build_day = datetime.now().strftime("%Y-%m-%d")
+    # deep-5 (2026-10-20): index/archive/about/tag lastmod follows the newest
+    # article date instead of the build day, so rebuilds are byte-identical
+    # across days when content is unchanged.
+    newest = max((a["date"] for s in slugs for a in pairs[s].values()
+                  if a.get("date")), default=datetime.now().strftime("%Y-%m-%d"))
     for lang in ("en", "id"):
         arts = [pairs[s][lang] for s in slugs if lang in pairs[s]]
         if not arts:
             continue
-        urls.append((f"{pfx(lang)}", build_day))
-        urls.append((f"{pfx(lang)}arsip/", build_day))
-        urls.append((f"{pfx(lang)}tentang/", build_day))
+        urls.append((f"{pfx(lang)}", newest))
+        urls.append((f"{pfx(lang)}arsip/", newest))
+        urls.append((f"{pfx(lang)}tentang/", newest))
         urls += [(f"{pfx(lang)}artikel/{a['slug']}/", a["date"]) for a in arts]
-        urls += [(f"{pfx(lang)}tag/{t}/", build_day)
+        urls += [(f"{pfx(lang)}tag/{t}/", newest)
                  for t in sorted({t for a in arts for t in a["tags"]})]
     sm = ('<?xml version="1.0" encoding="UTF-8"?>\n<urlset '
           'xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(

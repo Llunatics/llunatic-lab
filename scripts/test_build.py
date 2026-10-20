@@ -119,4 +119,41 @@ ok(a["slug"] == "x", "slug default dari filename tetap")
 u = build.art_url(a["slug"], "en")
 ok(u == "/artikel/x/" and '"' not in u and "<" not in u, "art_url aman: " + u)
 
+
+# --- deep-9 (2026-10-20): regression dari mutation testing ---
+# LB03: definisi glossary mengikuti bahasa halaman, fallback EN
+g3 = {"X": {"en": "EN def", "id": "ID def"}}
+x = build.inline_md('[[X]]', g3, "id")
+ok('data-def="ID def"' in x, "glossary def pakai bahasa halaman (id)")
+x = build.inline_md('[[X]]', g3, "id")
+ok('data-def="EN def"' not in x, "glossary def id tidak jatuh ke EN bila ada id")
+# LB04: slugify fallback untuk heading tanpa alfanumerik
+ok(build.slugify("!!!") == "bagian", "slugify fallback 'bagian'")
+# LB10: nomor h2 dua digit (01, 02, ...)
+h, _ = build.md_to_html("## Satu\n\n## Dua", G, "en")
+ok('class="hnum">01<' in h and 'class="hnum">02<' in h, "nomor h2 zero-padded 01/02")
+# LB12: baris pemisah tabel tanpa '-' BUKAN tabel
+h, _ = build.md_to_html("|a|b|\n|:|:|\n|1|2|", G, "en")
+ok("<table>" not in h, "separator tabel tanpa dash tidak jadi tabel")
+# LB13: '-x' tanpa spasi bukan list item
+h, _ = build.md_to_html("-nempel", G, "en")
+ok("<li>" not in h and "<p>" in h, "marker list butuh spasi")
+# LB15: tag_url path
+ok(build.tag_url("x", "en") == "/tag/x/", "tag_url EN")
+ok(build.tag_url("x", "id") == "/id/tag/x/", "tag_url ID")
+# LB17: beranda hanya 6 tulisan terbaru
+home = (pub / "index.html").read_text(encoding="utf-8")
+ok(home.count('class="index-row rv"') == 6, "beranda 6 index-row terbaru")
+# LB18: lastmod artikel di sitemap = tanggal artikel itu sendiri
+_dates = {build.parse_md(md)["slug"]: build.parse_md(md)["date"] for md in p.glob("*.md") if not md.name.endswith(".id.md")}
+_old_slug = min(_dates, key=lambda s: _dates[s])
+_m = re.search(r"<loc>https://lab\.llunaticsys\.web\.id/artikel/" + re.escape(_old_slug) + r"/</loc><lastmod>([^<]+)</lastmod>", sm)
+ok(_m and _m.group(1) == _dates[_old_slug], "sitemap lastmod artikel = tanggalnya: " + _old_slug)
+# LB19: blockquote multi-baris digabung <br>
+h, _ = build.md_to_html("> q1\n> q2", G, "en")
+ok("q1<br>q2" in h, "blockquote baris digabung <br>")
+# LB20: istilah tak dikenal tetap tampil sebagai teks
+x = build.inline_md('[[TidakAda]] halo', G, "en")
+ok("TidakAda" in x and "halo" in x, "istilah tak dikenal tetap teks")
+
 print(f"\n{n} asersi lolos.")

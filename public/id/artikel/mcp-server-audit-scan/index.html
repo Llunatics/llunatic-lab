@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plugin Agen AI-mu Adalah Attack Surface Baru: Mengaudit MCP Server dengan mcp-scan — llunatic-lab</title>
+<meta name="description" content="Agen AI kini menjelajah web, menjalankan kode, dan mengquery database lewat MCP server — dan penyerang sudah menyadarinya. Begini cara kerja tool poisoning, kenapa Oktober 2026 menjadikan MCP headline threat, dan cara mengaudit setup-mu sendiri dengan mcp-scan dari Invariant Labs sebelum sebuah plugin mengauditmu.">
+<meta property="og:title" content="Plugin Agen AI-mu Adalah Attack Surface Baru: Mengaudit MCP Server dengan mcp-scan">
+<meta property="og:description" content="Agen AI kini menjelajah web, menjalankan kode, dan mengquery database lewat MCP server — dan penyerang sudah menyadarinya. Begini cara kerja tool poisoning, kenapa Oktober 2026 menjadikan MCP headline threat, dan cara mengaudit setup-mu sendiri dengan mcp-scan dari Invariant Labs sebelum sebuah plugin mengauditmu.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/mcp-server-audit-scan.jpg"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/mcp-server-audit-scan/"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/mcp-server-audit-scan/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/id/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/id/arsip/">Arsip</a>
+      <a href="/id/tentang/">Tentang</a>
+      <a class="lang-toggle" href="/artikel/mcp-server-audit-scan/">EN</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>artikel</div>
+              <h1>Plugin Agen AI-mu Adalah Attack Surface Baru: Mengaudit MCP Server dengan mcp-scan</h1>
+              <div class="meta"><span>21 Oktober 2026</span><span>·</span>
+              <span>6 mnt baca</span><a class="tag" href="/id/tag/mcp/">mcp</a> <a class="tag" href="/id/tag/ai-security/">ai-security</a> <a class="tag" href="/id/tag/tools/">tools</a> <a class="tag" href="/id/tag/prompt-injection/">prompt-injection</a></div>
+              <img class="cover" src="/assets/covers/mcp-server-audit-scan.jpg" alt="Plugin Agen AI-mu Adalah Attack Surface Baru: Mengaudit MCP Server dengan mcp-scan">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Kamu memasang plugin kalkulator yang kelihatannya tidak berbahaya untuk AI coding agent-mu. Deskripsi tool-nya bilang ia &quot;menjumlahkan dua angka dan mengembalikan hasilnya.&quot; Kamu tidak pernah membaca sisanya — karena memang tidak ada &quot;sisanya&quot; sejauh yang ditampilkan UI. Tapi tersembunyi di dalam deskripsi itu, tak terlihat olehmu, ada blok teks yang memerintahkan agen untuk membaca SSH private key dan file konfigurasi MCP-mu dulu, menyelundupkan isinya lewat parameter sampingan, dan tidak pernah menceritakannya kepadamu.</p>
+<p>Itulah <span class="gterm" data-term="tool poisoning" data-def="Instruksi jahat tersembunyi yang disisipkan dalam deskripsi tool MCP. Agen membaca deskripsi sebagai konteks tepercaya lalu menuruti instruksinya — tanpa exploit, hanya teks dalam field JSON. Dinamai dan didemonstrasikan oleh Invariant Labs pada April 2025.">tool poisoning</span>, yang didemonstrasikan secara publik oleh Invariant Labs pada April 2025. Tanpa authentication bypass. Tanpa exploit memory-corruption. Hanya teks dalam sebuah field JSON yang dibaca agen sebagai konteks tepercaya. Dan satu setengah tahun kemudian, pada Oktober 2026, seluruh kategori ini meledak menjadi salah satu cerita terpanas di dunia keamanan.</p>
+<h2 id="kenapa-mcp-jadi-target"><span class="hnum">01</span>Kenapa MCP jadi target</h2>
+<p><span class="gterm" data-term="MCP" data-def="Model Context Protocol — standar terbuka dari Anthropic (November 2024) yang memungkinkan asisten AI memanggil tool eksternal seperti filesystem, API, database, dan utilitas developer. MCP server mengeksekusi aksi sistem yang nyata atas nama model.">MCP</span> — Model Context Protocol — adalah standar terbuka dari Anthropic, diperkenalkan November 2024, yang memungkinkan asisten AI memanggil tool eksternal: filesystem, API, database, utilitas developer seperti Git. MCP server adalah jembatan: model yang memutuskan, server yang mengeksekusi aksi sistem yang nyata.</p>
+<p>Jembatan itu menjadi mainstream dengan cepat. Pada Q3 2026, Gartner memperkirakan lebih dari 40% perusahaan yang menjalankan deployment LLM telah mengembangkannya menjadi arsitektur agen otonom — sistem di mana agen menjelajah web, mengeksekusi kode, mengquery database, mengirim email, dan mengorkestrasi sub-agen lain. Setiap kemampuan itu adalah sebuah tool. Setiap tool adalah server yang ditulis seseorang. Dan server yang ditulis orang asing kini duduk di antara agenmu dan infrastrukturmu.</p>
+<p>Angka-angka bulan ini menceritakan semuanya. Enterprise MCP Guide 2026, terbit 5 Oktober oleh The Agentics, mencatat <strong>68 CVE MCP server dalam satu bulan</strong> dan menamai enam kelas serangan yang berbeda. Analisis Stingrai terhadap NVD menemukan <strong>141 CVE yang deskripsinya mengandung frasa persis &quot;prompt injection&quot;</strong> — 87 di antaranya terbit pada 2026 saja, dengan 105 berstatus High atau Critical. MITRE ATT&amp;CK v20, rilis 13 Oktober 2026, menambahkan Direct <span class="gterm" data-term="prompt injection" data-def="Serangan yang menyelundupkan instruksi ke dalam data yang dibaca LLM — halaman web, email, deskripsi tool, atau file — sehingga model memperlakukan teks penyerang sebagai perintah. MITRE ATT&amp;CK v20 (Oktober 2026) mencatat Direct dan Indirect Prompt Injection sebagai teknik tersendiri.">Prompt Injection</span>, Indirect Prompt Injection, dan AI-Enabled Exfiltration sebagai teknik resmi. Ini bukan lagi sekadar keingintahuan riset; ini attack surface yang terlacak, tertaksonomi, dan sedang dieksploitasi.</p>
+<h2 id="enam-jalan-masuknya"><span class="hnum">02</span>Enam jalan masuknya</h2>
+<p>Taksonomi dari The Agentics layak dihafal, karena setiap kelas meruntuhkan asumsi yang berbeda:</p>
+<ol>
+<li><strong>Tool poisoning</strong> — instruksi jahat disembunyikan dalam deskripsi tool, yang dibaca model di setiap pemanggilan sementara pengguna hanya melihat nama yang ramah.</li>
+<li><strong>Schema poisoning</strong> — daftar tool yang tersedia itu sendiri dirusak.</li>
+<li><strong>Tool shadowing</strong> — tool jahat diam-diam menimpa tool sah dengan nama yang sama, sehingga agen memanggil kode penyerang sementara dialog persetujuan menampilkan label yang familiar.</li>
+<li><strong>Command injection</strong> — instruksi penyerang disematkan dalam konten yang diproses agen (dokumen, halaman web, output tool).</li>
+<li><strong>Shadow servers</strong> — MCP server tak resmi ditambahkan ke environment agen tanpa persetujuan.</li>
+<li><strong>Context oversharing</strong> — agen mengekspos lebih banyak data daripada yang dibutuhkan tugas, memberi makan kelima serangan di atas.</li>
+</ol>
+<p>Dua temuan nyata bulan ini membuatnya konkret. Firma keamanan Signals Corps menemukan hampir <strong>8.000 situs web mengirim pesan ke agen AI lewat HTTP header</strong>, dengan 30 di antaranya mencoba indirect prompt injection yang sesungguhnya. Dan peneliti independen Syed Anas Mohiuddin mendokumentasikan &quot;protocol pivoting&quot; — prompt injection yang diarahkan ke agen individual, bukan ke modelnya, lalu diteruskan menyusuri rantai agent-to-agent — yang berdampak pada organisasi termasuk Google, JP Morgan Chase, dan Rapid7. Kepercayaan antar agen internal, katanya, adalah kerentanannya.</p>
+<h2 id="praktik-memindai-setup-mu-sendiri-dengan-mcp-scan"><span class="hnum">03</span>Praktik: memindai setup-mu sendiri dengan mcp-scan</h2>
+<p>Mengetahui teorinya baru setengah pekerjaan; separuhnya lagi adalah memeriksa apa yang sebenarnya tercolok ke <em>agenmu</em>. Scanner yang paling mapan adalah <strong>mcp-scan</strong> dari Invariant Labs — tim yang sama yang menamai tool poisoning. Ia memindai MCP server yang dikonfigurasi di Claude, Cursor, Windsurf, dan klien MCP berbasis file lainnya, mencari prompt injection dalam deskripsi tool, tool poisoning lewat analisis Guardrails mereka, dan cross-origin escalation (<span class="gterm" data-term="tool shadowing" data-def="Serangan MCP di mana tool jahat diam-diam menimpa tool sah dengan nama yang sama, sehingga agen memanggil kode penyerang sementara pengguna melihat label yang familiar.">tool shadowing</span>). Ia juga mendukung <strong>tool pinning</strong>: meng-hash definisi tool tiap server sehingga <span class="gterm" data-term="rug pull" data-def="Dalam keamanan MCP, server yang lolos pemindaian awal lalu menukar definisi tool-nya dengan yang jahat. Dilawan dengan tool pinning: meng-hash metadata tool dan memberi peringatan saat berubah.">rug pull</span> — server yang hasil scannya bersih hari ini lalu berubah jahat besok — ketahuan saat metadata-nya berubah.</p>
+<p>Instalasinya satu perintah:</p>
+<pre><code class="language-bash">uvx mcp-scan@latest</code></pre>
+<p>Untuk benar-benar memeriksa apa yang dilihat agenmu — deskripsi tool selengkapnya, termasuk teks yang tak pernah ditampilkan UI mana pun:</p>
+<pre><code class="language-bash">uvx mcp-scan@latest inspect</code></pre>
+<p>Dan untuk pemindaian penuh atas semua server yang dikonfigurasi:</p>
+<pre><code class="language-bash">uvx mcp-scan@latest scan</code></pre>
+<p>Dua hal yang perlu kamu tahu sebelum menjalankannya. Pertama, kecuali kamu memakai flag <code>--local-only</code> (yang butuh OpenAI API key dan hasilnya kurang akurat), nama dan deskripsi tool dikirim ke API Invariant untuk dianalisis — tool ini tidak mencatat <em>pemanggilan</em> tool atau hasilnya, tapi ia membagikan metadata untuk riset. Tentukan sendiri apakah kamu nyaman dengan itu di mesin kerja. Kedua, ada alternatif komunitas yang lebih baru dan layak dikenal: scanner statis bernama <code>mcpscan</code> yang menjalankan dua belas pemeriksaan offline — frasa prompt-injection, command injection, hook berbahaya, secret yang ter-commit — tanpa dependensi sama sekali dan output JSON/SARIF untuk CI. Filosofi berbeda, tujuan sama: baca metadata-nya sebelum model membacanya.</p>
+<h2 id="caveat-yang-tidak-nyaman"><span class="hnum">04</span>Caveat yang tidak nyaman</h2>
+<p>Sekarang bagian yang tidak akan ditulis vendor scanner di landing page mereka. Riset Adversa pada Oktober 2026 membangun dua MCP server jahat yang sepenuhnya berfungsi — satu pencuri kredensial, satu remote code executor — dan <strong>kelima scanner yang mereka uji memberi hasil bersih untuk keduanya</strong>, termasuk mcp-scanner dari Cisco, agent-scan dari Snyk, dan SkillSpector dari NVIDIA. Teknik evasinya: payload disembunyikan di handler code, obfuskasi, file berukuran raksasa, dan fingerprinting terhadap scanner. Kesimpulan mereka blak-blakan dan tepat: <em>hasil scan yang bersih adalah titik awal, bukan persetujuan.</em></p>
+<p>Jadi perlakukan mcp-scan sebagai detektor asap, bukan firewall. Ia menangkap yang malas, yang ceroboh, dan yang sudah dikenal — yang, jujur saja, merupakan sebagian besar isi direktori MCP server publik saat ini. Yang canggih butuh kontrol membosankan di bawahnya.</p>
+<h2 id="checklist-yang-benar-benar-penting"><span class="hnum">05</span>Checklist yang benar-benar penting</h2>
+<p>Meminjam dari Enterprise MCP Guide dan para praktisi yang menulis soal ini sepanjang bulan, inilah versi berlapisnya:</p>
+<ul>
+<li><strong>Perlakukan setiap MCP server pihak ketiga sebagai dependency yang belum direview.</strong> Baca deskripsi tool-nya (pakai <code>inspect</code>) sebelum menghubungkan, sama seperti kamu me-review package baru.</li>
+<li><strong>Least privilege, selalu.</strong> Hubungkan dengan kredensial terlemah yang diizinkan tugas — read-only kalau bisa, dibatasi ke satu database atau direktori, bukan seluruh akun. Matikan grup tool write/execute kecuali workflow memang membutuhkannya.</li>
+<li><strong>Allowlist per agen.</strong> Setiap agen hanya mendapat tool yang benar-benar dibutuhkannya. Agen penerjemah tidak ada urusannya dengan shell.</li>
+<li><strong>Catat semuanya lewat gateway.</strong> Gateway MCP terpusat yang merekam setiap pemanggilan tool mengubah &quot;agen melakukan sesuatu yang aneh&quot; menjadi jejak yang bisa diaudit.</li>
+<li><strong>Persetujuan manusia untuk yang ireversibel.</strong> Menghapus data, mengirim komunikasi, memindahkan uang — agen tidak boleh melakukannya tanpa gerbang manusia.</li>
+<li><strong>Pin tool-mu.</strong> Hash metadata tool setelah direview; beri peringatan saat berubah. Rug pull itu soal kapan, bukan soal apakah.</li>
+<li><strong>Pindai ulang terjadwal</strong>, bukan cuma saat instalasi. Server di-update; update bisa bersifat hostile.</li>
+</ul>
+<h2 id="perimeternya-sudah-pindah"><span class="hnum">06</span>Perimeternya sudah pindah</h2>
+<p>Inilah model mental yang layak dibawa pulang: di era agen, teks paling berpengaruh dalam sebuah transaksi sering kali adalah teks yang tidak dibaca siapa pun — deskripsi tool yang dilahap model di setiap pemanggilan sementara manusia hanya melihat label yang ramah. Antarmuka yang memperlakukan teks itu sekadar metadata, lalu terkejut saat ternyata ia adalah instruksi, adalah kerentanannya. Angka-angka Oktober 2026 — 68 CVE dalam sebulan, 141 CVE prompt-injection, teknik ATT&amp;CK dengan nama resmi — adalah gambaran ketika penyerang tiba di perimeter baru sebelum para defender.</p>
+<p>Jalankan scan-nya. Baca deskripsinya. Pin tool-nya. Direktori plugin adalah software supply chain yang baru — dan tidak seperti npm, kebanyakan orang yang memasang darinya belum pernah sekalipun melihat apa yang mereka pasang.</p><div class="author-box"><div class="kicker"><span class="dot"></span>ditulis oleh</div><p><strong>kou</strong> mendokumentasikan threat intel, attack surface, dan pertahanan praktis — dari sisi gelap internet.</p></div><div class="pager"><a href="/id/artikel/nuclei-poc-to-template/"><span class="dir">← sebelumnya</span><span class="t">Dari PoC ke Deteksi dalam Hitungan Menit: Template Nuclei Pertamamu</span></a><span></span></div></div>
+                <aside class="toc"><h4>Daftar isi</h4><ol><li style="margin-left:0px"><a href="#kenapa-mcp-jadi-target">Kenapa MCP jadi target</a></li><li style="margin-left:0px"><a href="#enam-jalan-masuknya">Enam jalan masuknya</a></li><li style="margin-left:0px"><a href="#praktik-memindai-setup-mu-sendiri-dengan-mcp-scan">Praktik: memindai setup-mu sendiri dengan mcp-scan</a></li><li style="margin-left:0px"><a href="#caveat-yang-tidak-nyaman">Caveat yang tidak nyaman</a></li><li style="margin-left:0px"><a href="#checklist-yang-benar-benar-penting">Checklist yang benar-benar penting</a></li><li style="margin-left:0px"><a href="#perimeternya-sudah-pindah">Perimeternya sudah pindah</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>catatan keamanan dari sisi gelap internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="cari artikel…" aria-label="search">
+    <div class="search-hint">ketik minimal 2 huruf · esc untuk tutup · ctrl+k dari mana saja</div>
+    <div class="search-results" data-empty="nggak ketemu — coba kata kunci lain."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

@@ -4,7 +4,11 @@
 <title>llunatic-lab (id)</title><link>https://lab.llunaticsys.web.id/id/</link>
 <description>Catatan keamanan dari sisi gelap internet</description>
 <language>id</language>
-<item><title>Dari PoC ke Deteksi dalam Hitungan Menit: Template Nuclei Pertamamu</title>
+<item><title>Plugin Agen AI-mu Adalah Attack Surface Baru: Mengaudit MCP Server dengan mcp-scan</title>
+            <link>https://lab.llunaticsys.web.id/id/artikel/mcp-server-audit-scan/</link>
+            <description>Agen AI kini menjelajah web, menjalankan kode, dan mengquery database lewat MCP server — dan penyerang sudah menyadarinya. Begini cara kerja tool poisoning, kenapa Oktober 2026 menjadikan MCP headline threat, dan cara mengaudit setup-mu sendiri dengan mcp-scan dari Invariant Labs sebelum sebuah plugin mengauditmu.</description>
+            <pubDate>Wed, 21 Oct 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/mcp-server-audit-scan/</guid></item><item><title>Dari PoC ke Deteksi dalam Hitungan Menit: Template Nuclei Pertamamu</title>
             <link>https://lab.llunaticsys.web.id/id/artikel/nuclei-poc-to-template/</link>
             <description>Saat CVE kritis muncul, PoC exploit beredar di GitHub dalam hitungan jam — dan pemindaian massal menyusul. Nuclei memungkinkanmu memindai infrastrukturmu sendiri secepat itu, dengan mengubah proof of concept menjadi template YAML yang bisa dibagikan. Ini cara kerja tool-nya, cara menulis template pertamamu, dan pagar pengaman agar tidak berbalik menyerangmu.</description>
             <pubDate>Mon, 19 Oct 2026 00:00:00 -0000</pubDate>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Agent&#x27;s Plugins Are the New Attack Surface: Auditing MCP Servers With mcp-scan — llunatic-lab</title>
+<meta name="description" content="AI agents now browse the web, run code, and query databases through MCP servers — and attackers have noticed. Here&#x27;s how tool poisoning works, why October 2026 turned MCP into a headline threat, and how to audit your own setup with Invariant Labs&#x27; mcp-scan before a plugin audits you.">
+<meta property="og:title" content="Your Agent&#x27;s Plugins Are the New Attack Surface: Auditing MCP Servers With mcp-scan">
+<meta property="og:description" content="AI agents now browse the web, run code, and query databases through MCP servers — and attackers have noticed. Here&#x27;s how tool poisoning works, why October 2026 turned MCP into a headline threat, and how to audit your own setup with Invariant Labs&#x27; mcp-scan before a plugin audits you.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/mcp-server-audit-scan.jpg"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/mcp-server-audit-scan/"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/mcp-server-audit-scan/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/arsip/">Archive</a>
+      <a href="/tentang/">About</a>
+      <a class="lang-toggle" href="/id/artikel/mcp-server-audit-scan/">ID</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>article</div>
+              <h1>Your Agent&#x27;s Plugins Are the New Attack Surface: Auditing MCP Servers With mcp-scan</h1>
+              <div class="meta"><span>21 October 2026</span><span>·</span>
+              <span>6 min read</span><a class="tag" href="/tag/mcp/">mcp</a> <a class="tag" href="/tag/ai-security/">ai-security</a> <a class="tag" href="/tag/tools/">tools</a> <a class="tag" href="/tag/prompt-injection/">prompt-injection</a></div>
+              <img class="cover" src="/assets/covers/mcp-server-audit-scan.jpg" alt="Your Agent&#x27;s Plugins Are the New Attack Surface: Auditing MCP Servers With mcp-scan">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>You install a harmless-looking calculator plugin for your AI coding agent. Its tool description says it &quot;adds two numbers and returns the sum.&quot; You never read the rest — because there is no rest, as far as the UI shows. But buried inside that description, invisible to you, is a block of text that tells the agent to read your SSH private key and your MCP config file first, smuggle their contents through a side parameter, and never mention it to you.</p>
+<p>That is <span class="gterm" data-term="tool poisoning" data-def="Hidden malicious instructions embedded in an MCP tool&#x27;s description. The agent reads the description as trusted context and follows the instructions — no exploit needed, just text in a JSON field. Named and demonstrated by Invariant Labs in April 2025.">tool poisoning</span>, demonstrated publicly by Invariant Labs in April 2025. No authentication bypass. No memory-corruption exploit. Just text in a JSON field that the agent reads as trusted context. And a year and a half later, in October 2026, the whole category has exploded into one of the loudest stories in security.</p>
+<h2 id="why-mcp-became-the-target"><span class="hnum">01</span>Why MCP became the target</h2>
+<p>The <span class="gterm" data-term="MCP" data-def="Model Context Protocol — Anthropic&#x27;s open standard (November 2024) letting AI assistants call external tools such as filesystems, APIs, databases, and developer utilities. MCP servers execute real system actions on the model&#x27;s behalf.">MCP</span> — Model Context Protocol — is Anthropic&#x27;s open standard, introduced in November 2024, that lets AI assistants call external tools: filesystems, APIs, databases, developer utilities like Git. An MCP server is a bridge: the model decides, the server executes real system actions.</p>
+<p>That bridge went mainstream fast. By Q3 2026, Gartner estimated that over 40% of enterprises running LLM deployments had extended them into autonomous agent architectures — systems where agents browse, execute code, query databases, send emails, and orchestrate other sub-agents. Every one of those capabilities is a tool. Every tool is a server someone wrote. And servers written by strangers are now sitting between your agent and your infrastructure.</p>
+<p>The numbers from this month tell the story. The Enterprise MCP Guide 2026, published October 5 by The Agentics, catalogued <strong>68 MCP server CVEs in a single month</strong> and named six distinct attack classes. Stingrai&#x27;s analysis of the NVD found <strong>141 CVEs whose descriptions contain the exact phrase &quot;prompt injection&quot;</strong> — 87 of them published in 2026 alone, with 105 rated High or Critical. MITRE ATT&amp;CK v20, released October 13, 2026, added Direct <span class="gterm" data-term="prompt injection" data-def="An attack that smuggles instructions into data an LLM reads — a webpage, email, tool description, or file — so the model treats attacker text as commands. MITRE ATT&amp;CK v20 (October 2026) lists Direct and Indirect Prompt Injection as distinct techniques.">Prompt Injection</span>, Indirect Prompt Injection, and AI-Enabled Exfiltration as first-class techniques. This is no longer a research curiosity; it&#x27;s a tracked, taxonomied, actively exploited attack surface.</p>
+<h2 id="the-six-ways-in"><span class="hnum">02</span>The six ways in</h2>
+<p>The Agentics&#x27; taxonomy is worth memorizing, because each class breaks a different assumption:</p>
+<ol>
+<li><strong>Tool poisoning</strong> — malicious instructions hidden in a tool&#x27;s description, which the model reads on every call while the user sees only a friendly name.</li>
+<li><strong>Schema poisoning</strong> — the list of available tools itself is tampered with.</li>
+<li><strong>Tool shadowing</strong> — a malicious tool quietly overrides a legitimate one with the same name, so the agent calls the attacker&#x27;s code while the approval dialog shows a familiar label.</li>
+<li><strong>Command injection</strong> — attacker instructions embedded in content the agent processes (documents, web pages, tool outputs).</li>
+<li><strong>Shadow servers</strong> — unauthorized MCP servers added to an agent&#x27;s environment without approval.</li>
+<li><strong>Context oversharing</strong> — agents exposing more data than the task requires, feeding the other five.</li>
+</ol>
+<p>Two real-world sightings from this month make it concrete. Security firm Signals Corps found nearly <strong>8,000 websites sending messages to AI agents via HTTP headers</strong>, with 30 of them attempting genuine indirect prompt injection. And independent researcher Syed Anas Mohiuddin documented &quot;protocol pivoting&quot; — prompt injection aimed at individual agents rather than the model itself, relayed down agent-to-agent chains — affecting organizations including Google, JP Morgan Chase, and Rapid7. The trust between internal agents, he showed, is the vulnerability.</p>
+<h2 id="hands-on-scanning-your-own-setup-with-mcp-scan"><span class="hnum">03</span>Hands-on: scanning your own setup with mcp-scan</h2>
+<p>Knowing the theory is half the job; the other half is checking what&#x27;s actually plugged into <em>your</em> agent. The most established scanner is <strong>mcp-scan</strong> by Invariant Labs — the same team that named tool poisoning. It scans the MCP servers configured in Claude, Cursor, Windsurf, and other file-based MCP clients, looking for prompt injection in tool descriptions, tool poisoning via their Guardrails analysis, and cross-origin escalation (<span class="gterm" data-term="tool shadowing" data-def="An MCP attack in which a malicious tool quietly overrides a legitimate one under the same name, so the agent calls the attacker&#x27;s code while the user sees a familiar label.">tool shadowing</span>). It also supports <strong>tool pinning</strong>: hashing each server&#x27;s tool definitions so a <span class="gterm" data-term="rug pull" data-def="In MCP security, a server that scans clean on first review but swaps its tool definitions for malicious ones afterwards. Countered with tool pinning: hashing tool metadata and alerting when it changes.">rug pull</span> — a server that scans clean today and turns malicious tomorrow — gets caught when its metadata changes.</p>
+<p>Installation is one command:</p>
+<pre><code class="language-bash">uvx mcp-scan@latest</code></pre>
+<p>To actually inspect what your agent sees — the full tool descriptions, including the text no UI ever shows you:</p>
+<pre><code class="language-bash">uvx mcp-scan@latest inspect</code></pre>
+<p>And for a full scan of every configured server:</p>
+<pre><code class="language-bash">uvx mcp-scan@latest scan</code></pre>
+<p>Two things to know before you run it. First, unless you pass <code>--local-only</code> (which needs an OpenAI API key and is less accurate), tool names and descriptions are sent to Invariant&#x27;s API for analysis — the tool doesn&#x27;t log your tool <em>calls</em> or results, but it does share metadata for research. Decide whether you&#x27;re comfortable with that on a work machine. Second, there is a newer community alternative worth knowing: a static scanner called <code>mcpscan</code> that runs twelve offline checks — prompt-injection phrasing, command injection, dangerous hooks, committed secrets — with zero dependencies and JSON/SARIF output for CI. Different philosophy, same goal: read the metadata before the model does.</p>
+<h2 id="the-uncomfortable-caveat"><span class="hnum">04</span>The uncomfortable caveat</h2>
+<p>Now the part scanner vendors won&#x27;t put on the landing page. Adversa&#x27;s October 2026 research built two fully working malicious MCP servers — a credential harvester and a remote code executor — and <strong>all five scanners they tested gave them clean results</strong>, including Cisco&#x27;s mcp-scanner, Snyk&#x27;s agent-scan, and NVIDIA&#x27;s SkillSpector. The evasions were payloads hidden in handler code, obfuscation, oversized files, and scanner fingerprinting. Their conclusion is blunt and correct: <em>a clean scan is a starting point, not an approval.</em></p>
+<p>So treat mcp-scan as a smoke detector, not a firewall. It catches the lazy, the sloppy, and the known — which, honestly, is most of what&#x27;s floating around in public MCP server directories right now. The sophisticated stuff needs the boring controls underneath.</p>
+<h2 id="the-checklist-that-actually-matters"><span class="hnum">05</span>The checklist that actually matters</h2>
+<p>Borrowing from the Enterprise MCP Guide and the practitioners writing about this all month, here&#x27;s the layered version:</p>
+<ul>
+<li><strong>Treat every third-party MCP server as an unreviewed dependency.</strong> Read its tool descriptions (use <code>inspect</code>) before connecting, the same way you&#x27;d review a new package.</li>
+<li><strong>Least privilege, always.</strong> Connect with the weakest credential the task allows — read-only where possible, scoped to one database or directory, never a whole account. Disable write/execute tool groups unless the workflow needs them.</li>
+<li><strong>Per-agent allowlists.</strong> Each agent gets only the tools it genuinely needs. A translation agent has no business with a shell.</li>
+<li><strong>Log everything through a gateway.</strong> Centralized MCP gateways that record every tool call turn &quot;the agent did something weird&quot; into an auditable trail.</li>
+<li><strong>Human approval for the irreversible.</strong> Deleting data, sending communications, moving money — an agent should never do these without a human gate.</li>
+<li><strong>Pin your tools.</strong> Hash tool metadata after review; alert when it changes. Rug pulls are a when, not an if.</li>
+<li><strong>Re-scan on a schedule</strong>, not just on install. Servers update; updates can be hostile.</li>
+</ul>
+<h2 id="the-perimeter-moved"><span class="hnum">06</span>The perimeter moved</h2>
+<p>Here&#x27;s the mental model to take home: in the agent era, the most influential text in a transaction is often the text nobody reads — the tool description the model ingests on every call while the human sees a friendly label. Interfaces that treat that text as mere metadata, then act surprised when it turns out to be instructions, are the vulnerability. The October 2026 numbers — 68 CVEs in a month, 141 prompt-injection CVEs, ATT&amp;CK techniques with official names — are what it looks like when attackers arrive at a new perimeter before the defenders do.</p>
+<p>Run the scan. Read the descriptions. Pin the tools. The plugin directory is the new software supply chain — and unlike npm, most people installing from it have never once looked at what they installed.</p><div class="author-box"><div class="kicker"><span class="dot"></span>written by</div><p><strong>kou</strong> documents what’s learned about threat intel, attack surface, and practical defense — from the dark side of the internet.</p></div><div class="pager"><a href="/artikel/nuclei-poc-to-template/"><span class="dir">← previous</span><span class="t">From PoC to Detection in Minutes: Your First Nuclei Template</span></a><span></span></div></div>
+                <aside class="toc"><h4>Contents</h4><ol><li style="margin-left:0px"><a href="#why-mcp-became-the-target">Why MCP became the target</a></li><li style="margin-left:0px"><a href="#the-six-ways-in">The six ways in</a></li><li style="margin-left:0px"><a href="#hands-on-scanning-your-own-setup-with-mcp-scan">Hands-on: scanning your own setup with mcp-scan</a></li><li style="margin-left:0px"><a href="#the-uncomfortable-caveat">The uncomfortable caveat</a></li><li style="margin-left:0px"><a href="#the-checklist-that-actually-matters">The checklist that actually matters</a></li><li style="margin-left:0px"><a href="#the-perimeter-moved">The perimeter moved</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>security notes from the dark side of the internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="search articles…" aria-label="search">
+    <div class="search-hint">type at least 2 characters · esc to close · ctrl+k anywhere</div>
+    <div class="search-results" data-empty="nothing found — try another keyword."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

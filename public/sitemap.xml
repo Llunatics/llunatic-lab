@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://lab.llunaticsys.web.id/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/arsip/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tentang/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/arsip/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tentang/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/artikel/mcp-server-audit-scan/</loc><lastmod>2026-10-21</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/artikel/nuclei-poc-to-template/</loc><lastmod>2026-10-19</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/artikel/double-extortion-ransomware-playbook/</loc><lastmod>2026-10-18</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/artikel/phishing-email-autopsy-lab/</loc><lastmod>2026-10-16</lastmod></url>
@@ -12,34 +13,38 @@
   <url><loc>https://lab.llunaticsys.web.id/artikel/atlassian-cve-2026-21589-exploited-hours/</loc><lastmod>2026-10-09</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/artikel/mythos-ai-vulnerability-hunter/</loc><lastmod>2026-10-07</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/artikel/easm-memetakan-permukaan-serangan/</loc><lastmod>2026-10-06</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/ai/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/atlassian/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/attack-surface/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/blue-team/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/case-breakdown/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/cryptojacking/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/data-breach/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/easm/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/edge-security/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/email-security/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/extortion/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/hands-on/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/incident-response/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/nuclei/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/phishing/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/ransomware/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/supply-chain/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/third-party-risk/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/threat-hunting/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/threat-intel/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/tools/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/vulnerability/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/vulnerability-research/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/vulnerability-scanning/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/tag/zero-day/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/arsip/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tentang/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/ai/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/ai-security/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/atlassian/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/attack-surface/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/blue-team/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/case-breakdown/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/cryptojacking/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/data-breach/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/easm/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/edge-security/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/email-security/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/extortion/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/hands-on/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/incident-response/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/mcp/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/nuclei/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/phishing/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/prompt-injection/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/ransomware/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/supply-chain/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/third-party-risk/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/threat-hunting/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/threat-intel/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/tools/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/vulnerability/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/vulnerability-research/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/vulnerability-scanning/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/tag/zero-day/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/arsip/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tentang/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/artikel/mcp-server-audit-scan/</loc><lastmod>2026-10-21</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/id/artikel/nuclei-poc-to-template/</loc><lastmod>2026-10-19</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/id/artikel/double-extortion-ransomware-playbook/</loc><lastmod>2026-10-18</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/id/artikel/phishing-email-autopsy-lab/</loc><lastmod>2026-10-16</lastmod></url>
@@ -49,29 +54,32 @@
   <url><loc>https://lab.llunaticsys.web.id/id/artikel/atlassian-cve-2026-21589-exploited-hours/</loc><lastmod>2026-10-09</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/id/artikel/mythos-ai-vulnerability-hunter/</loc><lastmod>2026-10-07</lastmod></url>
   <url><loc>https://lab.llunaticsys.web.id/id/artikel/easm-memetakan-permukaan-serangan/</loc><lastmod>2026-10-06</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/ai/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/atlassian/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/attack-surface/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/blue-team/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/case-breakdown/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/cryptojacking/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/data-breach/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/easm/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/edge-security/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/email-security/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/extortion/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/hands-on/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/incident-response/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/nuclei/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/phishing/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/ransomware/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/supply-chain/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/third-party-risk/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/threat-hunting/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/threat-intel/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/tools/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/vulnerability/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/vulnerability-research/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/vulnerability-scanning/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://lab.llunaticsys.web.id/id/tag/zero-day/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/ai/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/ai-security/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/atlassian/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/attack-surface/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/blue-team/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/case-breakdown/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/cryptojacking/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/data-breach/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/easm/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/edge-security/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/email-security/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/extortion/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/hands-on/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/incident-response/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/mcp/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/nuclei/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/phishing/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/prompt-injection/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/ransomware/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/supply-chain/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/third-party-risk/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/threat-hunting/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/threat-intel/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/tools/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/vulnerability/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/vulnerability-research/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/vulnerability-scanning/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://lab.llunaticsys.web.id/id/tag/zero-day/</loc><lastmod>2026-10-21</lastmod></url>
 </urlset>

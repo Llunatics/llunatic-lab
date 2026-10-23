@@ -4,7 +4,11 @@
 <title>llunatic-lab (en)</title><link>https://lab.llunaticsys.web.id/</link>
 <description>Security notes from the dark side of the internet</description>
 <language>en</language>
-<item><title>Your Agent&#x27;s Plugins Are the New Attack Surface: Auditing MCP Servers With mcp-scan</title>
+<item><title>Zeabur: How Plaintext Secrets Killed a Hosting Platform — A Case Breakdown</title>
+            <link>https://lab.llunaticsys.web.id/artikel/zeabur-plaintext-secrets-breach/</link>
+            <description>No zero-day. No nation-state. Just a non-expiring admin token sitting in plaintext in a config repo — and it cost Zeabur 3.2 million secrets, root on 101 customer servers, and eventually the company itself.</description>
+            <pubDate>Fri, 23 Oct 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/artikel/zeabur-plaintext-secrets-breach/</guid></item><item><title>Your Agent&#x27;s Plugins Are the New Attack Surface: Auditing MCP Servers With mcp-scan</title>
             <link>https://lab.llunaticsys.web.id/artikel/mcp-server-audit-scan/</link>
             <description>AI agents now browse the web, run code, and query databases through MCP servers — and attackers have noticed. Here&#x27;s how tool poisoning works, why October 2026 turned MCP into a headline threat, and how to audit your own setup with Invariant Labs&#x27; mcp-scan before a plugin audits you.</description>
             <pubDate>Wed, 21 Oct 2026 00:00:00 -0000</pubDate>

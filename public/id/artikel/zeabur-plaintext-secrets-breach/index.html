@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zeabur: Ketika Secret Plaintext Membunuh Sebuah Hosting Platform — Bedah Kasus — llunatic-lab</title>
+<meta name="description" content="Bukan zero-day. Bukan nation-state. Hanya token admin tanpa masa kedaluwarsa yang disimpan plaintext di config repo — dan itu merenggut 3,2 juta secret, root di 101 server pelanggan, dan akhirnya perusahaan itu sendiri.">
+<meta property="og:title" content="Zeabur: Ketika Secret Plaintext Membunuh Sebuah Hosting Platform — Bedah Kasus">
+<meta property="og:description" content="Bukan zero-day. Bukan nation-state. Hanya token admin tanpa masa kedaluwarsa yang disimpan plaintext di config repo — dan itu merenggut 3,2 juta secret, root di 101 server pelanggan, dan akhirnya perusahaan itu sendiri.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/zeabur-plaintext-secrets-breach.jpg"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/zeabur-plaintext-secrets-breach/"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/zeabur-plaintext-secrets-breach/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/id/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/id/arsip/">Arsip</a>
+      <a href="/id/tentang/">Tentang</a>
+      <a class="lang-toggle" href="/artikel/zeabur-plaintext-secrets-breach/">EN</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>artikel</div>
+              <h1>Zeabur: Ketika Secret Plaintext Membunuh Sebuah Hosting Platform — Bedah Kasus</h1>
+              <div class="meta"><span>23 Oktober 2026</span><span>·</span>
+              <span>7 mnt baca</span><a class="tag" href="/id/tag/case-breakdown/">case-breakdown</a> <a class="tag" href="/id/tag/secrets-management/">secrets-management</a> <a class="tag" href="/id/tag/cloud-security/">cloud-security</a></div>
+              <img class="cover" src="/assets/covers/zeabur-plaintext-secrets-breach.jpg" alt="Zeabur: Ketika Secret Plaintext Membunuh Sebuah Hosting Platform — Bedah Kasus">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Sebuah hosting platform tumbang bulan ini, dan senjata pembunuhnya adalah sebuah configuration repository.</p>
+<p>Zeabur — platform developer tempat kamu sambungkan repo GitHub lalu ia yang mengurus build, database, HTTPS, dan server — menerbitkan laporan pembobolan keduanya dalam dua bulan pada 19 Oktober 2026. Antara 14 dan 15 Oktober, penyerang membaca secret dari setiap layanan di shared cluster-nya di sembilan region, menguasai root di 101 server pelanggan, dan menguras database platform: <strong>321.810 akun dan 3.218.965 record environment variable</strong>. Tak lama kemudian, Zeabur mengumumkan akan tutup pada 31 Desember 2026.</p>
+<p>Laporan resminya luar biasa jujur, dan ia menyebut akar masalah dalam satu kalimat: <em>&quot;kredensial admin berumur panjang disimpan dalam plaintext dan bisa dipakai dari internet publik.&quot;</em> Itulah seluruh ceritanya. Selebihnya hanyalah kalimat itu yang terurai dalam slow motion, dan layak dipelajari bingkai demi bingkai — karena kebiasaan yang sama masih hidup di perusahaan-perusahaan yang belum tumbang.</p>
+<h2 id="babak-satu-pembobolan-yang-tidak-selesai-diperbaiki"><span class="hnum">01</span>Babak satu: pembobolan yang tidak selesai diperbaiki</h2>
+<p>Intrusi Oktober sebenarnya dimulai pada 27 Agustus. Penyerang mengeksploitasi aplikasi NextChat milik pelanggan (v2.16.1, tercatat sebagai CVE-2026-7644) yang berjalan di shared cluster Zeabur. Isolasi antar-tenant yang lemah memungkinkan penyerang menjangkau routing cache berisi API key lawas Zeabur, lalu memakai kunci administrator tim untuk menemukan AWS root key di dalam sebuah layanan internal, lalu membaca environment variable proyek dari database produksi.</p>
+<p>Zeabur mengetahuinya pada 28 Agustus dari laporan penyalahgunaan API key — bukan dari monitoring-nya sendiri. Mereka memberitahu pengguna dan merotasi key.</p>
+<p>Tapi rotasi itu melewatkan dua hal: sebuah admin token shared-cluster yang dibuat Januari 2024 <strong>tanpa masa kedaluwarsa</strong>, dan AWS key. Keduanya duduk dalam plaintext di sebuah configuration repository privat sejak Januari 2026. Selama hampir dua tahun, token yang bisa mengadministrasikan seluruh cluster tidak pernah kedaluwarsa. Selama sembilan bulan, siapa pun yang bisa membaca repo itu memegang kunci kerajaan.</p>
+<p>Inilah pelajaran yang diteriakkan insiden Oktober: <span class="gterm" data-term="incident response" data-def="Proses terorganisir untuk mendeteksi, membatasi, membersihkan, dan memulihkan dari insiden keamanan, biasanya mengikuti playbook yang sudah dilatih.">incident response</span> yang setengah-setengah kadang lebih buruk daripada tidak sama sekali, karena menciptakan keyakinan bahwa masalah sudah selesai. Blast radius sudah dipahami, key yang terlihat sudah dirotasi, semua orang menghela napas — sementara satu kredensial yang paling menentukan terus bekerja, diam-diam, di sebuah repository.</p>
+<h2 id="babak-dua-dua-jalur-satu-plaintext"><span class="hnum">02</span>Babak dua: dua jalur, satu plaintext</h2>
+<p>Pada 14 Oktober pukul 01:36 UTC, penyerang kembali dengan kredensial yang terlewat dan menempuh dua jalur yang akhirnya bertemu di jaringan internal Zeabur.</p>
+<p><strong>Jalur A: shared cluster.</strong> Penyerang memakai AWS key Zeabur, lalu — empat menit kemudian — admin token yang tak pernah kedaluwarsa itu. Detail krusialnya: <strong>antarmuka admin shared cluster bisa diakses dari internet publik</strong>. Token curian tidak butuh pijakan di dalam jaringan, tidak butuh VPN, tidak butuh pivot. Dari luar dunia, langsung ke mahkota sembilan region.</p>
+<p>Pukul 12:39, penyerang sudah membaca pengaturan dan secret dari <em>seluruh layanan</em> di shared cluster, termasuk environment variable. Mulai 13:40, mereka menjalankan perintah baca di dalam 865 container database pelanggan. Angka dari laporannya mencengangkan: 736 di antaranya adalah instance <strong>n8n</strong>. Dari 607 instance n8n yang diperiksa Zeabur, <strong>602 menyimpan encryption key-nya di environment variable</strong> — dan key itu mendekripsi setiap kredensial pihak ketiga yang disimpan n8n untuk workflow-nya. Jadi membaca environment variable praktis juga membongkar login-login downstream itu, satu rantai kredensial meruntuhkan rantai berikutnya.</p>
+<p>Penyerang lalu memakai cluster key yang terlalu berkuasa untuk membaca backup dari cluster lama, menemukan kunci menuju layanan <span class="gterm" data-term="secrets management" data-def="Praktik menyimpan, mendistribusikan, merotasi, dan mencabut kredensial seperti API key, password, dan sertifikat secara aman — idealnya lewat secrets manager khusus dengan kontrol akses dan audit log, jangan pernah dalam file atau repository plaintext.">secrets management</span> Zeabur, dan membaca sekitar 53 production secret — termasuk kredensial admin jaringan internal, akun database platform, dan GitHub App private key. Mereka juga membaca kunci penanda login dan memalsukan sesi sebagai dua akun, salah satunya milik karyawan Zeabur.</p>
+<p><strong>Jalur B: dedicated server.</strong> Sebuah GCP key lama memberi penyerang akses ke pengaturan inisialisasi server, tempat <strong>password root disimpan dalam plaintext</strong>. Mulai 14 Oktober pukul 13:40, penyerang masuk sebagai root ke 101 dedicated server milik 92 pengguna. Mereka menambahkan SSH key milik mereka di 50 server untuk <span class="gterm" data-term="persistence" data-def="Teknik yang dipakai penyerang agar tetap bertahan melewati reboot dan pembersihan — service, scheduled task, registry key — sehingga akses tetap ada setelah pijakan awal.">persistence</span>, membuat lima virtual machine, dan menyalin 16 disk pelanggan.</p>
+<p>Pada 15 Oktober kedua jalur menyatu: kredensial admin jaringan internal dari Jalur A memungkinkan penyerang menambahkan node miliknya ke jaringan internal Zeabur dari server yang sudah dikuasai, dan antara pukul 16:10–16:47 UTC, mereka membaca database platform lewat node itu — 29 koneksi terpetakan, 8.903 record operasi, seluruh environment variable, seluruh akun.</p>
+<p>Ada satu detail yang layak diheningkan sejenak. Zeabur mulai menyelidiki pukul <strong>13:56 UTC pada 15 Oktober, setelah laporan pengguna</strong> — lagi-lagi, bukan dari alarmnya sendiri. Penyerang sudah berada di dalam selama lebih dari 36 jam.</p>
+<p>Dan satu catatan kaki yang mengerikan: di tengah serangan, backup harian Zeabur menangkap sebuah <em>key yang baru saja dirotasi</em> dan penyerang membacanya dari backup lalu memakainya pukul 20:30. Merotasi secret selagi penyerang bisa membaca backup kamu itu seperti mengganti gembok sambil membagikan salinan kunci baru.</p>
+<h2 id="apa-yang-sebenarnya-diincar-penyerang"><span class="hnum">03</span>Apa yang sebenarnya diincar penyerang</h2>
+<p>Pengamatan laporan tentang niat penyerang sangat revealing. Penyerang mencari API key di database platform, membaca kredensial n8n dan new-api/one-api dalam skala besar, dan mencoba memanggil <strong>Amazon Bedrock</strong> dengan AWS key milik Zeabur. Mereka tidak mengincar profil pengguna — mereka memburu AI service key.</p>
+<p>Inilah ekonomi kredensial yang baru. Pada 2026, API key penyedia AI sama berharganya dengan uang tunai: ia menyewa armada GPU orang lain untuk melatih model, menjalankan inferensi, atau menjual ulang akses. Platform hosting yang mengumpulkan nilai paling sensitif pelanggannya — password database, cloud key, AI key, signing secret — menjadi target paling berharga, karena satu pembobolan membayar ke ribuan korban. Itu sebabnya <span class="gterm" data-term="exfiltration" data-def="Transfer data tanpa izin keluar dari jaringan ke infrastruktur milik penyerang — pencurian sunyi yang mendahului enkripsi pada ransomware modern.">exfiltration</span> secret jauh lebih buruk daripada <span class="gterm" data-term="third-party risk" data-def="Paparan keamanan yang diwariskan organisasi dari vendor, mitra, dan kontraktornya — setiap pihak ketiga yang punya akses ke sistem atau data menjadi jalur serangan potensial.">third-party risk</span> yang diajarkan kasus Denmark: ini bukan vendor yang punya akses ke datamu, ini vendor <em>yang memegang kuncimu</em>.</p>
+<h2 id="checklist-mitigasi-untuk-semua-orang-bukan-cuma-pelanggan-zeabur"><span class="hnum">04</span>Checklist mitigasi (untuk semua orang, bukan cuma pelanggan Zeabur)</h2>
+<p>Daftar remidiasi Zeabur sendiri sangat bagus, dan prinsipnya berlaku umum untuk setiap tim yang menyimpan secret:</p>
+<ol>
+<li><strong>Rotasi semuanya, lalu cabut nilai lama di penyedianya.</strong> Pelanggan Zeabur diminta mencabut key di AWS, Google Cloud, Stripe, OpenAI, Anthropic dulu, baru menerbitkan yang baru. Mengganti secret hanya di sisimu sementara yang lama masih berfungsi itu teater.</li>
+<li><strong>Secret harus kedaluwarsa dan berotasi otomatis.</strong> Token yang dibuat Januari 2024 tanpa kedaluwarsa itu bukan kredensial, itu kunci serep permanen. Kredensial berumur pendek, rotasi otomatis, tanpa pengecualian untuk token &quot;internal&quot;.</li>
+<li><strong>Jangan pernah menyimpan secret dalam plaintext — di repo, di pengaturan inisialisasi, di mana pun.</strong> Repo privat bukan secrets store. Environment variable bukan enkripsi. Kalau secret-mu bisa dibaca oleh apa pun selain secrets manager dengan audit log, ia sudah bocor secara rohani.</li>
+<li><strong>Jauhkan antarmuka admin dari internet.</strong> Seandainya konsol admin shared cluster tidak bisa diakses publik, token curian itu jauh kurang berguna. Admin plane harus di balik kontrol jaringan, <span class="gterm" data-term="MFA" data-def="Multi-Factor Authentication — layered verification beyond a password, e.g. OTP codes or hardware keys.">MFA</span>, idealnya mutual TLS — bukan satu bearer token dari seluruh dunia.</li>
+<li><strong>Terapkan <span class="gterm" data-term="least privilege" data-def="Prinsip keamanan bahwa setiap akun, proses, atau layanan hanya boleh memegang akses minimum yang dibutuhkan untuk pekerjaannya — tidak lebih.">least privilege</span> pada key internal.</strong> Sebuah key &quot;terlalu berkuasa&quot; yang bisa membaca backup cluster lama menjadi jembatan dari cluster ke layanan secrets management. Setiap kredensial harus memegang akses minimum, supaya satu kebocoran tidak merembet ke berikutnya.</li>
+<li><strong>Monitoring seperti kunci pelanggan bergantung padanya — karena memang begitu.</strong> Kedua insiden Zeabur ditemukan lewat laporan pihak luar. Deteksi anomali pemakaian kredensial (token dari jaringan baru, pembacaan massal pukul 01:36 UTC, ribuan secret dibaca sekaligus) adalah kebutuhan dasar.</li>
+<li><strong>Perlakukan dedicated server sebagai sudah dikuasai sampai terbukti sebaliknya.</strong> Zeabur menyuruh pengguna terdampak membangun ulang dari nol dan memeriksa <code>authorized_keys</code> untuk komentar <code>@zeabur-pentest</code>. Dengan akses root dan SSH key yang ditambahkan, tidak ada kata &quot;dibersihkan&quot; — hanya dibangun ulang.</li>
+</ol>
+<p>Satu pelajaran struktural layak dapat bingkainya sendiri: <strong>proyek yang mengikuti panduan pasca-Agustus Zeabur dan memindahkan environment variable ke dedicated server milik sendiri berada di luar jangkauan pembacaan database platform.</strong> Desentralisasi secret — menolak menyerahkan semua kunci ke satu platform — adalah pertahanan terbaik, dan ia berhasil. Pelanggan yang paling sedikit mempercayai platform justru paling sedikit terluka.</p>
+<h2 id="tembakan-penutup"><span class="hnum">05</span>Tembakan penutup</h2>
+<p>Zeabur melakukan beberapa hal dengan benar di akhir: laporan pendahuluan yang detail dan jujur, panduan jelas untuk korban, dan pengumuman terakhir yang suram. Tapi kejujuran setelah kejadian tidak membangkitkan perusahaan yang model keamanannya bergantung pada secret yang tidak pernah kedaluwarsa, tidak pernah dirotasi, dan tidak pernah dilindungi.</p>
+<p>Kebenaran yang tidak nyaman adalah bahwa kegagalan-kegagalan di sini semuanya tidak glamor: plaintext di config repo, token tanpa kedaluwarsa, halaman admin di internet, secret tanpa alarm. Tidak ada exploit eksotis. Hanya hal-hal dasar, yang dilewatkan, selama bertahun-tahun — sampai seseorang datang menagih.</p>
+<p>Jadi audit plaintext-mu hari ini. Cari di repo-mu untuk <code>AKIA</code>, untuk <code>sk-</code>, untuk private key yang di-commit &quot;sementara&quot; tiga tahun lalu. Cek token mana di infrastrukturmu yang tidak punya tanggal kedaluwarsa. Karena kasus Zeabur membuktikan satu hal tanpa keraguan: <strong>penyerang yang menemukan kunci serep-mu tidak perlu membobol gembok.</strong> Kamu sudah menyerahkan pintunya.</p>
+<hr>
+<p><em>Sumber: <a href="https://zeabur.com/blogs/october-2026-security-incident">Laporan insiden keamanan Zeabur Oktober 2026</a> (primer, diterbitkan 19 Oktober 2026); <a href="https://breachhistory.com/blog/zeabur-second-breach-shutdown-october-2026">konteks insiden Agustus dan pengumuman penutupan</a>; buletin Exploit Security, 16–21 Oktober 2026.</em></p><div class="author-box"><div class="kicker"><span class="dot"></span>ditulis oleh</div><p><strong>kou</strong> mendokumentasikan threat intel, attack surface, dan pertahanan praktis — dari sisi gelap internet.</p></div><div class="pager"><a href="/id/artikel/mcp-server-audit-scan/"><span class="dir">← sebelumnya</span><span class="t">Plugin Agen AI-mu Adalah Attack Surface Baru: Mengaudit MCP Server dengan mcp-scan</span></a><span></span></div></div>
+                <aside class="toc"><h4>Daftar isi</h4><ol><li style="margin-left:0px"><a href="#babak-satu-pembobolan-yang-tidak-selesai-diperbaiki">Babak satu: pembobolan yang tidak selesai diperbaiki</a></li><li style="margin-left:0px"><a href="#babak-dua-dua-jalur-satu-plaintext">Babak dua: dua jalur, satu plaintext</a></li><li style="margin-left:0px"><a href="#apa-yang-sebenarnya-diincar-penyerang">Apa yang sebenarnya diincar penyerang</a></li><li style="margin-left:0px"><a href="#checklist-mitigasi-untuk-semua-orang-bukan-cuma-pelanggan-zeabur">Checklist mitigasi (untuk semua orang, bukan cuma pelanggan Zeabur)</a></li><li style="margin-left:0px"><a href="#tembakan-penutup">Tembakan penutup</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>catatan keamanan dari sisi gelap internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="cari artikel…" aria-label="search">
+    <div class="search-hint">ketik minimal 2 huruf · esc untuk tutup · ctrl+k dari mana saja</div>
+    <div class="search-results" data-empty="nggak ketemu — coba kata kunci lain."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

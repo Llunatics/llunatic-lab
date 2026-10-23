@@ -4,7 +4,11 @@
 <title>llunatic-lab (id)</title><link>https://lab.llunaticsys.web.id/id/</link>
 <description>Catatan keamanan dari sisi gelap internet</description>
 <language>id</language>
-<item><title>Plugin Agen AI-mu Adalah Attack Surface Baru: Mengaudit MCP Server dengan mcp-scan</title>
+<item><title>Zeabur: Ketika Secret Plaintext Membunuh Sebuah Hosting Platform — Bedah Kasus</title>
+            <link>https://lab.llunaticsys.web.id/id/artikel/zeabur-plaintext-secrets-breach/</link>
+            <description>Bukan zero-day. Bukan nation-state. Hanya token admin tanpa masa kedaluwarsa yang disimpan plaintext di config repo — dan itu merenggut 3,2 juta secret, root di 101 server pelanggan, dan akhirnya perusahaan itu sendiri.</description>
+            <pubDate>Fri, 23 Oct 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/zeabur-plaintext-secrets-breach/</guid></item><item><title>Plugin Agen AI-mu Adalah Attack Surface Baru: Mengaudit MCP Server dengan mcp-scan</title>
             <link>https://lab.llunaticsys.web.id/id/artikel/mcp-server-audit-scan/</link>
             <description>Agen AI kini menjelajah web, menjalankan kode, dan mengquery database lewat MCP server — dan penyerang sudah menyadarinya. Begini cara kerja tool poisoning, kenapa Oktober 2026 menjadikan MCP headline threat, dan cara mengaudit setup-mu sendiri dengan mcp-scan dari Invariant Labs sebelum sebuah plugin mengauditmu.</description>
             <pubDate>Wed, 21 Oct 2026 00:00:00 -0000</pubDate>

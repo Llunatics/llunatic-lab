@@ -36,6 +36,10 @@
     "en": "'Living Off the Land Binary' — a legitimate system tool (like certutil.exe or powershell.exe) that attackers abuse to blend in, since it is already trusted on the machine.",
     "id": "'Living Off the Land Binary' — tool sistem yang sah (seperti certutil.exe atau powershell.exe) yang disalahgunakan penyerang agar menyatu dengan aktivitas normal, karena tool tersebut memang dipercaya di mesin itu."
   },
+  "MCP": {
+    "en": "Model Context Protocol — Anthropic's open standard (November 2024) letting AI assistants call external tools such as filesystems, APIs, databases, and developer utilities. MCP servers execute real system actions on the model's behalf.",
+    "id": "Model Context Protocol — standar terbuka dari Anthropic (November 2024) yang memungkinkan asisten AI memanggil tool eksternal seperti filesystem, API, database, dan utilitas developer. MCP server mengeksekusi aksi sistem yang nyata atas nama model."
+  },
   "MFA": "Multi-Factor Authentication — layered verification beyond a password, e.g. OTP codes or hardware keys.",
   "MITRE ATT&CK": {
     "en": "A public knowledge base of adversary tactics and techniques, organized from initial access to impact — the common language defenders use to describe attacker behavior.",
@@ -128,12 +132,24 @@
     "id": "Teknik yang dipakai penyerang agar tetap bertahan melewati reboot dan pembersihan — service, scheduled task, registry key — sehingga akses tetap ada setelah pijakan awal."
   },
   "phishing": "Fraud via email or messages impersonating a trusted party to steal credentials.",
+  "prompt injection": {
+    "en": "An attack that smuggles instructions into data an LLM reads — a webpage, email, tool description, or file — so the model treats attacker text as commands. MITRE ATT&CK v20 (October 2026) lists Direct and Indirect Prompt Injection as distinct techniques.",
+    "id": "Serangan yang menyelundupkan instruksi ke dalam data yang dibaca LLM — halaman web, email, deskripsi tool, atau file — sehingga model memperlakukan teks penyerang sebagai perintah. MITRE ATT&CK v20 (Oktober 2026) mencatat Direct dan Indirect Prompt Injection sebagai teknik tersendiri."
+  },
   "proof of concept": {
     "en": "A working demonstration that a vulnerability can actually be exploited, usually published to pressure vendors and warn defenders.",
     "id": "Demonstrasi yang menunjukkan bahwa sebuah kerentanan benar-benar bisa dieksploitasi, biasanya dipublikasikan untuk menekan vendor dan memperingatkan defender."
   },
   "ransomware": "Malware that encrypts victim data and demands payment for its return.",
   "red team": "The attackers — the side that simulates attacks to test defenses (ethical hacking).",
+  "rug pull": {
+    "en": "In MCP security, a server that scans clean on first review but swaps its tool definitions for malicious ones afterwards. Countered with tool pinning: hashing tool metadata and alerting when it changes.",
+    "id": "Dalam keamanan MCP, server yang lolos pemindaian awal lalu menukar definisi tool-nya dengan yang jahat. Dilawan dengan tool pinning: meng-hash metadata tool dan memberi peringatan saat berubah."
+  },
+  "secrets management": {
+    "en": "The practice of securely storing, distributing, rotating, and revoking credentials like API keys, passwords, and certificates — ideally through a dedicated secrets manager with access control and audit logs, never in plaintext files or repositories.",
+    "id": "Praktik menyimpan, mendistribusikan, merotasi, dan mencabut kredensial seperti API key, password, dan sertifikat secara aman — idealnya lewat secrets manager khusus dengan kontrol akses dan audit log, jangan pernah dalam file atau repository plaintext."
+  },
   "spoofing": {
     "en": "Sending crafted requests that falsely present themselves as already authenticated or trusted — the server skips its checks because the request 'looks' legitimate. CVE-2026-104935 abuses this to bypass authentication entirely.",
     "id": "Mengirim permintaan yang dibuat-buat agar tampak sudah terotentikasi atau terpercaya — server melewatkan pemeriksaannya karena permintaan 'terlihat' sah. CVE-2026-104935 menyalahgunakan ini untuk melewati otentikasi sepenuhnya."
@@ -148,6 +164,14 @@
     "id": "Paparan keamanan yang diwariskan organisasi dari vendor, mitra, dan kontraktornya — setiap pihak ketiga yang punya akses ke sistem atau data menjadi jalur serangan potensial."
   },
   "threat intelligence": "Structured information about attacker tactics, techniques, and behavior.",
+  "tool poisoning": {
+    "en": "Hidden malicious instructions embedded in an MCP tool's description. The agent reads the description as trusted context and follows the instructions — no exploit needed, just text in a JSON field. Named and demonstrated by Invariant Labs in April 2025.",
+    "id": "Instruksi jahat tersembunyi yang disisipkan dalam deskripsi tool MCP. Agen membaca deskripsi sebagai konteks tepercaya lalu menuruti instruksinya — tanpa exploit, hanya teks dalam field JSON. Dinamai dan didemonstrasikan oleh Invariant Labs pada April 2025."
+  },
+  "tool shadowing": {
+    "en": "An MCP attack in which a malicious tool quietly overrides a legitimate one under the same name, so the agent calls the attacker's code while the user sees a familiar label.",
+    "id": "Serangan MCP di mana tool jahat diam-diam menimpa tool sah dengan nama yang sama, sehingga agen memanggil kode penyerang sementara pengguna melihat label yang familiar."
+  },
   "vulnerability": "A weakness in a system or application that attackers can exploit.",
   "webshell": {
     "en": "A malicious script uploaded to a web server that gives an attacker remote command execution through the browser — a permanent backdoor disguised as a web page.",
@@ -157,25 +181,5 @@
     "en": "A fast, non-cryptographic PRNG algorithm used by the V8 JavaScript engine's Math.random(). Its outputs are reversible, so observing enough values lets an attacker recover its internal state.",
     "id": "Algoritma PRNG non-kriptografis yang cepat, dipakai Math.random() pada engine JavaScript V8. Output-nya bisa dibalik, sehingga pengamat yang melihat cukup banyak nilai dapat memulihkan state internal-nya."
   },
-  "zero-day": "A security flaw unknown to the public and the vendor — no patch exists when it's exploited.",
-  "MCP": {
-    "en": "Model Context Protocol — Anthropic's open standard (November 2024) letting AI assistants call external tools such as filesystems, APIs, databases, and developer utilities. MCP servers execute real system actions on the model's behalf.",
-    "id": "Model Context Protocol — standar terbuka dari Anthropic (November 2024) yang memungkinkan asisten AI memanggil tool eksternal seperti filesystem, API, database, dan utilitas developer. MCP server mengeksekusi aksi sistem yang nyata atas nama model."
-  },
-  "tool poisoning": {
-    "en": "Hidden malicious instructions embedded in an MCP tool's description. The agent reads the description as trusted context and follows the instructions — no exploit needed, just text in a JSON field. Named and demonstrated by Invariant Labs in April 2025.",
-    "id": "Instruksi jahat tersembunyi yang disisipkan dalam deskripsi tool MCP. Agen membaca deskripsi sebagai konteks tepercaya lalu menuruti instruksinya — tanpa exploit, hanya teks dalam field JSON. Dinamai dan didemonstrasikan oleh Invariant Labs pada April 2025."
-  },
-  "tool shadowing": {
-    "en": "An MCP attack in which a malicious tool quietly overrides a legitimate one under the same name, so the agent calls the attacker's code while the user sees a familiar label.",
-    "id": "Serangan MCP di mana tool jahat diam-diam menimpa tool sah dengan nama yang sama, sehingga agen memanggil kode penyerang sementara pengguna melihat label yang familiar."
-  },
-  "rug pull": {
-    "en": "In MCP security, a server that scans clean on first review but swaps its tool definitions for malicious ones afterwards. Countered with tool pinning: hashing tool metadata and alerting when it changes.",
-    "id": "Dalam keamanan MCP, server yang lolos pemindaian awal lalu menukar definisi tool-nya dengan yang jahat. Dilawan dengan tool pinning: meng-hash metadata tool dan memberi peringatan saat berubah."
-  },
-  "prompt injection": {
-    "en": "An attack that smuggles instructions into data an LLM reads — a webpage, email, tool description, or file — so the model treats attacker text as commands. MITRE ATT&CK v20 (October 2026) lists Direct and Indirect Prompt Injection as distinct techniques.",
-    "id": "Serangan yang menyelundupkan instruksi ke dalam data yang dibaca LLM — halaman web, email, deskripsi tool, atau file — sehingga model memperlakukan teks penyerang sebagai perintah. MITRE ATT&CK v20 (Oktober 2026) mencatat Direct dan Indirect Prompt Injection sebagai teknik tersendiri."
-  }
+  "zero-day": "A security flaw unknown to the public and the vendor — no patch exists when it's exploited."
 }

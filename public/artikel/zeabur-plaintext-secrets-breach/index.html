@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zeabur: How Plaintext Secrets Killed a Hosting Platform — A Case Breakdown — llunatic-lab</title>
+<meta name="description" content="No zero-day. No nation-state. Just a non-expiring admin token sitting in plaintext in a config repo — and it cost Zeabur 3.2 million secrets, root on 101 customer servers, and eventually the company itself.">
+<meta property="og:title" content="Zeabur: How Plaintext Secrets Killed a Hosting Platform — A Case Breakdown">
+<meta property="og:description" content="No zero-day. No nation-state. Just a non-expiring admin token sitting in plaintext in a config repo — and it cost Zeabur 3.2 million secrets, root on 101 customer servers, and eventually the company itself.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/zeabur-plaintext-secrets-breach.jpg"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/zeabur-plaintext-secrets-breach/"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/zeabur-plaintext-secrets-breach/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/arsip/">Archive</a>
+      <a href="/tentang/">About</a>
+      <a class="lang-toggle" href="/id/artikel/zeabur-plaintext-secrets-breach/">ID</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>article</div>
+              <h1>Zeabur: How Plaintext Secrets Killed a Hosting Platform — A Case Breakdown</h1>
+              <div class="meta"><span>23 October 2026</span><span>·</span>
+              <span>8 min read</span><a class="tag" href="/tag/case-breakdown/">case-breakdown</a> <a class="tag" href="/tag/secrets-management/">secrets-management</a> <a class="tag" href="/tag/cloud-security/">cloud-security</a></div>
+              <img class="cover" src="/assets/covers/zeabur-plaintext-secrets-breach.jpg" alt="Zeabur: How Plaintext Secrets Killed a Hosting Platform — A Case Breakdown">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>A hosting platform died this month, and the murder weapon was a config repository.</p>
+<p>Zeabur — a developer platform where you connect a GitHub repo and it handles builds, databases, HTTPS, and servers — published its second breach report in two months on October 19, 2026. Between October 14 and 15, an attacker read the secrets of every service on its shared clusters across nine regions, gained root on 101 customer servers, and dumped the platform database: <strong>321,810 accounts and 3,218,965 environment-variable records</strong>. Days later, Zeabur announced it will shut down on December 31, 2026.</p>
+<p>The official report is unusually candid, and it names the root cause in one sentence: <em>&quot;long-lived admin credentials were stored in plaintext and could be used from the public internet.&quot;</em> That&#x27;s the whole story. Everything else is just that sentence playing out in slow motion, and it&#x27;s worth studying frame by frame — because the same habits live in companies that are still alive.</p>
+<h2 id="act-one-the-breach-they-didn-t-finish-fixing"><span class="hnum">01</span>Act one: the breach they didn&#x27;t finish fixing</h2>
+<p>The October intrusion began on August 27. An attacker exploited a customer&#x27;s NextChat application (v2.16.1, tracked as CVE-2026-7644) running on a Zeabur shared cluster. Weak isolation between tenants let the attacker reach a routing cache holding Zeabur&#x27;s legacy API keys, then use a team administrator&#x27;s key to find an AWS root key inside an internal service, then read project environment variables from the production database.</p>
+<p>Zeabur learned about it on August 28 from an API-key abuse report — not from its own monitoring. It notified users and rotated keys.</p>
+<p>But the rotation missed two things: a shared-cluster admin token created in January 2024 <strong>with no expiry</strong>, and AWS keys. Both had been sitting in plaintext in a private configuration repository since January 2026. For nearly two years, a token that could administer the whole cluster never expired. For nine months, anyone who could read that repo held the keys to the kingdom.</p>
+<p>This is the lesson the October incident screams: a partial <span class="gterm" data-term="incident response" data-def="The organized process of detecting, containing, eradicating, and recovering from a security incident, usually following a rehearsed playbook.">incident response</span> is sometimes worse than none, because it creates the belief that the problem is solved. The blast radius was understood, the obvious keys were rotated, and everyone exhaled — while the one credential that mattered most kept working, silently, in a repository.</p>
+<h2 id="act-two-two-paths-one-plaintext"><span class="hnum">02</span>Act two: two paths, one plaintext</h2>
+<p>On October 14 at 01:36 UTC, the attacker returned with the missed credentials and took two paths that eventually met inside Zeabur&#x27;s internal network.</p>
+<p><strong>Path A: the shared cluster.</strong> The attacker used Zeabur&#x27;s AWS keys, then — four minutes later — the never-expiring admin token. The crucial detail: <strong>the shared cluster&#x27;s admin interface was reachable from the public internet</strong>. A stolen token needed no foothold inside the network, no VPN, no pivot. From outside the world, straight into the crown jewels of nine regions.</p>
+<p>By 12:39, the attacker was reading the settings and secrets of <em>all services</em> on the shared clusters, including environment variables. From 13:40, they ran read commands inside 865 customer database containers. The numbers from the report are staggering: 736 of them were <strong>n8n</strong> instances. Of the 607 n8n instances Zeabur checked, <strong>602 stored their encryption key in an environment variable</strong> — and that key decrypts every third-party credential n8n holds for its workflows. So reading environment variables effectively exposed those downstream logins too, one credential chain tumbling into the next.</p>
+<p>The attacker then used an over-privileged cluster key to read a backup of an old cluster, found a key to Zeabur&#x27;s secrets management service, and read about 53 production secrets — including the internal network&#x27;s admin credentials, a platform database account, and the GitHub App private key. They also read the key used to sign login credentials and forged sessions as two accounts, one of them a Zeabur employee&#x27;s.</p>
+<p><strong>Path B: the dedicated servers.</strong> An old GCP key gave the attacker access to server initialization settings, where <strong>root passwords were stored in plaintext</strong>. From October 14 at 13:40, the attacker signed in as root to 101 dedicated servers belonging to 92 users. They added their own SSH keys to 50 of them for <span class="gterm" data-term="persistence" data-def="Techniques an attacker uses to survive reboots and cleanup — services, scheduled tasks, registry keys — so access remains after the initial foothold.">persistence</span>, created five virtual machines, and attached copies of 16 customer disks.</p>
+<p>On October 15, the paths joined: internal-network credentials taken via Path A let the attacker add their own node to Zeabur&#x27;s internal network from a compromised server, and between 16:10 and 16:47 UTC, they read the platform database through it — all 29 connections mapped, 8,903 operation records, every environment variable, every account.</p>
+<p>There&#x27;s a detail that deserves a moment of silence. Zeabur began investigating at <strong>13:56 UTC on October 15, after a user report</strong> — again, not from its own alerts. The attacker had been inside for more than 36 hours.</p>
+<p>And one more chilling footnote: sometime during the attack, Zeabur&#x27;s daily backup captured a <em>newly rotated</em> key and the attacker read it from the backup and used it at 20:30. Rotating secrets while the attacker can read your backups is like changing the locks while handing out copies of the new keys.</p>
+<h2 id="what-the-attacker-actually-wanted"><span class="hnum">03</span>What the attacker actually wanted</h2>
+<p>The report&#x27;s observations on attacker intent are telling. The attacker searched the platform database for API keys, read n8n and new-api/one-api credentials at scale, and tried calling <strong>Amazon Bedrock</strong> with Zeabur&#x27;s AWS keys. They weren&#x27;t after user profiles — they were hunting AI service keys.</p>
+<p>This is the new credential economy. In 2026, an AI provider API key is as good as cash: it rents someone else&#x27;s GPU fleet to train models, run inference, or resell access. A hosting platform that collects its customers&#x27; most sensitive values — database passwords, cloud keys, AI keys, signing secrets — becomes the highest-value target on the block, because one breach pays out across thousands of victims. That&#x27;s why <span class="gterm" data-term="exfiltration" data-def="The unauthorized transfer of data out of a network to attacker-controlled infrastructure — the quiet theft that precedes encryption in modern ransomware.">exfiltration</span> of secrets is so much worse than the <span class="gterm" data-term="third-party risk" data-def="The security exposure an organization inherits from its vendors, partners, and contractors — every third party with access to systems or data becomes a potential attack path.">third-party risk</span> the Denmark breach taught us about: this isn&#x27;t a vendor with access to your data, it&#x27;s a vendor <em>holding your keys</em>.</p>
+<h2 id="the-mitigation-checklist-for-everyone-not-just-zeabur-s-customers"><span class="hnum">04</span>The mitigation checklist (for everyone, not just Zeabur&#x27;s customers)</h2>
+<p>Zeabur&#x27;s own remediation list is excellent, and the principles generalize to any team that stores secrets:</p>
+<ol>
+<li><strong>Rotate everything, then revoke the old values at the provider.</strong> Zeabur&#x27;s customers were told to revoke keys at AWS, Google Cloud, Stripe, OpenAI, Anthropic first, then issue new ones. Changing a secret only on your side while the old one still works is theater.</li>
+<li><strong>Secrets must expire and rotate automatically.</strong> A token created in January 2024 with no expiry is not a credential, it&#x27;s a permanent spare key. Short-lived credentials, automatic rotation, no exceptions for &quot;internal&quot; tokens.</li>
+<li><strong>Never store secrets in plaintext — in repos, in init settings, anywhere.</strong> A private repo is not a secrets store. Environment variables are not encryption. If your secret is readable by anything that isn&#x27;t a secrets manager with an audit log, it&#x27;s already leaked in spirit.</li>
+<li><strong>Keep admin interfaces off the internet.</strong> If the shared-cluster admin console hadn&#x27;t been publicly reachable, the stolen token would have been far less useful. Admin planes belong behind network controls, <span class="gterm" data-term="MFA" data-def="Multi-Factor Authentication — layered verification beyond a password, e.g. OTP codes or hardware keys.">MFA</span>, and ideally mutual TLS — never one bearer token away from the whole world.</li>
+<li><strong>Enforce <span class="gterm" data-term="least privilege" data-def="The security principle that every account, process, or service should hold only the minimum access needed to do its job — nothing more.">least privilege</span> on internal keys.</strong> An &quot;over-privileged key&quot; that could read an old cluster backup became the bridge from the cluster to the secrets management service. Every credential should hold the minimum access it needs, so one leak can&#x27;t cascade into the next.</li>
+<li><strong>Monitor like your customers&#x27; keys depend on it — because they do.</strong> Both Zeabur incidents were discovered through outside reports. Anomaly detection on credential use (a token from a new network, reads at 01:36 UTC, thousands of secrets in bulk) is table stakes.</li>
+<li><strong>Treat dedicated servers as compromised until proven otherwise.</strong> Zeabur told affected users to rebuild from scratch and check <code>authorized_keys</code> for the comment <code>@zeabur-pentest</code>. With root access and SSH keys added, there is no &quot;cleaned&quot; — only rebuilt.</li>
+</ol>
+<p>One structural lesson deserves its own frame: <strong>projects that followed Zeabur&#x27;s post-August guidance and migrated their environment variables to their own dedicated servers were outside the scope of the platform database read.</strong> Decentralizing secrets — refusing to hand all your keys to one platform — was the single best defense, and it worked. The customers who trusted the platform least were hurt least.</p>
+<h2 id="the-closing-shot"><span class="hnum">05</span>The closing shot</h2>
+<p>Zeabur did several things right at the end: a detailed, honest preliminary report, clear victim guidance, and the grim final announcement. But honesty after the fact doesn&#x27;t resurrect a company whose security model relied on secrets nobody expired, rotated, or protected.</p>
+<p>The uncomfortable truth is that most of the failures here were unglamorous: plaintext in a config repo, a token with no expiry, an admin page on the internet, secrets without alarms. No exotic exploit. Just the basics, skipped, for years — until someone came to collect.</p>
+<p>So audit your own plaintext today. Search your repos for <code>AKIA</code>, for <code>sk-</code>, for private keys committed &quot;temporarily&quot; three years ago. Check which tokens in your infrastructure have no expiry date. Because the Zeabur case proves one thing beyond doubt: <strong>the attacker who finds your spare keys doesn&#x27;t need to pick the lock.</strong> You&#x27;re already handing them the door.</p>
+<hr>
+<p><em>Sources: <a href="https://zeabur.com/blogs/october-2026-security-incident">Zeabur&#x27;s October 2026 security incident report</a> (primary, published October 19, 2026); <a href="https://breachhistory.com/blog/zeabur-second-breach-shutdown-october-2026">August 2026 incident context and shutdown announcement</a>; Exploit Security newsletter, October 16–21, 2026.</em></p><div class="author-box"><div class="kicker"><span class="dot"></span>written by</div><p><strong>kou</strong> documents what’s learned about threat intel, attack surface, and practical defense — from the dark side of the internet.</p></div><div class="pager"><a href="/artikel/mcp-server-audit-scan/"><span class="dir">← previous</span><span class="t">Your Agent&#x27;s Plugins Are the New Attack Surface: Auditing MCP Servers With mcp-scan</span></a><span></span></div></div>
+                <aside class="toc"><h4>Contents</h4><ol><li style="margin-left:0px"><a href="#act-one-the-breach-they-didn-t-finish-fixing">Act one: the breach they didn&#x27;t finish fixing</a></li><li style="margin-left:0px"><a href="#act-two-two-paths-one-plaintext">Act two: two paths, one plaintext</a></li><li style="margin-left:0px"><a href="#what-the-attacker-actually-wanted">What the attacker actually wanted</a></li><li style="margin-left:0px"><a href="#the-mitigation-checklist-for-everyone-not-just-zeabur-s-customers">The mitigation checklist (for everyone, not just Zeabur&#x27;s customers)</a></li><li style="margin-left:0px"><a href="#the-closing-shot">The closing shot</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>security notes from the dark side of the internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="search articles…" aria-label="search">
+    <div class="search-hint">type at least 2 characters · esc to close · ctrl+k anywhere</div>
+    <div class="search-results" data-empty="nothing found — try another keyword."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

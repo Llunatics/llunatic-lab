@@ -181,5 +181,9 @@
     "en": "A fast, non-cryptographic PRNG algorithm used by the V8 JavaScript engine's Math.random(). Its outputs are reversible, so observing enough values lets an attacker recover its internal state.",
     "id": "Algoritma PRNG non-kriptografis yang cepat, dipakai Math.random() pada engine JavaScript V8. Output-nya bisa dibalik, sehingga pengamat yang melihat cukup banyak nilai dapat memulihkan state internal-nya."
   },
-  "zero-day": "A security flaw unknown to the public and the vendor — no patch exists when it's exploited."
+  "zero-day": "A security flaw unknown to the public and the vendor — no patch exists when it's exploited.",
+  "remote code execution": {
+    "en": "An attacker running their own code on a victim system, usually the most severe outcome of a vulnerability.",
+    "id": "Penyerang menjalankan kodenya sendiri di sistem korban, biasanya dampak paling berat dari sebuah kerentanan."
+  }
 }

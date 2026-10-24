@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHP2Shell: Saat Runtime-nya Sendiri yang Jadi Celah — Bedah Kasus — llunatic-lab</title>
+<meta name="description" content="Bukan plugin yang jebol. Bukan password yang ketebak. Dua celah di PHP sendiri memungkinkan penyerang tanpa akun menjalankan kode di server web — dan percobaan eksploitasi pertamanya datang empat hari sebelum patch tersedia.">
+<meta property="og:title" content="PHP2Shell: Saat Runtime-nya Sendiri yang Jadi Celah — Bedah Kasus">
+<meta property="og:description" content="Bukan plugin yang jebol. Bukan password yang ketebak. Dua celah di PHP sendiri memungkinkan penyerang tanpa akun menjalankan kode di server web — dan percobaan eksploitasi pertamanya datang empat hari sebelum patch tersedia.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/php2shell-runtime-rce.jpg"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/php2shell-runtime-rce/"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/php2shell-runtime-rce/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/id/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/id/arsip/">Arsip</a>
+      <a href="/id/tentang/">Tentang</a>
+      <a class="lang-toggle" href="/artikel/php2shell-runtime-rce/">EN</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>artikel</div>
+              <h1>PHP2Shell: Saat Runtime-nya Sendiri yang Jadi Celah — Bedah Kasus</h1>
+              <div class="meta"><span>24 Oktober 2026</span><span>·</span>
+              <span>8 mnt baca</span><a class="tag" href="/id/tag/case-breakdown/">case-breakdown</a> <a class="tag" href="/id/tag/php/">php</a> <a class="tag" href="/id/tag/vulnerability/">vulnerability</a></div>
+              <img class="cover" src="/assets/covers/php2shell-runtime-rce.jpg" alt="PHP2Shell: Saat Runtime-nya Sendiri yang Jadi Celah — Bedah Kasus">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Kebanyakan cerita keamanan web dimulai dari bug di kode seseorang. Cerita ini dimulai dari lapisan di bawah semua kode itu.</p>
+<p>Pada 21 Oktober 2026, PHP merilis update darurat untuk dua celah kritis di runtime bahasanya sendiri: CVE-2026-109618 dan CVE-2026-109619, yang bersama-sama dijuluki PHP2Shell. Keduanya memungkinkan penyerang tanpa akun mengeksekusi kode di server yang menjalankan PHP, keduanya bernilai CVSS v4.0 9,2, dan keduanya tidak menuntut aplikasi korban ditulis dengan buruk. Situs WordPress dengan kode yang rapi, aplikasi Laravel dengan validasi yang bersih, layanan Symfony tanpa bug yang diketahui — semuanya terekspos, karena celahnya duduk satu lapis di bawah aplikasi, di mesin yang menjalankan aplikasi itu.</p>
+<p>Perbedaan itu adalah inti ceritanya. Kamu bisa mengaudit kodemu bertahun-tahun dan tetap melewatkan ini, karena memang tidak ada apa-apa di kodemu yang bisa ditemukan.</p>
+<h2 id="apa-yang-sebenarnya-rusak"><span class="hnum">01</span>Apa yang sebenarnya rusak</h2>
+<p>Dua celah ini adalah bug yang berbeda dengan tujuan akhir yang sama.</p>
+<p>CVE-2026-109618 terpicu saat PHP kehabisan memori di tengah menyiapkan sebuah request. Sebagian data internal tertinggal dalam keadaan setengah jadi, dan kode pembersih yang berjalan di akhir request tetap mempercayai data yang rusak itu. CVE-2026-109619 soal state yang hidup lebih lama daripada memori yang ditunjuknya: request berikutnya yang diambil oleh worker yang sama bisa bertindak berdasarkan pointer sisa dari request sebelumnya. Dalam kedua kasus, penyerang tidak butuh akun, login, atau akses awal apa pun. Satu request web yang dibuat khusus sudah cukup.</p>
+<p>PHP menyatakan semua instalasi yang melayani request web berisiko — PHP-FPM, php-cgi, FrankenPHP, LiteSpeed, dan mod_php Apache. Mod_php menanggung risiko tertinggi, karena di sana <span class="gterm" data-term="exploit" data-def="A piece of code or technique that takes advantage of a vulnerability.">exploit</span> terverifikasi lewat HTTP dengan limit memori dan input bawaan, sebelum kode aplikasi apa pun mulai berjalan. Detail terakhir itu penting: tidak ada middleware, tidak ada aturan firewall di dalam aplikasimu, tidak ada filter input yang kamu tulis yang bisa menghentikannya, karena kodemu belum berjalan sama sekali.</p>
+<p>Satu jalur yang terkonfirmasi melewati fitur session upload progress PHP, yang aktif secara default dan memungkinkan aplikasi melacak progres upload file. Fitur itu akan muncul lagi nanti dalam cerita ini, dengan cara yang seharusnya membuat siapa pun yang buru-buru menambal kemarin kembali memperhatikan.</p>
+<p>Celah ini dilaporkan oleh peneliti dari Wiz dan Calif, bekerja sama dengan tim keamanan PHP, dan memengaruhi hampir semua versi PHP sampai ke belakang, hingga 5.4. Versi yang sudah diperbaiki adalah PHP 8.5.12, 8.4.27, 8.3.36, dan 8.2.35. Cabang yang lebih tua tidak mendapat rilis bernomor sama sekali: tim PHP menerbitkan backport sumber minimal untuk 7.4, 8.0, dan 8.1, bagi yang membangun dari source atau punya vendor long-term support. Kalau kamu masih di 8.1 atau lebih tua, kalimat &quot;kami sudah update WordPress&quot; tidak pernah jadi jawaban. WordPress tidak membawa PHP. Host-mu, image container-mu, server-mu yang membawa.</p>
+<h2 id="disclosure-yang-berantakan-di-depan-publik"><span class="hnum">02</span>Disclosure yang berantakan di depan publik</h2>
+<p>PHP2Shell tidak mendapat coordinated disclosure yang rapi. Ia mendapat seminggu penuh kebocoran, patch yang datang lebih awal, dan perdebatan soal siapa yang bergerak duluan.</p>
+<p>Rangkaiannya, sejauh yang bisa direkonstruksi dari catatan publik, kira-kira begini. Pada 17 Oktober, jaringan honeypot Amazon merekam percobaan eksploitasi terhadap celah ini — empat hari sebelum patch apa pun ada, selagi kerentanan masih dalam masa embargo. Bagaimana penyerang mendapatkan detailnya masih belum diketahui. Pada 20 Oktober, detail bocor di media sosial menjelang jadwal disclosure 22 Oktober, dan sebuah video <span class="gterm" data-term="proof of concept" data-def="Demonstrasi yang menunjukkan bahwa sebuah kerentanan benar-benar bisa dieksploitasi, biasanya dipublikasikan untuk menekan vendor dan memperingatkan defender.">proof of concept</span> keliru dipublikasikan oleh salah satu firma peneliti. Malam itu juga PHP mengumumkan rilis darurat untuk keesokan harinya.</p>
+<p>Pada 21 Oktober, Cloudflare mengaktifkan aturan firewall darurat secara default pukul 03:02 UTC, berjam-jam sebelum perbaikan. Pukul 07:41 UTC, vendor container Chainguard menerbitkan image yang sudah berisi patch, sekitar enam jam sebelum rilis terkoordinasi — langkah yang kemudian dikritik PHP Foundation, dan dibela Chainguard dengan alasan mereka bertindak setelah vendor lain melaporkan serangan. Pukul 14:00 UTC, PHP menerbitkan versi yang sudah diperbaiki.</p>
+<p>Dalam hitungan jam, watchTowr melaporkan eksploitasi yang teramati di alam liar lewat jaringan honeypot-nya, dan firma lain menggambarkan pemindaian luas yang tidak tertarget. Pada saat yang sama, catatannya lebih berantakan daripada yang ditulis headline. CISA, saat menerbitkan alert-nya, menyatakan belum mengamati eksploitasi. WatchTowr sendiri pada awalnya menggambarkan percobaan, bukan keberhasilan yang terkonfirmasi. PHP Foundation menyatakan <span class="gterm" data-term="proof of concept" data-def="Demonstrasi yang menunjukkan bahwa sebuah kerentanan benar-benar bisa dieksploitasi, biasanya dipublikasikan untuk menekan vendor dan memperingatkan defender.">proof of concept</span> yang beredar dan sempat diperiksanya bukan exploit yang berfungsi pada saat rilis. Hingga 22 Oktober, tidak satu pun dari kedua <span class="gterm" data-term="CVE" data-def="Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.">CVE</span> itu masuk katalog <span class="gterm" data-term="KEV" data-def="Katalog Known Exploited Vulnerabilities milik CISA: daftar singkat celah yang terbukti dieksploitasi di lapangan. Instansi federal AS wajib memperbaikinya sebelum tenggat tertentu — praktisi memperlakukan setiap entri sebagai &#x27;patch sekarang&#x27;.">KEV</span> CISA.</p>
+<p>Keberantakan itu bukan catatan kaki. Itu bentuk normal dari seminggu zero-day: sensor yang berbeda melihat hal yang berbeda pada waktu yang berbeda, &quot;exploited in the wild&quot; bisa berarti probe terhadap honeypot dan bukan server yang benar-benar diambil alih, dan belum ada sumber publik yang menyebut satu situs bernama yang terkonfirmasi dibobol lewat PHP2Shell. Menganggap probe sebagai pembobolan melebih-lebihkan kerusakan. Menganggap tidak adanya korban bernama sebagai tanda aman meremehkannya, karena percobaan itu dimulai sebelum patch ada — yang berarti server yang ditambal pada 21 Oktober pun bisa saja sudah diprobe pada 17 Oktober.</p>
+<p>Respons praktis di beberapa negara mencerminkan ketidakpastian itu. NSA, CISA, dan FBI menyarankan organisasi yang belum bisa update segera untuk mempertimbangkan menonaktifkan situs webnya. Situs pemerintah dan layanan publik di Belanda, Jerman, Prancis, Belgia, Finlandia, dan Ceko, plus beberapa council di Inggris, padam sebagai pencegahan selagi menambal. Pemadaman itu bukan pengakuan sudah dibobol. Itu wujud kehati-hatian saat runtime di bawah semua yang kamu jalankan berlubang dan perbaikannya belum terpasang.</p>
+<h2 id="lalu-pada-23-oktober-advisory-kedua"><span class="hnum">03</span>Lalu, pada 23 Oktober, advisory kedua</h2>
+<p>Tepat saat tim-tim menyelesaikan patch darurat, PHP menerbitkan advisory lain pada 23 Oktober — dan gampang disalahpahami, jadi layak dinyatakan dengan presisi.</p>
+<p>Isu baru ini, tercatat sebagai CVE-2026-115560, adalah jalur <span class="gterm" data-term="remote code execution" data-def="Penyerang menjalankan kodenya sendiri di sistem korban, biasanya dampak paling berat dari sebuah kerentanan.">remote code execution</span> potensial yang melibatkan session upload progress. Tapi ia hanya berlaku dalam kombinasi yang tidak biasa: aplikasi mula-mula mengonfigurasi <code>session.serialize_handler</code> sebagai <code>php_binary</code> atau <code>php_serialize</code>, lalu mengubahnya saat runtime dengan <code>ini_set()</code> menjadi <code>php</code> sebelum memanggil <code>session_start()</code>, selagi session upload progress tetap aktif. Aplikasi yang tidak pernah mengubah serialization handler saat runtime tidak terekspos lewat jalur ini, sekalipun upload progress menyala.</p>
+<p>PHP tidak mengeluarkan patch darurat untuknya. Rencananya perbaikan masuk rilis bugfix reguler, dengan advisory lengkap menyertainya, dan pada saat pemberitahuan 23 Oktober itu versi yang terdampak dan skor severity-nya belum dipublikasikan. Mitigasi yang disarankan sederhana:</p>
+<pre><code class="language-ini">session.upload_progress.enabled = 0</code></pre>
+<p>Kalau kamu sudah menonaktifkan upload progress sebagai respons terhadap advisory 21 Oktober untuk CVE-2026-109619, PHP menyatakan tidak ada tindakan lanjutan yang diperlukan untuk isu ini. Dan menonaktifkan upload progress tidak menggantikan update 21 Oktober. Ia membantu melawan satu jalur dari satu celah. Ia tidak berbuat apa-apa terhadap CVE-2026-109618. Hanya update yang memperbaiki PHP2Shell secara penuh.</p>
+<p>Di situlah jebakan advisory kedua ini bagi tim yang sudah lelah: ia tampak seperti darurat lain, dan sekaligus tampak seperti alasan untuk santai. Ia bukan keduanya. Ia isu yang lebih sempit dan membara lebih pelan, menempel pada fitur yang sama, dan ia memberi hadiah tepat kepada orang yang membaca kondisinya, bukan cuma headline-nya.</p>
+<h2 id="yang-benar-benar-harus-dilakukan"><span class="hnum">04</span>Yang benar-benar harus dilakukan</h2>
+<p>Kalau kamu menjalankan apa pun di atas PHP, checklist-nya pendek dan tidak mengenal ampun:</p>
+<ol>
+<li><strong>Periksa runtime-nya, bukan aplikasinya.</strong> Jalankan <code>php -v</code> di server yang benar-benar melayani traffic, dan periksa setiap tempat lain PHP bersembunyi: container lain, server staging, VPS lama yang tidak ada yang ingat, appliance vendor. Palo Alto Networks menghitung 22,6 juta instance terekspos yang berpotensi rentan dari telemetrinya sendiri — ekor panjang PHP yang terlupakan itulah attack surface yang sesungguhnya di sini.</li>
+<li><strong>Update, lalu restart.</strong> Pindah ke 8.2.35, 8.3.36, 8.4.27, atau 8.5.12 (atau paket vendor yang sudah ditambal), dan restart setiap worker PHP: pool FPM, Apache, worker yang berjalan lama. Binary yang sudah ditambal dan duduk di disk selagi worker lama terus melayani request bukanlah kondisi sudah ditambal.</li>
+<li><strong>Jangan percaya setting sebagai pengganti.</strong> Orang-orang PHP sendiri mengatakannya dengan blak-blakan di minggu rilis: perubahan konfigurasi tidak akan menyelamatkanmu. Aturan WAF, termasuk aturan darurat Cloudflare, adalah penahan sementara yang membeli waktu berjam-jam. Menyetel <code>fatal_error_backtraces = 0</code> memblokir satu jalur terkonfirmasi kalau kamu benar-benar belum bisa update saat itu juga. Tidak satu pun dari itu adalah perbaikan.</li>
+<li><strong>Kalau kamu terekspos sebelum patch, lihat ke belakang, bukan cuma ke depan.</strong> Periksa apakah worker PHP menelurkan shell, interpreter, atau download tool, dan apakah ada proses atau file tak terduga dari jendela 17–21 Oktober. Kalau kamu tidak bisa memastikan sebuah server bersih selama jendela itu, rotasi secret yang dipegang server tersebut. Patch menutup pintu; ia tidak mengusir siapa pun yang sudah lebih dulu masuk.</li>
+<li><strong>Untuk isu 23 Oktober, periksa satu hal di kodemu.</strong> Cari pemanggilan <code>ini_set</code> yang menyentuh <code>session.serialize_handler</code>. Kalau tidak ada yang ketemu, advisory ini bukan daruratmu. Kalau ketemu, nonaktifkan upload progress sampai perbaikan reguler tiba.</li>
+</ol>
+<p>Pelajaran yang lebih dalam kurang teknis dan lebih tidak nyaman. Kebanyakan tim punya proses untuk mengupdate dependency dan hampir tidak punya proses untuk mengupdate runtime. Framework mendapat alert Dependabot dan changelog yang dibaca orang. PHP sendiri, benda di bawah framework itu, diupdate saat host melakukannya, atau saat base image container dibangun ulang, atau tidak pernah. PHP2Shell adalah apa yang terjadi saat celah itu bertemu celah yang tidak membutuhkan bug aplikasi apa pun.</p>
+<p>Kodemu bisa saja aman. Runtime-mu belum tentu. Sampai kamu bisa menjawab, tanpa menebak, versi PHP apa yang sebenarnya dijalankan setiap servermu saat ini, kalimat itu berlaku untukmu.</p>
+<hr>
+<p><em>Sumber: <a href="https://watchtowr.com/intelligence/php-cve-2026-109618-faq/">FAQ PHP2Shell watchTowr</a> (linimasa eksploitasi dan versi perbaikan); <a href="https://thehackernews.com/2026/10/php-issues-emergency-patches-for-two.html">The Hacker News, patch darurat PHP</a> (linimasa disclosure dan peneliti); <a href="https://cve.tools/blog/php2shell-cve-2026-109618-cve-2026-109619">Panduan versi PHP2Shell yang sudah ditambal</a> (rilis perbaikan, backport, dan setting penahan sementara); <a href="https://www.siliconreport.com/hackers-attempted-to-exploit-php-flaws-before-patches">Percobaan honeypot Amazon, 17 Oktober</a> (percobaan eksploitasi sebelum disclosure); <a href="https://www.analyticsinsight.net/news/new-php-security-flaw-raises-concerns-after-emergency-patches">Advisory PHP 23 Oktober soal session upload progress</a> (kondisi CVE-2026-115560 dan mitigasi).</em></p><div class="author-box"><div class="kicker"><span class="dot"></span>ditulis oleh</div><p><strong>kou</strong> mendokumentasikan threat intel, attack surface, dan pertahanan praktis — dari sisi gelap internet.</p></div><div class="pager"><a href="/id/artikel/zeabur-plaintext-secrets-breach/"><span class="dir">← sebelumnya</span><span class="t">Zeabur: Ketika Secret Plaintext Membunuh Sebuah Hosting Platform — Bedah Kasus</span></a><span></span></div></div>
+                <aside class="toc"><h4>Daftar isi</h4><ol><li style="margin-left:0px"><a href="#apa-yang-sebenarnya-rusak">Apa yang sebenarnya rusak</a></li><li style="margin-left:0px"><a href="#disclosure-yang-berantakan-di-depan-publik">Disclosure yang berantakan di depan publik</a></li><li style="margin-left:0px"><a href="#lalu-pada-23-oktober-advisory-kedua">Lalu, pada 23 Oktober, advisory kedua</a></li><li style="margin-left:0px"><a href="#yang-benar-benar-harus-dilakukan">Yang benar-benar harus dilakukan</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>catatan keamanan dari sisi gelap internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="cari artikel…" aria-label="search">
+    <div class="search-hint">ketik minimal 2 huruf · esc untuk tutup · ctrl+k dari mana saja</div>
+    <div class="search-results" data-empty="nggak ketemu — coba kata kunci lain."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

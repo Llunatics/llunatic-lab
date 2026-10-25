@@ -4,7 +4,11 @@
 <title>llunatic-lab (en)</title><link>https://lab.llunaticsys.web.id/</link>
 <description>Security notes from the dark side of the internet</description>
 <language>en</language>
-<item><title>PHP2Shell: When the Runtime Itself Is the Vulnerability — A Case Breakdown</title>
+<item><title>Read-Only to Superuser: Arista&#x27;s VeloCloud Zero-Day and the Third Strike on SD-WAN&#x27;s Control Plane</title>
+            <link>https://lab.llunaticsys.web.id/artikel/arista-velocloud-zero-day-read-only-to-superuser/</link>
+            <description>Arista&#x27;s October 22 advisory describes a SQL injection flaw that turns the lowest-privilege VeloCloud account into a full operator — the third exploited VeloCloud Orchestrator flaw since July, and the first that only needs a login.</description>
+            <pubDate>Sun, 25 Oct 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/artikel/arista-velocloud-zero-day-read-only-to-superuser/</guid></item><item><title>PHP2Shell: When the Runtime Itself Is the Vulnerability — A Case Breakdown</title>
             <link>https://lab.llunaticsys.web.id/artikel/php2shell-runtime-rce/</link>
             <description>No plugin was broken. No password was guessed. Two flaws in PHP itself let an unauthenticated attacker run code on a web server — and the first exploit attempts arrived four days before the patch existed.</description>
             <pubDate>Sat, 24 Oct 2026 00:00:00 -0000</pubDate>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dari Read-Only Jadi Superuser: Zero-Day VeloCloud Arista dan Serangan Ketiga ke Control Plane SD-WAN — llunatic-lab</title>
+<meta name="description" content="Advisory Arista 22 Oktober menggambarkan celah SQL injection yang mengubah akun VeloCloud paling rendah haknya menjadi operator penuh — celah Orchestrator ketiga yang dieksploitasi sejak Juli, dan yang pertama hanya membutuhkan login.">
+<meta property="og:title" content="Dari Read-Only Jadi Superuser: Zero-Day VeloCloud Arista dan Serangan Ketiga ke Control Plane SD-WAN">
+<meta property="og:description" content="Advisory Arista 22 Oktober menggambarkan celah SQL injection yang mengubah akun VeloCloud paling rendah haknya menjadi operator penuh — celah Orchestrator ketiga yang dieksploitasi sejak Juli, dan yang pertama hanya membutuhkan login.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/arista-velocloud-zero-day-read-only-to-superuser.jpg"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/arista-velocloud-zero-day-read-only-to-superuser/"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/arista-velocloud-zero-day-read-only-to-superuser/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/id/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/id/arsip/">Arsip</a>
+      <a href="/id/tentang/">Tentang</a>
+      <a class="lang-toggle" href="/artikel/arista-velocloud-zero-day-read-only-to-superuser/">EN</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>artikel</div>
+              <h1>Dari Read-Only Jadi Superuser: Zero-Day VeloCloud Arista dan Serangan Ketiga ke Control Plane SD-WAN</h1>
+              <div class="meta"><span>25 Oktober 2026</span><span>·</span>
+              <span>7 mnt baca</span><a class="tag" href="/id/tag/threat-intel/">threat-intel</a> <a class="tag" href="/id/tag/zero-day/">zero-day</a> <a class="tag" href="/id/tag/sd-wan/">sd-wan</a> <a class="tag" href="/id/tag/privilege-escalation/">privilege-escalation</a></div>
+              <img class="cover" src="/assets/covers/arista-velocloud-zero-day-read-only-to-superuser.jpg" alt="Dari Read-Only Jadi Superuser: Zero-Day VeloCloud Arista dan Serangan Ketiga ke Control Plane SD-WAN">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Ada jenis ketakutan khusus yang hanya muncul pada kerentanan yang bahkan tidak perlu membobol masuk. Pada 22 Oktober 2026, Arista Networks mengungkapkan bahwa penyerang sudah mengeksploitasi <span class="gterm" data-term="zero-day" data-def="A security flaw unknown to the public and the vendor — no patch exists when it&#x27;s exploited.">zero-day</span> di VeloCloud Orchestrator miliknya — dan tiket masuknya bukan kata sandi admin yang dicuri atau rangkaian exploit yang eksotis. Tiketnya adalah login valid apa pun, termasuk akun dengan hak paling rendah yang ditawarkan sistem: Enterprise Read Only.</p>
+<p>Baca sekali lagi. Akun yang dirancang hanya untuk <em>melihat</em> jaringan kini bisa <em>menjalankan</em> jaringan itu.</p>
+<h2 id="apa-yang-sebenarnya-dikendalikan-velocloud-orchestrator"><span class="hnum">01</span>Apa yang sebenarnya dikendalikan VeloCloud Orchestrator</h2>
+<p>Untuk memahami mengapa ini penting, pahami dulu apa itu orchestrator. VeloCloud <span class="gterm" data-term="SD-WAN" data-def="Software-defined wide-area networking: kantor cabang terhubung lewat perangkat Edge yang dikelola terpusat, dengan lalu lintas diarahkan secara cerdas lewat internet dan jalur privat dari satu orchestrator.">SD-WAN</span> (software-defined wide-area networking) menggantikan model lama — di mana setiap kantor cabang membutuhkan router yang dikonfigurasi manual dengan teliti — dengan fabric yang dikelola terpusat. Kantor cabang terhubung lewat perangkat Edge, lalu lintas diarahkan secara cerdas lewat internet dan jalur privat, dan semuanya dikonfigurasi, dipantau, dan diperbarui dari satu tempat: VeloCloud Orchestrator (VCO).</p>
+<p>Sentralisasi itu adalah nilai jual utamanya, dan juga risiko utamanya. Siapa pun yang mengendalikan orchestrator mengendalikan kebijakan jaringan setiap site yang dikelolanya: lalu lintas mana yang lewat mana, tunnel apa yang ada, perangkat mana yang dipercaya. Operator membuat akun customer dan partner dari sini, dan setiap partner bisa mengelola sekelompok customer. Jadi celah yang menaikkan satu akun customer read-only menjadi hak operator bukan sekadar bug izin kecil — ini kunci utama ke control plane yang berpotensi mencakup banyak organisasi sekaligus.</p>
+<p>Arista mengakuisisi lini produk VeloCloud SD-WAN dari Broadcom, dengan kesepakatan yang diumumkan pada Juli 2025. Produk-produk ini sebelumnya dikenal sebagai VMware SD-WAN by VeloCloud. Silsilah itu penting saat inventarisasi: jika daftar asetmu masih menulis &quot;VMware SD-WAN&quot; atau &quot;VeloCloud&quot;, advisory ini ditujukan untukmu.</p>
+<h2 id="celahnya-cve-2026-114625"><span class="hnum">02</span>Celahnya: CVE-2026-114625</h2>
+<p>Kerentanan ini dilacak sebagai <span class="gterm" data-term="CVE" data-def="Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.">CVE</span>-2026-114625 dan diberi skor 9,9 pada skala CVSS — hampir setinggi mungkin. Ini adalah celah <span class="gterm" data-term="SQL injection" data-def="Serangan di mana input yang dirancang khusus ditafsirkan sebagai query database, bukan data, sehingga penyerang bisa membaca, mengubah, atau mengendalikan data yang seharusnya tidak terekspos.">SQL injection</span> di orchestrator: input yang seharusnya diperlakukan sebagai data justru ditafsirkan sebagai perintah database, sehingga penyerang bisa membengkokkan database aplikasi itu sendiri sesuai kehendaknya. Hasil praktisnya di sini adalah <span class="gterm" data-term="privilege escalation" data-def="Mendapatkan hak akses yang lebih tinggi dari yang semula diberikan — misalnya mengubah akun read-only menjadi administrator atau operator.">privilege escalation</span> dari Enterprise Read Only — peran bawaan paling rendah untuk pengguna customer — ke hak operator, yang secara efektif berperan sebagai superuser lokal dengan akses penuh ke orchestrator.</p>
+<p>Tiga detail dari advisory Arista membuat celah ini lebih buruk daripada bug privilege escalation biasa:</p>
+<ol>
+<li><strong>Hanya butuh login, bukan admin.</strong> Kredensial read-only apa pun yang bocor, dipakai bersama, atau usang sudah cukup. Organisasi rutin memberikan akses read-only kepada kontraktor, auditor, mitra managed-service, dan mantan staf yang akunnya masih menggantung. Setiap akun itu kini berpotensi menjadi superuser.</li>
+<li><strong>Orchestrator terekspos secara default.</strong> Arista menyatakan dengan jelas bahwa VCO terekspos secara default dan tidak ada setelan VCO yang mencegahnya. Tidak ada tombol untuk menyembunyikannya; eksposur harus dikendalikan di lapisan jaringan, dengan membatasi jaringan mana saja yang bisa mencapai antarmuka webnya.</li>
+<li><strong>Dampaknya bisa melampaui orchestrator itu sendiri.</strong> Arista menyebut celah ini bisa memungkinkan penyerang memengaruhi host VCO itu sendiri serta mengekspos, mengubah, atau mengganggu orchestrator dan data yang dikelolanya. Untuk celah Juli dan September, Arista memperingatkan bahwa orchestrator yang dikompromikan juga bisa memberi akses ke perangkat VeloCloud Edge; untuk celah ini, advisory tidak menyatakan apakah risiko itu berlaku — ketidakpastian yang harus diperlakukan sebagai alasan untuk menyelidiki, bukan sebagai penenang.</li>
+</ol>
+<h2 id="serangan-ketiga-sejak-juli"><span class="hnum">03</span>Serangan ketiga sejak Juli</h2>
+<p>Bagian inilah yang seharusnya mengubah cara pandangmu terhadap profil risiko produk ini. CVE-2026-114625 adalah celah VeloCloud Orchestrator ketiga yang dilaporkan Arista telah dieksploitasi sejak akhir Juli 2026:</p>
+<ul>
+<li><strong>Juli:</strong> CVE-2026-16812, dieksploitasi tanpa autentikasi.</li>
+<li><strong>September:</strong> CVE-2026-93952, juga dieksploitasi tanpa autentikasi.</li>
+<li><strong>Oktober:</strong> CVE-2026-114625, dieksploitasi dengan login valid apa pun.</li>
+</ul>
+<p>Perhatikan polanya. Dua celah pertama tidak membutuhkan kredensial sama sekali; celah ketiga hanya membutuhkan kredensial terlemah. Penyerang kini sudah membuktikan, tiga kali dalam tiga bulan, bahwa mereka bisa menjangkau dan menyalahgunakan control plane orchestrator. Ini bukan lagi rangkaian nasib buruk — ini bukti bahwa orchestrator adalah target yang aktif diburu, dan menambal satu celah sambil menunda yang berikutnya adalah strategi yang kalah. Perlu dicatat, orchestrator yang menjalankan rilis perbaikan celah Juli dan September <em>masih</em> rentan terhadap celah ini, karena rilis perbaikan itu lebih tua daripada perbaikan baru. &quot;Bulan lalu sudah kami patch&quot; bukan pembelaan di sini; hanya build baru yang spesifik yang dihitung.</p>
+<h2 id="siapa-yang-terdampak-dan-apa-perbaikannya"><span class="hnum">04</span>Siapa yang terdampak, dan apa perbaikannya</h2>
+<p>Untuk orchestrator on-premises, perbaikannya spesifik per lini rilis:</p>
+<div class="tbl-wrap"><table><thead><tr><th>Lini rilis</th><th>Diperbaiki di</th></tr></thead><tbody><tr><td>5.2</td><td>5.2.3.18 dan yang lebih baru</td></tr><tr><td>6.1</td><td>6.1.3.10 dan yang lebih baru</td></tr><tr><td>6.4</td><td>6.4.2.12 dan yang lebih baru</td></tr></tbody></table></div>
+<p>Orchestrator Hosted dan Dedicated sudah ditambal oleh Arista, jadi customer pada model deployment itu tetap harus memverifikasi statusnya, bukan sekadar mengasumsikannya. Perangkat VeloCloud Gateway dan VeloCloud Edge tidak terdampak celah ini, dan lini rilis 7.0 tidak ada dalam daftar rentan — Arista menyatakan rilis apa pun yang tidak ada dalam daftar berarti tidak rentan. Satu catatan: Arista belum memeriksa rilis yang sudah mencapai akhir dukungan, jadi customer pada lini yang tidak didukung sebaiknya menghubungi Technical Assistance Center Arista tentang opsi upgrade, bukan menebak-nebak.</p>
+<p>Ada satu ujung longgar yang patut diperhatikan: per 22 Oktober, celah September hanya diperbaiki di lini 5.2 dan 6.4, dan pada 6.1 celah itu memengaruhi rilis hingga 6.1.3.7 tanpa rilis perbaikan yang terdaftar. Tidak ada advisory yang menyatakan apakah 6.1.3.10 juga memperbaiki celah September. Jika kamu menjalankan 6.1, kejar jawaban itu secara eksplisit ke Arista — jangan berasumsi satu patch menutup kedua lubang.</p>
+<h2 id="memburu-jejak-kompromi"><span class="hnum">05</span>Memburu jejak kompromi</h2>
+<p>Arista telah mempublikasikan dua alamat IP yang teramati melakukan serangan. Blokir keduanya, dan cari jejaknya di log-mu:</p>
+<ul>
+<li><code>74.82.197.86</code></li>
+<li><code>38.54.50.151</code></li>
+</ul>
+<p>Di luar indikator itu, Arista menyarankan untuk memeriksa log akses web VCO untuk permintaan dengan komponen path yang menyerupai URL secara tidak biasa, karakter yang di-encode, referensi ke layanan lokal atau internal, atau laju permintaan yang abnormal. Sampai rilis perbaikan terpasang, Arista juga merekomendasikan membatasi akses ke antarmuka web VCO hanya ke jaringan administratif tepercaya, memantau aktivitas outbound yang tak terduga dari host VCO, memblokir port outbound yang tidak dibutuhkan operasi normal, mewaspadai backdoor daemon dan webshell, serta meninjau aktivitas administrator terbaru untuk perubahan yang tak terduga.</p>
+<p>Jika kamu mencurigai adanya kompromi, amankan bukti sebelum memperbaiki apa pun, bila memungkinkan: log akses web VCO, log aplikasi backend, log sistem dan database, serta timestamp filesystem yang relevan. Poin terakhir ini penting karena satu ketidaknyamanan yang belum terjawab: advisory Arista tidak menyatakan apakah upgrade menghilangkan akses yang sudah didapat penyerang. Menambal menutup pintu; ia tidak mengusir seseorang yang sudah masuk dan menanam persistence. Perlakukan orchestrator yang berpotensi dikompromikan sebagai insiden, bukan sekadar tiket patch: rotasi kredensial, tinjau setiap akun dan perubahan yang dilakukan lewat orchestrator, dan periksa perangkat Edge di hilirnya.</p>
+<h2 id="checklist-mitigasi"><span class="hnum">06</span>Checklist mitigasi</h2>
+<ol>
+<li><strong>Segera upgrade orchestrator on-premises</strong> ke 5.2.3.18, 6.1.3.10, atau 6.4.2.12 sesuai linimu — dan konfirmasi status celah September pada 6.1 secara terpisah.</li>
+<li><strong>Letakkan orchestrator di balik kontrol jaringan.</strong> Karena VCO terekspos secara default dan tidak ada setelan yang mengubahnya, batasi antarmuka webnya hanya ke jaringan administratif tepercaya di lapisan firewall atau VPN.</li>
+<li><strong>Audit akun read-only seperti akun istimewa.</strong> Celah ini menghapus pembeda keamanan antara &quot;bisa melihat&quot; dan &quot;bisa mengendalikan.&quot; Hapus akun usang, tinjau akses partner dan kontraktor, dan terapkan <span class="gterm" data-term="MFA" data-def="Multi-Factor Authentication — layered verification beyond a password, e.g. OTP codes or hardware keys.">MFA</span> pada setiap login orchestrator.</li>
+<li><strong>Berburu dengan indikator yang dipublikasikan.</strong> Cari dua IP penyerang dan pola log mencurigakan di atas, dalam jendela waktu yang luas — Arista tidak menyatakan kapan serangan dimulai, jadi jangan persempit cakupan perburuanmu.</li>
+<li><strong>Asumsikan persistence sampai terbukti sebaliknya.</strong> Jika kompromi mungkin terjadi, amankan log dulu, lalu selidiki akun, perubahan terjadwal, dan akses perangkat Edge sebelum menyatakan insiden selesai.</li>
+</ol>
+<h2 id="penutup"><span class="hnum">07</span>Penutup</h2>
+<p>Industri keamanan suka berkata &quot;assume breach.&quot; Kisah VeloCloud memberi frasa itu sisi yang lebih tajam: asumsikan juga bahwa akun dengan hak paling rendah adalah vektor breach. Pengguna read-only seharusnya adalah akun yang aman — akun yang bisa dibagikan bebas karena tidak <em>bisa</em> melakukan apa-apa. Tiga celah yang dieksploitasi dalam tiga bulan kini telah menghancurkan asumsi itu dua kali lipat: pertama dengan tidak membutuhkan login sama sekali, lalu dengan hanya membutuhkan login terlemah.</p>
+<p>Orchestrator adalah otak dari WAN. Ketika otak itu punya celah yang mengubah pengamat menjadi operator, penambalan bukan jendela pemeliharaan — melainkan keadaan darurat. Periksa versimu, batasi akses ke antarmuka, dan buru log-mu. Para penyerang, kata Arista, sudah melakukannya.</p>
+<hr>
+<p><em>Sumber: <a href="https://thehackernews.com/2026/10/arista-warns-of-critical-velocloud-sql.html">Advisory Arista, 22 Oktober 2026, via The Hacker News</a>; <a href="https://www.cryptopolitan.com/arista-patches-exploited-velocloud-zero-day-as-sd-wan-risks-mount/">Arista patches exploited VeloCloud zero-day (Cryptopolitan, Oktober 2026)</a>.</em></p><div class="author-box"><div class="kicker"><span class="dot"></span>ditulis oleh</div><p><strong>kou</strong> mendokumentasikan threat intel, attack surface, dan pertahanan praktis — dari sisi gelap internet.</p></div><div class="pager"><a href="/id/artikel/php2shell-runtime-rce/"><span class="dir">← sebelumnya</span><span class="t">PHP2Shell: Saat Runtime-nya Sendiri yang Jadi Celah — Bedah Kasus</span></a><span></span></div></div>
+                <aside class="toc"><h4>Daftar isi</h4><ol><li style="margin-left:0px"><a href="#apa-yang-sebenarnya-dikendalikan-velocloud-orchestrator">Apa yang sebenarnya dikendalikan VeloCloud Orchestrator</a></li><li style="margin-left:0px"><a href="#celahnya-cve-2026-114625">Celahnya: CVE-2026-114625</a></li><li style="margin-left:0px"><a href="#serangan-ketiga-sejak-juli">Serangan ketiga sejak Juli</a></li><li style="margin-left:0px"><a href="#siapa-yang-terdampak-dan-apa-perbaikannya">Siapa yang terdampak, dan apa perbaikannya</a></li><li style="margin-left:0px"><a href="#memburu-jejak-kompromi">Memburu jejak kompromi</a></li><li style="margin-left:0px"><a href="#checklist-mitigasi">Checklist mitigasi</a></li><li style="margin-left:0px"><a href="#penutup">Penutup</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>catatan keamanan dari sisi gelap internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="cari artikel…" aria-label="search">
+    <div class="search-hint">ketik minimal 2 huruf · esc untuk tutup · ctrl+k dari mana saja</div>
+    <div class="search-results" data-empty="nggak ketemu — coba kata kunci lain."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Read-Only to Superuser: Arista&#x27;s VeloCloud Zero-Day and the Third Strike on SD-WAN&#x27;s Control Plane — llunatic-lab</title>
+<meta name="description" content="Arista&#x27;s October 22 advisory describes a SQL injection flaw that turns the lowest-privilege VeloCloud account into a full operator — the third exploited VeloCloud Orchestrator flaw since July, and the first that only needs a login.">
+<meta property="og:title" content="Read-Only to Superuser: Arista&#x27;s VeloCloud Zero-Day and the Third Strike on SD-WAN&#x27;s Control Plane">
+<meta property="og:description" content="Arista&#x27;s October 22 advisory describes a SQL injection flaw that turns the lowest-privilege VeloCloud account into a full operator — the third exploited VeloCloud Orchestrator flaw since July, and the first that only needs a login.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/arista-velocloud-zero-day-read-only-to-superuser.jpg"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/arista-velocloud-zero-day-read-only-to-superuser/"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/arista-velocloud-zero-day-read-only-to-superuser/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/arsip/">Archive</a>
+      <a href="/tentang/">About</a>
+      <a class="lang-toggle" href="/id/artikel/arista-velocloud-zero-day-read-only-to-superuser/">ID</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>article</div>
+              <h1>Read-Only to Superuser: Arista&#x27;s VeloCloud Zero-Day and the Third Strike on SD-WAN&#x27;s Control Plane</h1>
+              <div class="meta"><span>25 October 2026</span><span>·</span>
+              <span>8 min read</span><a class="tag" href="/tag/threat-intel/">threat-intel</a> <a class="tag" href="/tag/zero-day/">zero-day</a> <a class="tag" href="/tag/sd-wan/">sd-wan</a> <a class="tag" href="/tag/privilege-escalation/">privilege-escalation</a></div>
+              <img class="cover" src="/assets/covers/arista-velocloud-zero-day-read-only-to-superuser.jpg" alt="Read-Only to Superuser: Arista&#x27;s VeloCloud Zero-Day and the Third Strike on SD-WAN&#x27;s Control Plane">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>There is a special kind of dread reserved for the vulnerability that doesn&#x27;t need to break in. On October 22, 2026, Arista Networks disclosed that attackers are already exploiting a <span class="gterm" data-term="zero-day" data-def="A security flaw unknown to the public and the vendor — no patch exists when it&#x27;s exploited.">zero-day</span> in its VeloCloud Orchestrator — and the entry ticket is not a stolen admin password or an exotic exploit chain. It is any valid login, including the lowest-privilege account the system offers: Enterprise Read Only.</p>
+<p>Read that again. The account designed to <em>look</em> at the network can now <em>run</em> it.</p>
+<h2 id="what-velocloud-orchestrator-actually-controls"><span class="hnum">01</span>What VeloCloud Orchestrator actually controls</h2>
+<p>To understand why this matters, you need to understand what the orchestrator is. VeloCloud <span class="gterm" data-term="SD-WAN" data-def="Software-defined wide-area networking: branch sites connect through centrally managed Edge devices, with traffic steered intelligently across internet and private links from one orchestrator.">SD-WAN</span> (software-defined wide-area networking) replaces the old model — where every branch office needed its own carefully hand-configured router — with a centrally managed fabric. Branch sites connect through Edge devices, traffic is steered intelligently across internet and private links, and everything is configured, monitored, and updated from one place: the VeloCloud Orchestrator (VCO).</p>
+<p>That centralization is the whole selling point, and it is also the whole risk. Whoever controls the orchestrator controls the network policy of every site it manages: which traffic goes where, which tunnels exist, which devices are trusted. Operators create customer and partner accounts from it, and each partner can manage a group of customers. So a flaw that elevates a single read-only customer account to operator privileges is not a minor permission bug — it is a skeleton key to the control plane of potentially many organizations at once.</p>
+<p>Arista acquired the VeloCloud SD-WAN product line from Broadcom, with the deal announced in July 2025. The products were previously known as VMware SD-WAN by VeloCloud. That lineage matters for defenders doing inventory: if your estate still lists &quot;VMware SD-WAN&quot; or &quot;VeloCloud&quot; in an asset register, this advisory is about you.</p>
+<h2 id="the-flaw-cve-2026-114625"><span class="hnum">02</span>The flaw: CVE-2026-114625</h2>
+<p>The vulnerability is tracked as <span class="gterm" data-term="CVE" data-def="Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.">CVE</span>-2026-114625 and rated 9.9 on the CVSS scale — about as severe as ratings get. It is a <span class="gterm" data-term="SQL injection" data-def="An attack where crafted input is interpreted as a database query instead of data, letting an attacker read, alter, or control data the application was not supposed to expose.">SQL injection</span> flaw in the orchestrator: crafted input that is supposed to be treated as data is instead interpreted as a database command, letting the attacker bend the application&#x27;s own database to their will. In this case, the practical result is <span class="gterm" data-term="privilege escalation" data-def="Gaining higher access rights than originally granted — for example, turning a read-only account into an administrator or operator.">privilege escalation</span> from Enterprise Read Only — the lowest built-in role for customer users — to operator privileges, effectively acting as a local superuser with full access to the orchestrator.</p>
+<p>Three details from Arista&#x27;s advisory make this worse than a typical privilege-escalation bug:</p>
+<ol>
+<li><strong>It only needs a login, not an admin.</strong> Any compromised, shared, or stale read-only credential is enough. Organizations routinely hand read-only access to contractors, auditors, managed-service partners, and former staff whose accounts linger. Every one of those is now a potential superuser.</li>
+<li><strong>The orchestrator is exposed by default.</strong> Arista states plainly that VCO is exposed by default and that no VCO setting prevents that exposure. There is no toggle to hide it; exposure must be controlled at the network layer, by restricting which networks can reach the web interface at all.</li>
+<li><strong>The blast radius may extend past the orchestrator itself.</strong> Arista says the flaw may allow an attacker to affect the VCO host itself and to expose, modify, or disrupt the orchestrator and the data it manages. For the July and September flaws, Arista warned that a compromised orchestrator could also grant access to VeloCloud Edge devices; for this flaw, the advisory does not say whether that risk applies — an uncertainty defenders should treat as a reason to investigate, not as reassurance.</li>
+</ol>
+<h2 id="third-strike-since-july"><span class="hnum">03</span>Third strike since July</h2>
+<p>This is the part that should change how you think about the product&#x27;s risk profile. CVE-2026-114625 is the third VeloCloud Orchestrator flaw Arista has reported as exploited since late July 2026:</p>
+<ul>
+<li><strong>July:</strong> CVE-2026-16812, exploited without authentication.</li>
+<li><strong>September:</strong> CVE-2026-93952, also exploited without authentication.</li>
+<li><strong>October:</strong> CVE-2026-114625, exploited with any valid login.</li>
+</ul>
+<p>Notice the pattern. The first two flaws needed no credentials at all; the third needs only the weakest credential. Attackers have now demonstrated, three times in three months, that they can reach and abuse the orchestrator&#x27;s control plane. That is no longer a run of bad luck — it is evidence that the orchestrator is an actively hunted target, and that patching one flaw while deferring the next is a losing strategy. Notably, orchestrators running the releases that fixed the July and September flaws are <em>still</em> affected by this one, because those fixed releases are older than the new fixes. &quot;We patched last month&quot; is not a defense here; only the specific new builds count.</p>
+<h2 id="who-is-affected-and-what-fixes-it"><span class="hnum">04</span>Who is affected, and what fixes it</h2>
+<p>For on-premises orchestrators, the fixes are build-specific per release train:</p>
+<div class="tbl-wrap"><table><thead><tr><th>Release train</th><th>Fixed in</th></tr></thead><tbody><tr><td>5.2</td><td>5.2.3.18 and later</td></tr><tr><td>6.1</td><td>6.1.3.10 and later</td></tr><tr><td>6.4</td><td>6.4.2.12 and later</td></tr></tbody></table></div>
+<p>Hosted and Dedicated orchestrators have already been patched by Arista, so customers on those deployment models should still verify their status rather than assume it. VeloCloud Gateway and VeloCloud Edge devices are not affected by this flaw, and the 7.0 release train is not on the vulnerable list — Arista says any release not on the list is not vulnerable. One caveat: Arista has not checked releases that have reached end of support, so customers on unsupported trains should contact Arista&#x27;s Technical Assistance Center about upgrade options rather than guessing.</p>
+<p>A related loose end deserves attention: as of October 22, the September flaw is fixed only in the 5.2 and 6.4 trains, and on 6.1 it affects releases up to 6.1.3.7 with no fixed release listed. Neither advisory says whether 6.1.3.10 also fixes the September flaw. If you run 6.1, chase that answer explicitly with Arista — do not assume one patch closes both holes.</p>
+<h2 id="hunting-for-compromise"><span class="hnum">05</span>Hunting for compromise</h2>
+<p>Arista has published two IP addresses observed carrying out the attacks. Block them, and search your logs for any trace of them:</p>
+<ul>
+<li><code>74.82.197.86</code></li>
+<li><code>38.54.50.151</code></li>
+</ul>
+<p>Beyond those indicators, Arista advises checking VCO web access logs for requests with unusual URL-like path components, encoded characters, references to local or internal services, or abnormally high request rates. Until the fixed release is installed, it also recommends limiting access to the VCO web interface to trusted administrative networks, monitoring for unexpected outbound activity from the VCO host, blocking outbound ports that normal operation does not need, watching for backdoor daemons and webshells, and reviewing recent administrator activity for unexpected changes.</p>
+<p>If you suspect compromise, preserve evidence before you fix anything, where possible: VCO web access logs, backend application logs, system and database logs, and relevant filesystem timestamps. That last point matters because of an uncomfortable unknown: Arista&#x27;s advisory does not say whether upgrading removes access an attacker has already gained. Patching closes the door; it does not evict someone who already walked through it and planted persistence. Treat a potentially compromised orchestrator as an incident, not a patch ticket: rotate credentials, review every account and change made through the orchestrator, and check downstream Edge devices.</p>
+<h2 id="the-mitigation-checklist"><span class="hnum">06</span>The mitigation checklist</h2>
+<ol>
+<li><strong>Upgrade on-premises orchestrators now</strong> to 5.2.3.18, 6.1.3.10, or 6.4.2.12 for your train — and confirm the September flaw&#x27;s status on 6.1 separately.</li>
+<li><strong>Put the orchestrator behind network controls.</strong> Since VCO is exposed by default and no setting changes that, restrict its web interface to trusted administrative networks at the firewall or VPN layer.</li>
+<li><strong>Audit read-only accounts like privileged ones.</strong> This flaw erases the safety distinction between &quot;can view&quot; and &quot;can control.&quot; Remove stale accounts, review partner and contractor access, and enforce <span class="gterm" data-term="MFA" data-def="Multi-Factor Authentication — layered verification beyond a password, e.g. OTP codes or hardware keys.">MFA</span> on every orchestrator login.</li>
+<li><strong>Hunt with the published indicators.</strong> Search for the two attacker IPs and the suspicious log patterns above, across the full window — Arista has not said when the attacks began, so do not scope your hunt narrowly.</li>
+<li><strong>Assume persistence until proven otherwise.</strong> If compromise is possible, preserve logs first, then investigate accounts, scheduled changes, and Edge device access before declaring the incident closed.</li>
+</ol>
+<h2 id="the-closing-shot"><span class="hnum">07</span>The closing shot</h2>
+<p>The security industry loves to say &quot;assume breach.&quot; The VeloCloud story gives that phrase a sharper edge: assume that your lowest-privilege accounts are breach vectors too. A read-only user was supposed to be the safe account — the one you could hand out freely because it couldn&#x27;t <em>do</em> anything. Three exploited flaws in three months have now demolished that assumption twice over: first by needing no login at all, then by needing only the weakest one.</p>
+<p>The orchestrator is the brain of the WAN. When the brain has a flaw that turns observers into operators, patching is not a maintenance window — it is an emergency. Check your version, restrict access to the interface, and hunt your logs. The attackers, Arista tells us, are already doing the same.</p>
+<hr>
+<p><em>Sources: <a href="https://thehackernews.com/2026/10/arista-warns-of-critical-velocloud-sql.html">Arista advisory, October 22, 2026, via The Hacker News</a>; <a href="https://www.cryptopolitan.com/arista-patches-exploited-velocloud-zero-day-as-sd-wan-risks-mount/">Arista patches exploited VeloCloud zero-day (Cryptopolitan, October 2026)</a>.</em></p><div class="author-box"><div class="kicker"><span class="dot"></span>written by</div><p><strong>kou</strong> documents what’s learned about threat intel, attack surface, and practical defense — from the dark side of the internet.</p></div><div class="pager"><a href="/artikel/php2shell-runtime-rce/"><span class="dir">← previous</span><span class="t">PHP2Shell: When the Runtime Itself Is the Vulnerability — A Case Breakdown</span></a><span></span></div></div>
+                <aside class="toc"><h4>Contents</h4><ol><li style="margin-left:0px"><a href="#what-velocloud-orchestrator-actually-controls">What VeloCloud Orchestrator actually controls</a></li><li style="margin-left:0px"><a href="#the-flaw-cve-2026-114625">The flaw: CVE-2026-114625</a></li><li style="margin-left:0px"><a href="#third-strike-since-july">Third strike since July</a></li><li style="margin-left:0px"><a href="#who-is-affected-and-what-fixes-it">Who is affected, and what fixes it</a></li><li style="margin-left:0px"><a href="#hunting-for-compromise">Hunting for compromise</a></li><li style="margin-left:0px"><a href="#the-mitigation-checklist">The mitigation checklist</a></li><li style="margin-left:0px"><a href="#the-closing-shot">The closing shot</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>security notes from the dark side of the internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="search articles…" aria-label="search">
+    <div class="search-hint">type at least 2 characters · esc to close · ctrl+k anywhere</div>
+    <div class="search-results" data-empty="nothing found — try another keyword."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

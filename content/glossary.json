@@ -185,5 +185,17 @@
   "remote code execution": {
     "en": "An attacker running their own code on a victim system, usually the most severe outcome of a vulnerability.",
     "id": "Penyerang menjalankan kodenya sendiri di sistem korban, biasanya dampak paling berat dari sebuah kerentanan."
+  },
+  "SQL injection": {
+    "en": "An attack where crafted input is interpreted as a database query instead of data, letting an attacker read, alter, or control data the application was not supposed to expose.",
+    "id": "Serangan di mana input yang dirancang khusus ditafsirkan sebagai query database, bukan data, sehingga penyerang bisa membaca, mengubah, atau mengendalikan data yang seharusnya tidak terekspos."
+  },
+  "SD-WAN": {
+    "en": "Software-defined wide-area networking: branch sites connect through centrally managed Edge devices, with traffic steered intelligently across internet and private links from one orchestrator.",
+    "id": "Software-defined wide-area networking: kantor cabang terhubung lewat perangkat Edge yang dikelola terpusat, dengan lalu lintas diarahkan secara cerdas lewat internet dan jalur privat dari satu orchestrator."
+  },
+  "privilege escalation": {
+    "en": "Gaining higher access rights than originally granted — for example, turning a read-only account into an administrator or operator.",
+    "id": "Mendapatkan hak akses yang lebih tinggi dari yang semula diberikan — misalnya mengubah akun read-only menjadi administrator atau operator."
   }
 }

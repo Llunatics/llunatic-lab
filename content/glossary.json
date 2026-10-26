@@ -197,5 +197,25 @@
   "privilege escalation": {
     "en": "Gaining higher access rights than originally granted — for example, turning a read-only account into an administrator or operator.",
     "id": "Mendapatkan hak akses yang lebih tinggi dari yang semula diberikan — misalnya mengubah akun read-only menjadi administrator atau operator."
+  },
+  "Mark of the Web": {
+    "en": "The invisible tag Windows attaches to files downloaded from the internet, stored as a Zone.Identifier alternate data stream. Security controls like SmartScreen and Office Protected View read it to decide how cautiously to treat the file.",
+    "id": "Tanda tak kasat mata yang ditempel Windows pada file yang diunduh dari internet, disimpan sebagai alternate data stream Zone.Identifier. Kontrol keamanan seperti SmartScreen dan Office Protected View membacanya untuk menentukan seberapa hati-hati file itu harus diperlakukan."
+  },
+  "SmartScreen": {
+    "en": "Windows' reputation-based filter that checks downloaded executables before they run and warns about unknown or rarely downloaded files.",
+    "id": "Filter berbasis reputasi milik Windows yang memeriksa executable yang diunduh sebelum dijalankan dan memberi peringatan tentang file yang tak dikenal atau jarang diunduh."
+  },
+  "alternate data stream": {
+    "en": "An NTFS feature that lets extra data ride along with a file, hidden from normal directory listings — used by Windows to store metadata such as the Zone.Identifier tag.",
+    "id": "Fitur NTFS yang memungkinkan data tambahan menumpang pada sebuah file, tersembunyi dari daftar direktori biasa — dipakai Windows untuk menyimpan metadata seperti tanda Zone.Identifier."
+  },
+  "Zone.Identifier": {
+    "en": "The alternate data stream Windows uses to record a file's origin zone; ZoneId=3 marks a file as coming from the internet.",
+    "id": "Alternate data stream yang dipakai Windows untuk mencatat zona asal sebuah file; ZoneId=3 menandai file berasal dari internet."
+  },
+  "NTFS": {
+    "en": "New Technology File System — Windows' standard filesystem, which supports features like alternate data streams that other filesystems (FAT32, exFAT) do not.",
+    "id": "New Technology File System — sistem file standar Windows, yang mendukung fitur seperti alternate data stream yang tidak dimiliki sistem file lain (FAT32, exFAT)."
   }
 }

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stiker Tak Kasat Mata yang Menjaga Windows: Lab Hands-On Mark of the Web — llunatic-lab</title>
+<meta name="description" content="CVE-2026-96951, yang sudah dieksploitasi di lapangan, menghapus tanda tak kasat mata yang ditempel Windows pada file unduhan internet — dan bersamanya, SmartScreen, Protected View, dan pemblokir macro ikut diam. Lab ini menunjukkan cara melihat tanda itu, menguji apa yang dikendalikannya, dan memburu file yang kehilangan tanda tersebut.">
+<meta property="og:title" content="Stiker Tak Kasat Mata yang Menjaga Windows: Lab Hands-On Mark of the Web">
+<meta property="og:description" content="CVE-2026-96951, yang sudah dieksploitasi di lapangan, menghapus tanda tak kasat mata yang ditempel Windows pada file unduhan internet — dan bersamanya, SmartScreen, Protected View, dan pemblokir macro ikut diam. Lab ini menunjukkan cara melihat tanda itu, menguji apa yang dikendalikannya, dan memburu file yang kehilangan tanda tersebut.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/mark-of-the-web-lab.jpg"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/mark-of-the-web-lab/"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/mark-of-the-web-lab/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/id/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/id/arsip/">Arsip</a>
+      <a href="/id/tentang/">Tentang</a>
+      <a class="lang-toggle" href="/artikel/mark-of-the-web-lab/">EN</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>artikel</div>
+              <h1>Stiker Tak Kasat Mata yang Menjaga Windows: Lab Hands-On Mark of the Web</h1>
+              <div class="meta"><span>26 Oktober 2026</span><span>·</span>
+              <span>7 mnt baca</span><a class="tag" href="/id/tag/hands-on/">hands-on</a> <a class="tag" href="/id/tag/windows-security/">windows-security</a> <a class="tag" href="/id/tag/mark-of-the-web/">mark-of-the-web</a> <a class="tag" href="/id/tag/phishing/">phishing</a></div>
+              <img class="cover" src="/assets/covers/mark-of-the-web-lab.jpg" alt="Stiker Tak Kasat Mata yang Menjaga Windows: Lab Hands-On Mark of the Web">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Bayangkan mengunduh sebuah file lalu mengklik dua kali — dan Windows tidak berkata apa-apa. Tanpa peringatan, tanpa banner kuning, tanpa peringatan &quot;file ini berasal dari internet&quot;. File itu langsung terbuka, seolah-olah kamu sendiri yang membuatnya lima menit lalu. Keheningan itulah yang dibeli penyerang lewat <span class="gterm" data-term="CVE" data-def="Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.">CVE</span>-2026-96951.</p>
+<p>Microsoft menambal celah ini dalam Patch Tuesday 13 Oktober 2026, memberinya skor CVSS 8.8 dan mengonfirmasi bahwa celah ini sudah dieksploitasi di lapangan. CISA memasukkannya ke katalog <span class="gterm" data-term="KEV" data-def="Katalog Known Exploited Vulnerabilities milik CISA: daftar singkat celah yang terbukti dieksploitasi di lapangan. Instansi federal AS wajib memperbaikinya sebelum tenggat tertentu — praktisi memperlakukan setiap entri sebagai &#x27;patch sekarang&#x27;.">KEV</span> pada hari yang sama, dengan tenggat perbaikan untuk instansi federal pada 16 Oktober. Celah ini adalah bug command-injection di Windows Shell yang menembus <span class="gterm" data-term="Mark of the Web" data-def="Tanda tak kasat mata yang ditempel Windows pada file yang diunduh dari internet, disimpan sebagai alternate data stream Zone.Identifier. Kontrol keamanan seperti SmartScreen dan Office Protected View membacanya untuk menentukan seberapa hati-hati file itu harus diperlakukan.">Mark of the Web</span> — tanda yang ditempel Windows pada file yang diunduh dari internet. Ini adalah celah bypass MotW ketiga di Windows Shell yang dieksploitasi di lapangan hanya pada 2026, setelah CVE-2026-21510 pada Februari dan CVE-2026-32202 pada April. Penyerang terus menghantam komponen yang sama persis ini karena ia adalah sakelar utama: satu bypass diam-diam mematikan beberapa pertahanan sekaligus.</p>
+<p>Artikel ini bukan panduan exploit. Ini adalah lab yang bisa kamu jalankan di mesin virtual Windows yang terisolasi, memakai file tidak berbahaya yang kamu buat sendiri, supaya kamu bisa melihat mekanismenya dengan mata kepala sendiri — dan belajar cara mempertahankannya.</p>
+<h2 id="tanda-yang-tak-pernah-kamu-lihat"><span class="hnum">01</span>Tanda yang tak pernah kamu lihat</h2>
+<p>Ketika browser atau klien email menyimpan file dari internet, Windows menulis sedikit metadata di samping file itu memakai <span class="gterm" data-term="alternate data stream" data-def="Fitur NTFS yang memungkinkan data tambahan menumpang pada sebuah file, tersembunyi dari daftar direktori biasa — dipakai Windows untuk menyimpan metadata seperti tanda Zone.Identifier.">alternate data stream</span> — aliran data tersembunyi yang menempel pada file di volume <span class="gterm" data-term="NTFS" data-def="New Technology File System — sistem file standar Windows, yang mendukung fitur seperti alternate data stream yang tidak dimiliki sistem file lain (FAT32, exFAT).">NTFS</span>, tak terlihat di File Explorer. Aliran itu bernama <span class="gterm" data-term="Zone.Identifier" data-def="Alternate data stream yang dipakai Windows untuk mencatat zona asal sebuah file; ZoneId=3 menandai file berasal dari internet.">Zone.Identifier</span>, dan untuk unduhan dari internet isinya biasanya seperti ini:</p>
+<pre><code class="language-text">[ZoneTransfer]
+ZoneId=3</code></pre>
+<p>ZoneId=3 berarti &quot;zona internet.&quot; Hanya itu isi tandanya: beberapa byte, tanpa konten, tanpa kode. Dan inilah perbedaan penting yang sering terlewat — tanda itu sendiri tidak melindungi apa-apa. Ia hanya label. Pertahanan yang sesungguhnya adalah kontrol-kontrol yang <em>membaca</em> label itu:</p>
+<ul>
+<li><strong><span class="gterm" data-term="SmartScreen" data-def="Filter berbasis reputasi milik Windows yang memeriksa executable yang diunduh sebelum dijalankan dan memberi peringatan tentang file yang tak dikenal atau jarang diunduh.">SmartScreen</span></strong> memeriksa executable yang diunduh terhadap data reputasinya dan memberi peringatan sebelum menjalankan file yang tak dikenal.</li>
+<li><strong>Office Protected View</strong> membuka dokumen dari internet dalam mode hanya-baca, di balik banner kuning &quot;Enable Editing&quot;.</li>
+<li><strong>Pemblokir macro internet</strong> menghentikan macro di file Office yang ditandai berasal dari internet.</li>
+<li><strong>Smart App Control</strong> di Windows 11 memblokir aplikasi yang tak tepercaya.</li>
+<li><strong>Attachment Manager</strong> menampilkan prompt &quot;apakah kamu ingin membuka file ini?&quot;.</li>
+</ul>
+<p>Anggap MotW sebagai stiker pada paket yang diperiksa setiap penjaga di gedung itu. CVE-2026-96951 mengantarkan paket tanpa stiker — sehingga semua penjaga meloloskannya begitu saja. Penyerang tetap butuh kamu membuka file itu; Microsoft menegaskan tidak ada yang bisa memaksamu melihat konten yang dikendalikan penyerang. Tapi <span class="gterm" data-term="phishing" data-def="Fraud via email or messages impersonating a trusted party to steal credentials.">phishing</span> ada justru karena selalu ada yang mengklik dua kali, dan bug ini menghilangkan peringatan yang seharusnya menyambut klik tersebut.</p>
+<h2 id="persiapan-lab-lima-menit-nol-risiko"><span class="hnum">02</span>Persiapan lab: lima menit, nol risiko</h2>
+<p>Jalankan semua langkah di bawah ini di VM Windows tanpa data penting, terpisah dari dokumen aslimu — snapshot yang bisa di-rollback adalah pilihan ideal. Kamu hanya memakai file yang kamu buat sendiri: tanpa malware unduhan, tanpa kode exploit, tanpa payload serangan sungguhan. Yang kamu butuhkan hanyalah PowerShell dan satu dokumen Office kosong atau file teks yang kamu buat di VM.</p>
+<h2 id="latihan-1-melihat-tandanya"><span class="hnum">03</span>Latihan 1: Melihat tandanya</h2>
+<p>Unduh file kecil apa pun di browser VM — manual PDF, gambar, apa saja yang tidak berbahaya — lalu periksa di PowerShell:</p>
+<pre><code class="language-powershell">Get-Item .\Downloads\example.pdf -Stream *
+Get-Content .\Downloads\example.pdf -Stream Zone.Identifier</code></pre>
+<p>Perintah pertama menampilkan semua stream yang menempel pada file, termasuk <code>:$DATA</code> (file itu sendiri) dan <code>Zone.Identifier</code>. Perintah kedua mencetak isi tandanya: <code>[ZoneTransfer]</code> dan <code>ZoneId=3</code>. Sekarang buat file lokal di folder yang sama — klik kanan, New, Text Document — dan jalankan perintah yang sama pada file itu. Tidak ada stream <code>Zone.Identifier</code> yang muncul. Perbedaan itu, yang tak terlihat di File Explorer, adalah dasar seluruh pertahanan unduhan Windows.</p>
+<p>Sekarang salin file unduhan itu ke flashdisk atau volume non-NTFS lain, lalu salin kembali. Periksa stream-nya lagi: tandanya hilang, karena alternate data stream hanya ada di NTFS. Itulah keterbatasan jujur pertama MotW — ia adalah label yang bisa lepas dalam perjalanan, dan ketiadaannya tidak membuktikan apa-apa soal keamanan sebuah file.</p>
+<h2 id="latihan-2-menyaksikan-tanda-mengubah-perilaku-file"><span class="hnum">04</span>Latihan 2: Menyaksikan tanda mengubah perilaku file</h2>
+<p>Buat dokumen Word kosong di VM, lalu beri ia tanda internet sendiri:</p>
+<pre><code class="language-powershell">Copy-Item .\lab.docx .\lab-internet.docx
+Set-Content -Path .\lab-internet.docx -Stream Zone.Identifier -Value &quot;[ZoneTransfer]`nZoneId=3&quot;</code></pre>
+<p>Buka kedua file itu. Salinan lokal terbuka normal. Salinan bertanda terbuka di Protected View, hanya-baca, di balik banner kuning — padahal isi kedua file identik. Kamu baru saja mereproduksi, dengan dokumen tidak berbahaya, mekanisme persis yang ditembus zero-day Oktober itu: kontennya sama, tapi tandanya yang menentukan pertahanan mana yang aktif.</p>
+<p>Sekarang hapus tanda itu dengan cara yang sah:</p>
+<pre><code class="language-powershell">Unblock-File -Path .\lab-internet.docx
+Get-Item .\lab-internet.docx -Stream *</code></pre>
+<p>Stream <code>Zone.Identifier</code> hilang, dan file terbuka normal lagi. Inilah cara yang benar untuk membuka blokir file yang benar-benar kamu percayai — per file, secara sadar, lewat Properties atau <code>Unblock-File</code>. Yang tidak boleh kamu lakukan adalah membuka blokir seluruh folder Downloads sekaligus &quot;supaya peringatannya berhenti.&quot; Setiap unblock adalah keputusan untuk mempercayai sebuah file; skrip yang membuat keputusan itu untuk ratusan file sekaligus sedang mengerjakan tugas penyerang untuk mereka.</p>
+<h2 id="latihan-3-memburu-file-yang-kehilangan-tandanya"><span class="hnum">05</span>Latihan 3: Memburu file yang kehilangan tandanya</h2>
+<p>Penyerang tidak selalu butuh zero-day. Sebagian kanal unduhan tidak pernah menempelkan MotW, dan sebagian metode arsip dan transfer menghapusnya. Maka kebiasaan defensif yang berguna adalah memburu file executable dan skrip di lokasi unduhan pengguna yang <em>tidak</em> membawa tanda sama sekali — file yang mungkin diperlakukan pertahananmu sebagai file lokal. Di PowerShell, dari folder Downloads:</p>
+<pre><code class="language-powershell">Get-ChildItem -File -Recurse |
+  Where-Object { $_.Extension -match &#x27;\.(exe|msi|ps1|bat|scr|js)$&#x27; } |
+  ForEach-Object {
+    $streams = Get-Item $_.FullName -Stream * -ErrorAction SilentlyContinue
+    if (-not ($streams.Stream -contains &#x27;Zone.Identifier&#x27;)) {
+      $_.FullName
+    }
+  }</code></pre>
+<p>Apa pun yang muncul dalam daftar ini layak diperiksa kedua kalinya: dari mana asalnya, siapa yang menaruhnya di sana, dan apakah kehadirannya memang diharapkan? Di mesin yang bersih, daftarnya seharusnya pendek. Di mesin tempat sesuatu tiba lewat kanal yang tidak menempelkan tanda, daftar ini adalah peringatan dini. Perhatikan catatan jujur dari Latihan 1: tanda yang hilang saja bukan bukti kejahatan — file yang kamu buat sendiri secara sah memang tidak memilikinya. Perburuan ini adalah daftar triase, bukan vonis.</p>
+<h2 id="latihan-4-daftar-periksa-pertahanan"><span class="hnum">06</span>Latihan 4: Daftar periksa pertahanan</h2>
+<p>Tutup lab dengan kontrol yang benar-benar penting, urut berdasarkan prioritas:</p>
+<ol>
+<li><strong>Pasang patch.</strong> Update Oktober 2026 menutup CVE-2026-96951. Jika kamu mengelola mesin Windows, celah ini mengalahkan label &quot;Important&quot; CVSS 8.8-nya: status eksploitasi mengalahkan skor keparahan dalam triase, setiap saat.</li>
+<li><strong>Biarkan pemblokir macro dan Protected View aktif.</strong> Inilah kontrol yang diberi makan oleh MotW. Menonaktifkannya &quot;supaya tidak ribet&quot; justru menghilangkan pertahanan yang memang dirancang untuk dibungkam oleh bypass MotW.</li>
+<li><strong>Biarkan SmartScreen dan Smart App Control aktif.</strong> Mereka adalah peringatan terakhir yang didapat pengguna sebelum executable tak dikenal berjalan.</li>
+<li><strong>Ajarkan aturan satu klik.</strong> Bug ini butuh pengguna membuka file rekayasa yang dikirim lewat email atau pesan. Pertahanan yang tidak pernah kedaluwarsa adalah pengguna yang berhenti sejenak pada lampiran tak terduga — terutama yang datang bersama rasa urgensi.</li>
+<li><strong>Perlakukan &quot;tanpa peringatan&quot; sebagai sinyal, bukan kenyamanan.</strong> Jika file yang seharusnya berasal dari internet terbuka tanpa banner dan tanpa prompt, tanyakan dulu alasannya sebelum kamu mempercayainya. Ketiadaan peringatan adalah persis apa yang dihasilkan oleh celah sekelas ini.</li>
+</ol>
+<h2 id="mengapa-penyerang-terus-kembali-ke-stiker-ini"><span class="hnum">07</span>Mengapa penyerang terus kembali ke stiker ini</h2>
+<p>Tiga bypass MotW yang dieksploitasi dalam satu tahun bukanlah kebetulan. MotW adalah satu titik kegagalan sejak dari desainnya: satu tanda, dibaca banyak kontrol, tanpa opini kedua. Saat ia bekerja, ia elegan — beberapa byte yang mengoordinasikan seluruh postur pertahanan. Saat ia gagal, ia gagal di semua tempat sekaligus, secara diam-diam. Karena itulah patch Oktober penting, dan karena itulah lab ini lebih penting lagi: begitu kamu pernah melihat tandanya, menyaksikan ia mengubah perilaku dokumen, dan memburu file yang tidak memilikinya, kamu tidak akan pernah lagi mengira klik dua kali yang hening sebagai klik yang aman.</p>
+<p>Stikernya tak terlihat. Pertahanan yang dipicunya tidak. Belajarlah memeriksa keduanya.</p>
+<hr>
+<p><em>Sumber: <a href="https://www.securityweek.com/microsoft-patches-record-1413-vulnerabilities-including-exploited-windows-zero-day/amp/">Liputan Microsoft October 2026 Patch Tuesday (SecurityWeek, Oktober 2026)</a>; <a href="https://www.tenable.com/blog/microsofts-october-2026-patch-tuesday-addresses-1407-cves-cve-2026-96951">Analisis October 2026 Patch Tuesday (Tenable, Oktober 2026)</a>; <a href="https://www.automox.com/blog/patch-fix-tuesday-october-2026">Patch Tuesday Oktober 2026: analisis CVE (Automox, Oktober 2026)</a>; <a href="https://www.outflank.nl/blog/2020/03/30/mark-of-the-web-from-a-red-teams-perspective/?ref=0idea.dev">Mark of the Web dari sudut pandang red team (Outflank, 2020)</a>.</em></p><div class="author-box"><div class="kicker"><span class="dot"></span>ditulis oleh</div><p><strong>kou</strong> mendokumentasikan threat intel, attack surface, dan pertahanan praktis — dari sisi gelap internet.</p></div><div class="pager"><a href="/id/artikel/arista-velocloud-zero-day-read-only-to-superuser/"><span class="dir">← sebelumnya</span><span class="t">Dari Read-Only Jadi Superuser: Zero-Day VeloCloud Arista dan Serangan Ketiga ke Control Plane SD-WAN</span></a><span></span></div></div>
+                <aside class="toc"><h4>Daftar isi</h4><ol><li style="margin-left:0px"><a href="#tanda-yang-tak-pernah-kamu-lihat">Tanda yang tak pernah kamu lihat</a></li><li style="margin-left:0px"><a href="#persiapan-lab-lima-menit-nol-risiko">Persiapan lab: lima menit, nol risiko</a></li><li style="margin-left:0px"><a href="#latihan-1-melihat-tandanya">Latihan 1: Melihat tandanya</a></li><li style="margin-left:0px"><a href="#latihan-2-menyaksikan-tanda-mengubah-perilaku-file">Latihan 2: Menyaksikan tanda mengubah perilaku file</a></li><li style="margin-left:0px"><a href="#latihan-3-memburu-file-yang-kehilangan-tandanya">Latihan 3: Memburu file yang kehilangan tandanya</a></li><li style="margin-left:0px"><a href="#latihan-4-daftar-periksa-pertahanan">Latihan 4: Daftar periksa pertahanan</a></li><li style="margin-left:0px"><a href="#mengapa-penyerang-terus-kembali-ke-stiker-ini">Mengapa penyerang terus kembali ke stiker ini</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>catatan keamanan dari sisi gelap internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="cari artikel…" aria-label="search">
+    <div class="search-hint">ketik minimal 2 huruf · esc untuk tutup · ctrl+k dari mana saja</div>
+    <div class="search-results" data-empty="nggak ketemu — coba kata kunci lain."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

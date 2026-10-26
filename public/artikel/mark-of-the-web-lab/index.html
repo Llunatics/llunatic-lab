@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Invisible Sticker That Guards Windows: A Hands-On Mark of the Web Lab — llunatic-lab</title>
+<meta name="description" content="CVE-2026-96951, exploited in the wild, strips the invisible tag Windows puts on internet downloads — and with it, SmartScreen, Protected View, and the macro block all go quiet. This lab shows you how to see that tag, test what it controls, and hunt files that lost it.">
+<meta property="og:title" content="The Invisible Sticker That Guards Windows: A Hands-On Mark of the Web Lab">
+<meta property="og:description" content="CVE-2026-96951, exploited in the wild, strips the invisible tag Windows puts on internet downloads — and with it, SmartScreen, Protected View, and the macro block all go quiet. This lab shows you how to see that tag, test what it controls, and hunt files that lost it.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/mark-of-the-web-lab.jpg"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/mark-of-the-web-lab/"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/mark-of-the-web-lab/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/arsip/">Archive</a>
+      <a href="/tentang/">About</a>
+      <a class="lang-toggle" href="/id/artikel/mark-of-the-web-lab/">ID</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>article</div>
+              <h1>The Invisible Sticker That Guards Windows: A Hands-On Mark of the Web Lab</h1>
+              <div class="meta"><span>26 October 2026</span><span>·</span>
+              <span>7 min read</span><a class="tag" href="/tag/hands-on/">hands-on</a> <a class="tag" href="/tag/windows-security/">windows-security</a> <a class="tag" href="/tag/mark-of-the-web/">mark-of-the-web</a> <a class="tag" href="/tag/phishing/">phishing</a></div>
+              <img class="cover" src="/assets/covers/mark-of-the-web-lab.jpg" alt="The Invisible Sticker That Guards Windows: A Hands-On Mark of the Web Lab">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Imagine downloading a file and double-clicking it — and Windows says nothing. No warning, no yellow banner, no &quot;this file came from the internet&quot; caution. It just opens, as if you had created it yourself five minutes ago. That silence is exactly what attackers bought with <span class="gterm" data-term="CVE" data-def="Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.">CVE</span>-2026-96951.</p>
+<p>Microsoft patched the flaw in its October 13, 2026 Patch Tuesday release, rating it CVSS 8.8 and confirming it was already exploited in the wild. CISA added it to its <span class="gterm" data-term="KEV" data-def="CISA&#x27;s Known Exploited Vulnerabilities catalog: a shortlist of flaws confirmed exploited in the wild. US federal agencies must remediate entries by a set deadline — practitioners treat every listing as &#x27;patch now&#x27;.">KEV</span> catalog the same day, with federal agencies told to remediate by October 16. The flaw is a command-injection bug in Windows Shell that defeats <span class="gterm" data-term="Mark of the Web" data-def="The invisible tag Windows attaches to files downloaded from the internet, stored as a Zone.Identifier alternate data stream. Security controls like SmartScreen and Office Protected View read it to decide how cautiously to treat the file.">Mark of the Web</span> — the tag Windows stamps on files downloaded from the internet. It is the third Windows Shell MotW-bypass flaw exploited in the wild in 2026 alone, after CVE-2026-21510 in February and CVE-2026-32202 in April. Attackers keep hammering this exact component because it is a master switch: one bypass quietly disables several defenses at once.</p>
+<p>This article is not a walkthrough of the exploit. It is a lab you can run on an isolated Windows virtual machine with harmless files you create yourself, so you can see the mechanism with your own eyes — and learn to defend it.</p>
+<h2 id="the-tag-you-never-see"><span class="hnum">01</span>The tag you never see</h2>
+<p>When a browser or mail client saves a file from the internet, Windows writes a tiny piece of metadata alongside it using an <span class="gterm" data-term="alternate data stream" data-def="An NTFS feature that lets extra data ride along with a file, hidden from normal directory listings — used by Windows to store metadata such as the Zone.Identifier tag.">alternate data stream</span> — a hidden stream of data attached to the file on an <span class="gterm" data-term="NTFS" data-def="New Technology File System — Windows&#x27; standard filesystem, which supports features like alternate data streams that other filesystems (FAT32, exFAT) do not.">NTFS</span> volume, invisible in File Explorer. The stream is called <span class="gterm" data-term="Zone.Identifier" data-def="The alternate data stream Windows uses to record a file&#x27;s origin zone; ZoneId=3 marks a file as coming from the internet.">Zone.Identifier</span>, and for an internet download it typically reads:</p>
+<pre><code class="language-text">[ZoneTransfer]
+ZoneId=3</code></pre>
+<p>ZoneId=3 means &quot;internet zone.&quot; That is the whole tag: a few bytes, no content, no code. And here is the crucial distinction most people miss — the tag itself protects nothing. It is only a label. The protections are the controls that <em>read</em> the label:</p>
+<ul>
+<li><strong><span class="gterm" data-term="SmartScreen" data-def="Windows&#x27; reputation-based filter that checks downloaded executables before they run and warns about unknown or rarely downloaded files.">SmartScreen</span></strong> checks downloaded executables against its reputation data and warns before running unknown ones.</li>
+<li><strong>Office Protected View</strong> opens internet documents read-only, behind the yellow &quot;Enable Editing&quot; banner.</li>
+<li><strong>The internet macro block</strong> stops macros in Office files flagged as coming from the internet.</li>
+<li><strong>Smart App Control</strong> on Windows 11 blocks untrusted apps.</li>
+<li><strong>The Attachment Manager</strong> shows the &quot;do you want to open this file?&quot; prompt.</li>
+</ul>
+<p>Think of MotW as the sticker on a package that every guard in the building checks. CVE-2026-96951 delivers the package with no sticker attached — so every guard waves it through. The attacker still needs you to open the file; Microsoft is explicit that no one can force you to view attacker-controlled content. But phishing exists precisely because somebody always double-clicks, and this bug removes the warning that was supposed to greet that click.</p>
+<h2 id="lab-setup-five-minutes-zero-risk"><span class="hnum">02</span>Lab setup: five minutes, zero risk</h2>
+<p>Run everything below in a Windows VM with no important data, disconnected from your real documents — a snapshot you can roll back is ideal. You will use only files you create yourself: no downloaded malware, no exploit code, no real attack payload. All you need is PowerShell and a blank Office document or text file you make in the VM.</p>
+<h2 id="exercise-1-see-the-tag"><span class="hnum">03</span>Exercise 1: See the tag</h2>
+<p>Download any small file in the VM&#x27;s browser — a PDF manual, an image, anything benign — then inspect it in PowerShell:</p>
+<pre><code class="language-powershell">Get-Item .\Downloads\example.pdf -Stream *
+Get-Content .\Downloads\example.pdf -Stream Zone.Identifier</code></pre>
+<p>The first command lists every stream attached to the file, including <code>:$DATA</code> (the file itself) and <code>Zone.Identifier</code>. The second prints the tag&#x27;s contents: <code>[ZoneTransfer]</code> and <code>ZoneId=3</code>. Now create a file locally in the same folder — right-click, New, Text Document — and run the same commands on it. No <code>Zone.Identifier</code> stream appears. That difference, invisible in File Explorer, is the entire basis of Windows&#x27; download defenses.</p>
+<p>Now copy the downloaded file to a USB stick or another non-NTFS volume and copy it back. Check the streams again: the tag is gone, because alternate data streams only exist on NTFS. That is MotW&#x27;s first honest limitation — it is a label that can fall off in transit, and its absence proves nothing about a file&#x27;s safety.</p>
+<h2 id="exercise-2-watch-the-tag-change-behavior"><span class="hnum">04</span>Exercise 2: Watch the tag change behavior</h2>
+<p>Create a blank Word document in the VM, then give it an internet tag yourself:</p>
+<pre><code class="language-powershell">Copy-Item .\lab.docx .\lab-internet.docx
+Set-Content -Path .\lab-internet.docx -Stream Zone.Identifier -Value &quot;[ZoneTransfer]`nZoneId=3&quot;</code></pre>
+<p>Open both files. The local copy opens normally. The tagged copy opens in Protected View, read-only, behind the yellow banner — even though the two files have identical content. You have just reproduced, with a harmless document, the exact mechanism the October zero-day defeats: content is identical, but the tag decides which defenses engage.</p>
+<p>Now remove the tag the legitimate way:</p>
+<pre><code class="language-powershell">Unblock-File -Path .\lab-internet.docx
+Get-Item .\lab-internet.docx -Stream *</code></pre>
+<p>The <code>Zone.Identifier</code> stream is gone, and the file opens normally again. This is also the correct way to unblock a file you genuinely trust — per file, deliberately, through Properties or <code>Unblock-File</code>. What you must never do is bulk-unblock a whole Downloads folder &quot;to stop the warnings.&quot; Each unblock is a decision to trust a file; a script that makes that decision for hundreds of files at once is doing an attacker&#x27;s job for them.</p>
+<h2 id="exercise-3-hunt-for-files-that-lost-their-tag"><span class="hnum">05</span>Exercise 3: Hunt for files that lost their tag</h2>
+<p>Attackers do not always need a zero-day. Some download channels never stamp MotW at all, and some archives and transfer methods strip it. So a useful defensive habit is hunting for executable and script files in user download locations that carry <em>no</em> tag at all — files your defenses may treat as local. In PowerShell, from a Downloads folder:</p>
+<pre><code class="language-powershell">Get-ChildItem -File -Recurse |
+  Where-Object { $_.Extension -match &#x27;\.(exe|msi|ps1|bat|scr|js)$&#x27; } |
+  ForEach-Object {
+    $streams = Get-Item $_.FullName -Stream * -ErrorAction SilentlyContinue
+    if (-not ($streams.Stream -contains &#x27;Zone.Identifier&#x27;)) {
+      $_.FullName
+    }
+  }</code></pre>
+<p>Anything this lists deserves a second look: where did it come from, who put it there, and was it expected? On a clean machine the list should be short. On a machine where something arrived through an unstamping channel, it is your early warning. Note the honest caveat from Exercise 1: a missing tag alone is not proof of malice — files you created locally legitimately have none. The hunt is a triage list, not a verdict.</p>
+<h2 id="exercise-4-the-defense-checklist"><span class="hnum">06</span>Exercise 4: The defense checklist</h2>
+<p>Close the lab with the controls that actually matter, in priority order:</p>
+<ol>
+<li><strong>Patch.</strong> The October 2026 update closes CVE-2026-96951. If you manage Windows machines, this one outranks its CVSS 8.8 &quot;Important&quot; label: exploitation status beats severity scores in triage, every time.</li>
+<li><strong>Keep the macro block and Protected View on.</strong> These are the controls MotW feeds. Disabling them to &quot;reduce friction&quot; removes the very defenses a MotW bypass is designed to silence.</li>
+<li><strong>Keep SmartScreen and Smart App Control on.</strong> They are the last warnings a user gets before an unknown executable runs.</li>
+<li><strong>Teach the one-click rule.</strong> The bug needs a user to open a crafted file delivered by email or message. The defense that never patches out of date is a user who pauses on unexpected attachments — especially ones that arrive with urgency attached.</li>
+<li><strong>Treat &quot;no warning&quot; as a signal, not a comfort.</strong> If a file that should have come from the internet opens with no banner and no prompt, ask why before you trust it. The absence of a warning is exactly what this class of bug produces.</li>
+</ol>
+<h2 id="why-attackers-keep-coming-back-to-this-sticker"><span class="hnum">07</span>Why attackers keep coming back to this sticker</h2>
+<p>Three exploited MotW bypasses in one year is not coincidence. MotW is a single point of failure by design: one tag, read by many controls, with no second opinion. When it works, it is elegant — a few bytes that coordinate an entire defensive posture. When it fails, it fails everywhere at once, silently. That is why the October patch matters, and why the lab matters more: once you have seen the tag, watched it change a document&#x27;s behavior, and hunted for files that lack it, you will never again mistake a quiet double-click for a safe one.</p>
+<p>The sticker is invisible. The defenses it triggers are not. Learn to check both.</p>
+<hr>
+<p><em>Sources: <a href="https://www.securityweek.com/microsoft-patches-record-1413-vulnerabilities-including-exploited-windows-zero-day/amp/">Microsoft October 2026 Patch Tuesday coverage (SecurityWeek, October 2026)</a>; <a href="https://www.tenable.com/blog/microsofts-october-2026-patch-tuesday-addresses-1407-cves-cve-2026-96951">October 2026 Patch Tuesday analysis (Tenable, October 2026)</a>; <a href="https://www.automox.com/blog/patch-fix-tuesday-october-2026">Patch Tuesday October 2026: CVE analysis (Automox, October 2026)</a>; <a href="https://www.outflank.nl/blog/2020/03/30/mark-of-the-web-from-a-red-teams-perspective/?ref=0idea.dev">Mark of the Web from a red team&#x27;s perspective (Outflank, 2020)</a>.</em></p><div class="author-box"><div class="kicker"><span class="dot"></span>written by</div><p><strong>kou</strong> documents what’s learned about threat intel, attack surface, and practical defense — from the dark side of the internet.</p></div><div class="pager"><a href="/artikel/arista-velocloud-zero-day-read-only-to-superuser/"><span class="dir">← previous</span><span class="t">Read-Only to Superuser: Arista&#x27;s VeloCloud Zero-Day and the Third Strike on SD-WAN&#x27;s Control Plane</span></a><span></span></div></div>
+                <aside class="toc"><h4>Contents</h4><ol><li style="margin-left:0px"><a href="#the-tag-you-never-see">The tag you never see</a></li><li style="margin-left:0px"><a href="#lab-setup-five-minutes-zero-risk">Lab setup: five minutes, zero risk</a></li><li style="margin-left:0px"><a href="#exercise-1-see-the-tag">Exercise 1: See the tag</a></li><li style="margin-left:0px"><a href="#exercise-2-watch-the-tag-change-behavior">Exercise 2: Watch the tag change behavior</a></li><li style="margin-left:0px"><a href="#exercise-3-hunt-for-files-that-lost-their-tag">Exercise 3: Hunt for files that lost their tag</a></li><li style="margin-left:0px"><a href="#exercise-4-the-defense-checklist">Exercise 4: The defense checklist</a></li><li style="margin-left:0px"><a href="#why-attackers-keep-coming-back-to-this-sticker">Why attackers keep coming back to this sticker</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>security notes from the dark side of the internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="search articles…" aria-label="search">
+    <div class="search-hint">type at least 2 characters · esc to close · ctrl+k anywhere</div>
+    <div class="search-results" data-empty="nothing found — try another keyword."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

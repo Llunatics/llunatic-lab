@@ -4,7 +4,11 @@
 <title>llunatic-lab (en)</title><link>https://lab.llunaticsys.web.id/</link>
 <description>Security notes from the dark side of the internet</description>
 <language>en</language>
-<item><title>The Invisible Sticker That Guards Windows: A Hands-On Mark of the Web Lab</title>
+<item><title>Patch by Exploitation, Not by Score: How CISA&#x27;s KEV Catalog Reorders Your Queue</title>
+            <link>https://lab.llunaticsys.web.id/artikel/kev-patch-by-exploitation-not-score/</link>
+            <description>A CVSS 10.0 flaw with no known exploitation and a CVSS 8.8 flaw attackers are already using — which do you patch first? October 2026 gave that question a very expensive answer, and CISA&#x27;s KEV catalog is how smart teams stop getting it wrong.</description>
+            <pubDate>Wed, 28 Oct 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/artikel/kev-patch-by-exploitation-not-score/</guid></item><item><title>The Invisible Sticker That Guards Windows: A Hands-On Mark of the Web Lab</title>
             <link>https://lab.llunaticsys.web.id/artikel/mark-of-the-web-lab/</link>
             <description>CVE-2026-96951, exploited in the wild, strips the invisible tag Windows puts on internet downloads — and with it, SmartScreen, Protected View, and the macro block all go quiet. This lab shows you how to see that tag, test what it controls, and hunt files that lost it.</description>
             <pubDate>Mon, 26 Oct 2026 00:00:00 -0000</pubDate>

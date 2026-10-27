@@ -4,7 +4,11 @@
 <title>llunatic-lab (id)</title><link>https://lab.llunaticsys.web.id/id/</link>
 <description>Catatan keamanan dari sisi gelap internet</description>
 <language>id</language>
-<item><title>Stiker Tak Kasat Mata yang Menjaga Windows: Lab Hands-On Mark of the Web</title>
+<item><title>Tambal Berdasarkan Eksploitasi, Bukan Skor: Cara Katalog KEV Milik CISA Menyusun Ulang Antrean Patch Anda</title>
+            <link>https://lab.llunaticsys.web.id/id/artikel/kev-patch-by-exploitation-not-score/</link>
+            <description>Celah CVSS 10.0 yang belum terbukti dieksploitasi melawan celah CVSS 8.8 yang sudah dipakai penyerang — mana yang Anda tambal dulu? Oktober 2026 memberi jawaban yang sangat mahal untuk pertanyaan itu, dan katalog KEV milik CISA adalah cara tim yang cerdas berhenti salah menjawab.</description>
+            <pubDate>Wed, 28 Oct 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/kev-patch-by-exploitation-not-score/</guid></item><item><title>Stiker Tak Kasat Mata yang Menjaga Windows: Lab Hands-On Mark of the Web</title>
             <link>https://lab.llunaticsys.web.id/id/artikel/mark-of-the-web-lab/</link>
             <description>CVE-2026-96951, yang sudah dieksploitasi di lapangan, menghapus tanda tak kasat mata yang ditempel Windows pada file unduhan internet — dan bersamanya, SmartScreen, Protected View, dan pemblokir macro ikut diam. Lab ini menunjukkan cara melihat tanda itu, menguji apa yang dikendalikannya, dan memburu file yang kehilangan tanda tersebut.</description>
             <pubDate>Mon, 26 Oct 2026 00:00:00 -0000</pubDate>

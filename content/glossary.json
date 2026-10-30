@@ -225,5 +225,21 @@
  "CVSS": {
   "en": "Common Vulnerability Scoring System: a 0.0-10.0 score for a flaw's intrinsic severity (reachability, complexity, impact). It says nothing about whether anyone is actually exploiting the flaw.",
   "id": "Common Vulnerability Scoring System: skor 0.0-10.0 untuk tingkat keparahan intrinsik sebuah celah (keterjangkauan, kompleksitas, dampak). Skor ini tidak mengatakan apa-apa tentang apakah ada yang benar-benar mengeksploitasi celah tersebut."
+ },
+ ".pth file": {
+  "en": "A file in Python's site-packages directory that the interpreter processes at startup; any line beginning with 'import' is executed before user code runs, which makes it a code-execution primitive attackers can abuse for persistence.",
+  "id": "File di direktori site-packages Python yang diproses interpreter saat startup; baris apa pun yang diawali 'import' dieksekusi sebelum kode pengguna berjalan, sehingga ia menjadi primitif eksekusi kode yang bisa disalahgunakan penyerang untuk persistensi."
+ },
+ "PyPI": {
+  "en": "The Python Package Index — the official public repository from which pip installs Python packages.",
+  "id": "Python Package Index — repositori publik resmi tempat pip menginstal package Python."
+ },
+ "infostealer": {
+  "en": "Malware whose main job is silently collecting credentials, tokens, keys, and other sensitive data from a host and sending them to the attacker.",
+  "id": "Malware yang tugas utamanya diam-diam mengumpulkan kredensial, token, kunci, dan data sensitif lain dari sebuah host lalu mengirimkannya ke penyerang."
+ },
+ "sitecustomize.py": {
+  "en": "A special Python module the interpreter imports automatically at startup if present on the path; legitimate uses include environment setup, but attackers plant it for persistence because it runs without any import by user code.",
+  "id": "Modul Python khusus yang diimpor interpreter secara otomatis saat startup bila ada di path; kegunaan sahnya antara lain setup environment, tetapi penyerang menanamnya untuk persistensi karena ia berjalan tanpa perlu diimpor oleh kode pengguna."
  }
 }

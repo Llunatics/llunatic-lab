@@ -37,16 +37,27 @@
           <div class="kicker"><span class="dot"></span>security notes — from the dark side of the internet</div>
           <h1>Security <em>notes</em> for those who refuse to be the <em>next victim.</em></h1>
           <p class="lede">Threat intel, tutorials, and cybersecurity case breakdowns. Technical terms come with explanations: just <strong>hover</strong> over dotted-underlined words.</p>
-          <div class="hero-meta"><span><b>15</b> articles</span>
-          <span><b>39</b> topics</span><span>published 3–4× a week</span></div>
+          <div class="hero-meta"><span><b>16</b> articles</span>
+          <span><b>40</b> topics</span><span>published 3–4× a week</span></div>
         </div>
-        <div class="ticker"><div class="ticker-track"><span>Patch by Exploitation, Not by Score: How CISA&#x27;s KEV Catalog Reorders Your Queue</span><span>The Invisible Sticker That Guards Windows: A Hands-On Mark of the Web Lab</span><span>Read-Only to Superuser: Arista&#x27;s VeloCloud Zero-Day and the Third Strike on SD-WAN&#x27;s Control Plane</span><span>PHP2Shell: When the Runtime Itself Is the Vulnerability — A Case Breakdown</span><span>Zeabur: How Plaintext Secrets Killed a Hosting Platform — A Case Breakdown</span><span>Your Agent&#x27;s Plugins Are the New Attack Surface: Auditing MCP Servers With mcp-scan</span><span>From PoC to Detection in Minutes: Your First Nuclei Template</span><span>Double Extortion: How Modern Ransomware Really Works</span></div></div>
+        <div class="ticker"><div class="ticker-track"><span>Installed but Never Imported — and It Still Stole Your Keys: Hunting the LiteLLM .pth Stealer</span><span>Patch by Exploitation, Not by Score: How CISA&#x27;s KEV Catalog Reorders Your Queue</span><span>The Invisible Sticker That Guards Windows: A Hands-On Mark of the Web Lab</span><span>Read-Only to Superuser: Arista&#x27;s VeloCloud Zero-Day and the Third Strike on SD-WAN&#x27;s Control Plane</span><span>PHP2Shell: When the Runtime Itself Is the Vulnerability — A Case Breakdown</span><span>Zeabur: How Plaintext Secrets Killed a Hosting Platform — A Case Breakdown</span><span>Your Agent&#x27;s Plugins Are the New Attack Surface: Auditing MCP Servers With mcp-scan</span><span>From PoC to Detection in Minutes: Your First Nuclei Template</span></div></div>
         </section>
         <section><div class="wrap">
           <div class="sec-head"><h2><span class="idx">01</span>Latest writings</h2>
           <a class="more" href="/arsip/">full archive →</a></div>
           <ol class="index-list"><li class="index-row rv">
       <span class="num">/01</span>
+      <div>
+        <h3><a href="/artikel/litellm-pth-stealer-audit/">Installed but Never Imported — and It Still Stole Your Keys: Hunting the LiteLLM .pth Stealer</a></h3>
+        <p class="excerpt">On October 21, 2026, a poisoned LiteLLM 1.107.0 release hid a credential stealer in a Python startup file — so it ran in every Python process on the host, even ones that never touched LiteLLM. Here is how to check whether it touched you, and how to clean it up properly.</p>
+        <div class="meta"><span>30 October 2026</span><span>·</span>
+        <span>9 min read</span><a class="tag" href="/tag/supply-chain/">supply-chain</a> <a class="tag" href="/tag/python-security/">python-security</a> <a class="tag" href="/tag/tools/">tools</a> <a class="tag" href="/tag/incident-response/">incident-response</a></div>
+      </div>
+      <img class="thumb" src="/assets/covers/litellm-pth-stealer-audit.jpg" alt="" loading="lazy">
+      <span class="arrow">→</span>
+    </li>
+<li class="index-row rv">
+      <span class="num">/02</span>
       <div>
         <h3><a href="/artikel/kev-patch-by-exploitation-not-score/">Patch by Exploitation, Not by Score: How CISA&#x27;s KEV Catalog Reorders Your Queue</a></h3>
         <p class="excerpt">A CVSS 10.0 flaw with no known exploitation and a CVSS 8.8 flaw attackers are already using — which do you patch first? October 2026 gave that question a very expensive answer, and CISA&#x27;s KEV catalog is how smart teams stop getting it wrong.</p>
@@ -57,7 +68,7 @@
       <span class="arrow">→</span>
     </li>
 <li class="index-row rv">
-      <span class="num">/02</span>
+      <span class="num">/03</span>
       <div>
         <h3><a href="/artikel/mark-of-the-web-lab/">The Invisible Sticker That Guards Windows: A Hands-On Mark of the Web Lab</a></h3>
         <p class="excerpt">CVE-2026-96951, exploited in the wild, strips the invisible tag Windows puts on internet downloads — and with it, SmartScreen, Protected View, and the macro block all go quiet. This lab shows you how to see that tag, test what it controls, and hunt files that lost it.</p>
@@ -68,7 +79,7 @@
       <span class="arrow">→</span>
     </li>
 <li class="index-row rv">
-      <span class="num">/03</span>
+      <span class="num">/04</span>
       <div>
         <h3><a href="/artikel/arista-velocloud-zero-day-read-only-to-superuser/">Read-Only to Superuser: Arista&#x27;s VeloCloud Zero-Day and the Third Strike on SD-WAN&#x27;s Control Plane</a></h3>
         <p class="excerpt">Arista&#x27;s October 22 advisory describes a SQL injection flaw that turns the lowest-privilege VeloCloud account into a full operator — the third exploited VeloCloud Orchestrator flaw since July, and the first that only needs a login.</p>
@@ -79,7 +90,7 @@
       <span class="arrow">→</span>
     </li>
 <li class="index-row rv">
-      <span class="num">/04</span>
+      <span class="num">/05</span>
       <div>
         <h3><a href="/artikel/php2shell-runtime-rce/">PHP2Shell: When the Runtime Itself Is the Vulnerability — A Case Breakdown</a></h3>
         <p class="excerpt">No plugin was broken. No password was guessed. Two flaws in PHP itself let an unauthenticated attacker run code on a web server — and the first exploit attempts arrived four days before the patch existed.</p>
@@ -90,7 +101,7 @@
       <span class="arrow">→</span>
     </li>
 <li class="index-row rv">
-      <span class="num">/05</span>
+      <span class="num">/06</span>
       <div>
         <h3><a href="/artikel/zeabur-plaintext-secrets-breach/">Zeabur: How Plaintext Secrets Killed a Hosting Platform — A Case Breakdown</a></h3>
         <p class="excerpt">No zero-day. No nation-state. Just a non-expiring admin token sitting in plaintext in a config repo — and it cost Zeabur 3.2 million secrets, root on 101 customer servers, and eventually the company itself.</p>
@@ -99,20 +110,9 @@
       </div>
       <img class="thumb" src="/assets/covers/zeabur-plaintext-secrets-breach.jpg" alt="" loading="lazy">
       <span class="arrow">→</span>
-    </li>
-<li class="index-row rv">
-      <span class="num">/06</span>
-      <div>
-        <h3><a href="/artikel/mcp-server-audit-scan/">Your Agent&#x27;s Plugins Are the New Attack Surface: Auditing MCP Servers With mcp-scan</a></h3>
-        <p class="excerpt">AI agents now browse the web, run code, and query databases through MCP servers — and attackers have noticed. Here&#x27;s how tool poisoning works, why October 2026 turned MCP into a headline threat, and how to audit your own setup with Invariant Labs&#x27; mcp-scan before a plugin audits you.</p>
-        <div class="meta"><span>21 October 2026</span><span>·</span>
-        <span>6 min read</span><a class="tag" href="/tag/mcp/">mcp</a> <a class="tag" href="/tag/ai-security/">ai-security</a> <a class="tag" href="/tag/tools/">tools</a> <a class="tag" href="/tag/prompt-injection/">prompt-injection</a></div>
-      </div>
-      <img class="thumb" src="/assets/covers/mcp-server-audit-scan.jpg" alt="" loading="lazy">
-      <span class="arrow">→</span>
     </li></ol>
           <div class="sec-head"><h2><span class="idx">02</span>Browse topics</h2></div>
-          <div class="chips"><a class="chip" href="/tag/ai/">ai</a><a class="chip" href="/tag/ai-security/">ai-security</a><a class="chip" href="/tag/atlassian/">atlassian</a><a class="chip" href="/tag/attack-surface/">attack-surface</a><a class="chip" href="/tag/blue-team/">blue-team</a><a class="chip" href="/tag/case-breakdown/">case-breakdown</a><a class="chip" href="/tag/cloud-security/">cloud-security</a><a class="chip" href="/tag/concept/">concept</a><a class="chip" href="/tag/cryptojacking/">cryptojacking</a><a class="chip" href="/tag/data-breach/">data-breach</a><a class="chip" href="/tag/easm/">easm</a><a class="chip" href="/tag/edge-security/">edge-security</a><a class="chip" href="/tag/email-security/">email-security</a><a class="chip" href="/tag/extortion/">extortion</a><a class="chip" href="/tag/hands-on/">hands-on</a><a class="chip" href="/tag/incident-response/">incident-response</a><a class="chip" href="/tag/kev/">kev</a><a class="chip" href="/tag/mark-of-the-web/">mark-of-the-web</a><a class="chip" href="/tag/mcp/">mcp</a><a class="chip" href="/tag/nuclei/">nuclei</a><a class="chip" href="/tag/patching/">patching</a><a class="chip" href="/tag/phishing/">phishing</a><a class="chip" href="/tag/php/">php</a><a class="chip" href="/tag/privilege-escalation/">privilege-escalation</a><a class="chip" href="/tag/prompt-injection/">prompt-injection</a><a class="chip" href="/tag/ransomware/">ransomware</a><a class="chip" href="/tag/sd-wan/">sd-wan</a><a class="chip" href="/tag/secrets-management/">secrets-management</a><a class="chip" href="/tag/supply-chain/">supply-chain</a><a class="chip" href="/tag/third-party-risk/">third-party-risk</a><a class="chip" href="/tag/threat-hunting/">threat-hunting</a><a class="chip" href="/tag/threat-intel/">threat-intel</a><a class="chip" href="/tag/tools/">tools</a><a class="chip" href="/tag/vulnerability/">vulnerability</a><a class="chip" href="/tag/vulnerability-management/">vulnerability-management</a><a class="chip" href="/tag/vulnerability-research/">vulnerability-research</a><a class="chip" href="/tag/vulnerability-scanning/">vulnerability-scanning</a><a class="chip" href="/tag/windows-security/">windows-security</a><a class="chip" href="/tag/zero-day/">zero-day</a></div>
+          <div class="chips"><a class="chip" href="/tag/ai/">ai</a><a class="chip" href="/tag/ai-security/">ai-security</a><a class="chip" href="/tag/atlassian/">atlassian</a><a class="chip" href="/tag/attack-surface/">attack-surface</a><a class="chip" href="/tag/blue-team/">blue-team</a><a class="chip" href="/tag/case-breakdown/">case-breakdown</a><a class="chip" href="/tag/cloud-security/">cloud-security</a><a class="chip" href="/tag/concept/">concept</a><a class="chip" href="/tag/cryptojacking/">cryptojacking</a><a class="chip" href="/tag/data-breach/">data-breach</a><a class="chip" href="/tag/easm/">easm</a><a class="chip" href="/tag/edge-security/">edge-security</a><a class="chip" href="/tag/email-security/">email-security</a><a class="chip" href="/tag/extortion/">extortion</a><a class="chip" href="/tag/hands-on/">hands-on</a><a class="chip" href="/tag/incident-response/">incident-response</a><a class="chip" href="/tag/kev/">kev</a><a class="chip" href="/tag/mark-of-the-web/">mark-of-the-web</a><a class="chip" href="/tag/mcp/">mcp</a><a class="chip" href="/tag/nuclei/">nuclei</a><a class="chip" href="/tag/patching/">patching</a><a class="chip" href="/tag/phishing/">phishing</a><a class="chip" href="/tag/php/">php</a><a class="chip" href="/tag/privilege-escalation/">privilege-escalation</a><a class="chip" href="/tag/prompt-injection/">prompt-injection</a><a class="chip" href="/tag/python-security/">python-security</a><a class="chip" href="/tag/ransomware/">ransomware</a><a class="chip" href="/tag/sd-wan/">sd-wan</a><a class="chip" href="/tag/secrets-management/">secrets-management</a><a class="chip" href="/tag/supply-chain/">supply-chain</a><a class="chip" href="/tag/third-party-risk/">third-party-risk</a><a class="chip" href="/tag/threat-hunting/">threat-hunting</a><a class="chip" href="/tag/threat-intel/">threat-intel</a><a class="chip" href="/tag/tools/">tools</a><a class="chip" href="/tag/vulnerability/">vulnerability</a><a class="chip" href="/tag/vulnerability-management/">vulnerability-management</a><a class="chip" href="/tag/vulnerability-research/">vulnerability-research</a><a class="chip" href="/tag/vulnerability-scanning/">vulnerability-scanning</a><a class="chip" href="/tag/windows-security/">windows-security</a><a class="chip" href="/tag/zero-day/">zero-day</a></div>
         </div></section>
 </main>
 

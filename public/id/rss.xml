@@ -4,7 +4,11 @@
 <title>llunatic-lab (id)</title><link>https://lab.llunaticsys.web.id/id/</link>
 <description>Catatan keamanan dari sisi gelap internet</description>
 <language>id</language>
-<item><title>Tambal Berdasarkan Eksploitasi, Bukan Skor: Cara Katalog KEV Milik CISA Menyusun Ulang Antrean Patch Anda</title>
+<item><title>Terinstal tapi Tak Pernah Diimpor — dan Kunci Anda Tetap Dicuri: Memburu Stealer .pth LiteLLM</title>
+            <link>https://lab.llunaticsys.web.id/id/artikel/litellm-pth-stealer-audit/</link>
+            <description>Pada 21 Oktober 2026, rilis LiteLLM 1.107.0 yang diracuni menyembunyikan pencuri kredensial di dalam file startup Python — sehingga ia berjalan di setiap proses Python di host tersebut, bahkan yang tak pernah menyentuh LiteLLM. Inilah cara memeriksa apakah ia menyentuh Anda, dan cara membersihkannya dengan benar.</description>
+            <pubDate>Fri, 30 Oct 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/litellm-pth-stealer-audit/</guid></item><item><title>Tambal Berdasarkan Eksploitasi, Bukan Skor: Cara Katalog KEV Milik CISA Menyusun Ulang Antrean Patch Anda</title>
             <link>https://lab.llunaticsys.web.id/id/artikel/kev-patch-by-exploitation-not-score/</link>
             <description>Celah CVSS 10.0 yang belum terbukti dieksploitasi melawan celah CVSS 8.8 yang sudah dipakai penyerang — mana yang Anda tambal dulu? Oktober 2026 memberi jawaban yang sangat mahal untuk pertanyaan itu, dan katalog KEV milik CISA adalah cara tim yang cerdas berhenti salah menjawab.</description>
             <pubDate>Wed, 28 Oct 2026 00:00:00 -0000</pubDate>

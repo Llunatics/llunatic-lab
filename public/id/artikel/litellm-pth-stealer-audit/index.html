@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terinstal tapi Tak Pernah Diimpor — dan Kunci Anda Tetap Dicuri: Memburu Stealer .pth LiteLLM — llunatic-lab</title>
+<meta name="description" content="Pada 21 Oktober 2026, rilis LiteLLM 1.107.0 yang diracuni menyembunyikan pencuri kredensial di dalam file startup Python — sehingga ia berjalan di setiap proses Python di host tersebut, bahkan yang tak pernah menyentuh LiteLLM. Inilah cara memeriksa apakah ia menyentuh Anda, dan cara membersihkannya dengan benar.">
+<meta property="og:title" content="Terinstal tapi Tak Pernah Diimpor — dan Kunci Anda Tetap Dicuri: Memburu Stealer .pth LiteLLM">
+<meta property="og:description" content="Pada 21 Oktober 2026, rilis LiteLLM 1.107.0 yang diracuni menyembunyikan pencuri kredensial di dalam file startup Python — sehingga ia berjalan di setiap proses Python di host tersebut, bahkan yang tak pernah menyentuh LiteLLM. Inilah cara memeriksa apakah ia menyentuh Anda, dan cara membersihkannya dengan benar.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/litellm-pth-stealer-audit.jpg"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/litellm-pth-stealer-audit/"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/litellm-pth-stealer-audit/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/id/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/id/arsip/">Arsip</a>
+      <a href="/id/tentang/">Tentang</a>
+      <a class="lang-toggle" href="/artikel/litellm-pth-stealer-audit/">EN</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>artikel</div>
+              <h1>Terinstal tapi Tak Pernah Diimpor — dan Kunci Anda Tetap Dicuri: Memburu Stealer .pth LiteLLM</h1>
+              <div class="meta"><span>30 Oktober 2026</span><span>·</span>
+              <span>8 mnt baca</span><a class="tag" href="/id/tag/supply-chain/">supply-chain</a> <a class="tag" href="/id/tag/python-security/">python-security</a> <a class="tag" href="/id/tag/tools/">tools</a> <a class="tag" href="/id/tag/incident-response/">incident-response</a></div>
+              <img class="cover" src="/assets/covers/litellm-pth-stealer-audit.jpg" alt="Terinstal tapi Tak Pernah Diimpor — dan Kunci Anda Tetap Dicuri: Memburu Stealer .pth LiteLLM">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Ada asumsi menenangkan yang dibawa setiap developer Python: menginstal sebuah package itu tidak berbahaya sampai Anda mengimpornya. Anda bisa <code>pip install</code> sesuatu, mencobanya nanti, menghapusnya kalau berubah pikiran — dan tidak ada yang berjalan di antaranya. Pada 21 Oktober 2026, sebuah rilis LiteLLM yang diracuni membuktikan asumsi itu salah dengan cara terburuk.</p>
+<p>Pagi itu, versi berbahaya dari <code>litellm</code> 1.107.0 muncul di <span class="gterm" data-term="PyPI" data-def="Python Package Index — repositori publik resmi tempat pip menginstal package Python.">PyPI</span> — ketujuh wheel-nya, mencakup Linux, macOS, dan Windows — dan di image container LiteLLM di Docker Hub dan GHCR dengan tag <code>v1.107.0</code>, <code>latest</code>, <code>main-latest</code>, dan <code>main-stable</code>. Ia membawa pencuri kredensial yang tidak menunggu ada yang mengimpor LiteLLM. Ia berjalan begitu proses Python apa pun dimulai di host itu. &quot;Kami hanya menginstalnya, tidak pernah memakainya&quot; bukan pembelaan di sini. Kalau rilis beracun itu mendarat di environment Anda, kalimat itulah yang justru diandalkan penyerang.</p>
+<h2 id="apa-yang-sebenarnya-terjadi"><span class="hnum">01</span>Apa yang sebenarnya terjadi</h2>
+<p>LiteLLM adalah gateway open-source populer yang memungkinkan aplikasi berbicara ke banyak penyedia model bahasa besar lewat satu antarmuka — yang berarti mesin yang menjalankannya cenderung menyimpan persis rahasia yang diinginkan penyerang: kredensial cloud dan API key penyedia AI. Komprominya bukan pada kode sumber publik LiteLLM. Advisory proyek itu sendiri mencatat bahwa git tag resmi v1.107.0 tidak mengandung file berbahaya; wheel yang diracuni dibangun dari repositori yang dikuasai penyerang. Ini adalah <span class="gterm" data-term="supply chain attack" data-def="Serangan yang mencapai target lewat pemasok, vendor, atau update software tepercaya, alih-alih menyerang target secara langsung.">supply chain attack</span> terhadap pipeline rilis, bukan commit jahat yang bisa terlihat saat code review.</p>
+<p>Cara penyerang masuk ke pipeline itu adalah pelajarannya sendiri. Analisis atas insiden itu melaporkan bahwa sebuah master key telah terekspos di repositori publik sejak 27 Mei 2026, dan penyerang sempat mengujinya pada 10 Oktober sebelum memakainya untuk menerbitkan rilis beracun pada 21 Oktober. Sebuah rahasia yang dibiarkan di tempat publik selama hampir lima bulan, lalu dipersenjatai dalam satu pagi. Jendela paparan di <span class="gterm" data-term="PyPI" data-def="Python Package Index — repositori publik resmi tempat pip menginstal package Python.">PyPI</span> sendiri singkat — wheel diunggah antara pukul 11:39 dan 11:40 UTC dan PyPI menghapus rilis itu pada 13:23 UTC, kurang dari dua jam kemudian — tetapi dua jam adalah waktu yang sangat lama bagi installer otomatis. Pipeline CI, build Docker, dan bot dependensi tidak tidur, dan tag container yang mengambang membawa image berbahaya lebih lama, antara pukul 11:46 dan 14:20 UTC.</p>
+<p>Dan ini adalah kedua kalinya bagi LiteLLM. Pada Maret 2026, kelompok yang dilacak sebagai TeamPCP mengompromikan <code>litellm</code> 1.82.7 dan 1.82.8 memakai token <span class="gterm" data-term="PyPI" data-def="Python Package Index — repositori publik resmi tempat pip menginstal package Python.">PyPI</span> yang dicuri lewat Trivy, dengan teknik <code>.pth</code> yang serupa. Aktor berbeda, titik lemah yang sama: pipeline rilis adalah bagian dari attack surface, dan ia terus membuktikannya.</p>
+<h2 id="triknya-file-startup-bukan-import"><span class="hnum">02</span>Triknya: file startup, bukan import</h2>
+<p>Mekanismenyalah yang membuat insiden ini layak dipelajari, karena ia berlaku jauh melampaui LiteLLM. Wheel yang diracuni menaruh tiga file ke <code>site-packages</code>: <code>cook.pth</code>, <code>cook.py</code>, dan <code>sitecustomize.py</code>. File pertama adalah kuncinya.</p>
+<p>Python memproses setiap file <code>.pth</code> di <code>site-packages</code> saat interpreter dimulai, dan baris apa pun yang diawali <code>import</code> akan dieksekusi. Itu fitur yang terdokumentasi, dimaksudkan untuk menambahkan direktori ke jalur pencarian modul — tetapi itu berarti file <code>.pth</code> adalah primitif eksekusi kode yang menyala sebelum kode Anda, sebelum aplikasi Anda, sebelum apa pun yang Anda tulis. <code>cook.pth</code> mengimpor <code>cook.py</code>, sehingga stealer berjalan di dalam setiap proses Python di host itu: aplikasi Anda, test suite Anda, language server IDE Anda, job CI Anda, bahkan <code>pip</code> itu sendiri.</p>
+<p>Detail terakhir itu penting untuk incident response, dan merupakan jebakan pertama dalam kisah ini: menjalankan <code>pip show litellm</code> di environment yang dicurigai untuk memeriksa versi justru akan memicu stealer sekali lagi. Pada mesin yang Anda curigai, periksa file-nya dari shell dulu, tanpa memulai Python sama sekali.</p>
+<p>Apa yang dicuri <code>cook.py</code> terbaca seperti inventaris semua yang dimiliki host engineering modern: kredensial cloud untuk AWS, GCP, dan Azure, API key penyedia AI, kunci SSH dan GPG, rahasia CI/CD, kata sandi browser, variabel environment proses, dan — bila <code>DATABASE_URL</code> proxy LiteLLM disetel — baris dari tabel kredensial proxy, termasuk provider key yang tersimpan di sana. Hasil curian dienkripsi dan dikirim ke <code>www.litellm.dev</code>, domain tiruan yang tidak terkait dengan <code>litellm.ai</code> yang resmi. Perlakukan setiap rahasia yang bisa dibaca oleh host yang terdampak sebagai sudah terekspos, bukan hanya yang terbukti diambil.</p>
+<p>Payload kedua, <code>sitecustomize.py</code>, adalah lapisan persistensinya: ia memulai daemon latar yang, setiap jam, membaca alamat server dari file yang dihosting di GitHub, menjalankan ulang stealer, dan mengunduh serta mengeksekusi kode lanjutan. Akun GitHub di baliknya mengembalikan 404 pada pukul 13:40 UTC, kira-kira dua jam setelah rilis, sehingga loader itu cepat kehilangan server perintahnya — tetapi host apa pun yang menjalankan daemon itu sebelum titik tersebut bisa saja menerima kode tahap kedua yang alamatnya tak lagi bisa dipulihkan peneliti.</p>
+<h2 id="auditnya-lima-pemeriksaan-sesuai-urutan"><span class="hnum">03</span>Auditnya: lima pemeriksaan, sesuai urutan</h2>
+<p>Kalau Anda menjalankan Python di mana pun — dan terutama kalau Anda menjalankan LiteLLM, gateway AI, atau container apa pun yang dibangun dari tag yang mengambang — kerjakan ini sesuai urutan. Lakukan pemeriksaan file sebelum Anda menjalankan tool Python apa pun di environment yang dicurigai.</p>
+<p><strong>1. Periksa rilis beracun di lockfile dan cache Anda.</strong> Cari <code>litellm==1.107.0</code> di lockfile dependensi, log build, dan cache. Versi yang bersih adalah 1.106.2 dan release candidate 1.107.0 (1.107.0rc1 dan 1.107.0rc2). Lockfile yang mengunci 1.107.0, atau entri cache untuknya, berarti environment itu menarik rilis yang buruk — bahkan bila rilis itu kemudian dihapus dari <span class="gterm" data-term="PyPI" data-def="Python Package Index — repositori publik resmi tempat pip menginstal package Python.">PyPI</span>.</p>
+<p><strong>2. Cari file implan di disk.</strong> Dari shell, bukan lewat Python:</p>
+<pre><code class="language-bash">find / \( -name &#x27;litellm-1.107.0.dist-info&#x27; -o -name &#x27;cook.pth&#x27; \
+  -o -name &#x27;cook.py&#x27; -o -name &#x27;sitecustomize.py&#x27; \) 2&gt;/dev/null
+ls -la /tmp/.pc_once_* /tmp/remote_code_loader.lock 2&gt;/dev/null</code></pre>
+<p>Menemukan <code>cook.pth</code> atau direktori <code>litellm-1.107.0.dist-info</code> berarti rilis buruk itu pernah terinstal. Perlu dicatat bahwa <code>sitecustomize.py</code> bisa jadi sah di beberapa build Python, jadi perlakukan ia sebagai mencurigakan terutama bila ia berada di samping <code>cook.pth</code>.</p>
+<p><strong>3. Periksa file marker — dan pahami apa yang tidak dibuktikannya.</strong> Stealer menulis <code>/tmp/.pc_once_72129118c59f5636c0bb</code> hanya setelah data curian terkirim, jadi menemukannya memastikan eksfiltrasi pernah terjadi. Tidak menemukannya tidak membuktikan apa-apa: restart container atau pembersihan <code>/tmp</code> menghapusnya, dan pencurian itu mungkin tetap terjadi.</p>
+<p><strong>4. Periksa image container berdasarkan digest, bukan tag.</strong> Tag berpindah; digest tidak. Bandingkan image yang benar-benar Anda jalankan:</p>
+<pre><code class="language-bash">docker images --digests | grep -i -E &#x27;berriai|litellm&#x27;</code></pre>
+<p>Di Kubernetes, periksa image ID di status container setiap pod — itulah digest yang benar-benar berjalan, dan hanya itulah yang penting. Image apa pun yang ditarik saat tag mengambang menyajikan build beracun harus diperlakukan sebagai terkompromi.</p>
+<p><strong>5. Periksa egress dan log cloud.</strong> Cari koneksi keluar ke <code>litellm.dev</code> di sekitar jendela instalasi, dan aktivitas cloud — misalnya panggilan <code>GetCallerIdentity</code> dari role yang ada di host terdampak — yang datang dari luar jaringan Anda. Bila sebuah role bisa dipakai dari host itu, anggap saja role itu sudah dipakai.</p>
+<h2 id="pembersihannya-uninstall-saja-tidak-cukup"><span class="hnum">04</span>Pembersihannya: uninstall saja tidak cukup</h2>
+<p>Ini jebakan kedua dalam kisah ini, dan jebakan yang paling mungkin menelan kebanyakan tim. Menghapus instalasi <code>litellm</code> 1.107.0 tidak menghilangkan implan, karena <code>cook.pth</code>, <code>cook.py</code>, dan <code>sitecustomize.py</code> berada di root <code>site-packages</code>, di luar direktori package — mereka bertahan setelah package dihapus, dan loader yang sedang berjalan terus berjalan. Pembersihan yang benar punya empat langkah:</p>
+<ol>
+<li><strong>Hapus file implan dengan tangan</strong> dari setiap environment yang terdampak, dan matikan proses loader yang sedang berjalan.</li>
+<li><strong>Bangun ulang, jangan ditambal.</strong> Bangun ulang image container dari base yang bersih lalu deploy ulang; jangan mencoba membersihkan container yang sedang berjalan secara bedah lalu menyebutnya tepercaya.</li>
+<li><strong>Rotasi semua yang bisa dibaca host itu.</strong> Role cloud, setiap provider key di database proxy, master key dan virtual key, kata sandi <code>DATABASE_URL</code>, dan setiap rahasia di environment proses apa pun. Rotasi adalah remediasinya — penghapusan file hanyalah kebersihan.</li>
+<li><strong>Kunci dan verifikasi ke depannya.</strong> Kunci <code>litellm</code> ke versi bersih berdasarkan hash, kunci image container berdasarkan digest alih-alih tag yang mengambang, dan wajibkan instalasi terverifikasi hash (<code>pip install --require-hashes</code>) untuk build produksi. Tag yang mengambang adalah instruksi untuk menerima apa pun yang disajikan penerbit berikutnya — dan pada 21 Oktober, itu adalah malware.</li>
+</ol>
+<h2 id="pelajaran-yang-bertahan-lebih-lama-dari-insiden-ini"><span class="hnum">05</span>Pelajaran yang bertahan lebih lama dari insiden ini</h2>
+<p>Lepaskan detail LiteLLM-nya dan bentuk serangannya terasa tidak nyaman karena begitu umum. Pipeline rilis sebuah proyek open-source tepercaya dikompromikan lewat rahasia yang sudah lama terekspos. Payload memakai fitur interpreter yang sah, bukan kerentanan, sehingga tidak ada scanner yang menandai CVE yang diketahui akan menangkapnya. Ia berjalan tanpa import, sehingga &quot;kami tidak pernah memakainya&quot; tidak berarti apa-apa. Ia bertahan di luar direktori package, sehingga uninstall tidak berarti apa-apa. Dan ia menargetkan persis kelas host — gateway AI — yang memusatkan kredensial paling berharga di satu tempat.</p>
+<p>Itulah mengapa audit di atas layak dijalankan bahkan bila Anda cukup yakin tidak terdampak. Pemeriksaannya murah: grep lockfile, pencarian filesystem, perbandingan digest. Dan ia melatih kebiasaan yang penting melampaui minggu ini: perlakukan dependency tree dan tag container Anda sebagai keputusan trust yang hidup, bukan sebagai plumbing latar. Setiap instalasi adalah tindakan kecil percaya pada pipeline rilis orang lain. Pada 21 Oktober, kepercayaan itu disalahgunakan selama kurang dari dua jam — dan itu sudah cukup.</p>
+<p>Periksa environment Anda. Rotasi yang perlu dirotasi. Dan lain kali seseorang berkata sebuah package aman karena tidak pernah diimpor, Anda sudah tahu yang sebenarnya.</p>
+<hr>
+<p><em>Sumber: <a href="https://safedep.io/litellm-pypi-compromise-credential-stealer-backdoor/">Compromised LiteLLM 1.107.0 on PyPI Installs a Credential Stealer and Backdoor (SafeDep, 21 Oktober 2026)</a>; <a href="https://www.kodemsecurity.com/resources/litellm-supply-chain-attack-litellm-1-107-0-affected-versions-iocs-and-first-hour-response-runbook">LiteLLM Supply Chain Attack: IOCs and Runbook (Kodem)</a>; <a href="https://playciso.com/blog/litellm-1-107-0-supply-chain-compromise-credential-stealer">LiteLLM 1.107.0 Backdoored: How the .pth Key Stealer Worked (PlayCISO)</a>; <a href="https://tecyfy.com/blog/litellm-compromised-check-and-clean">LiteLLM 1.107.0 Compromised: Check, Clean Up, Rotate Keys (Tecyfy)</a>; <a href="https://beatsinbrief.com/2026/10/29/black-october-2026-ai-patch-window-php2shell/">Black October: How a Week of Cybersecurity Failures Exposed the Limits of Traditional Patching (29 Oktober 2026)</a>.</em></p><div class="author-box"><div class="kicker"><span class="dot"></span>ditulis oleh</div><p><strong>kou</strong> mendokumentasikan threat intel, attack surface, dan pertahanan praktis — dari sisi gelap internet.</p></div><div class="pager"><a href="/id/artikel/kev-patch-by-exploitation-not-score/"><span class="dir">← sebelumnya</span><span class="t">Tambal Berdasarkan Eksploitasi, Bukan Skor: Cara Katalog KEV Milik CISA Menyusun Ulang Antrean Patch Anda</span></a><span></span></div></div>
+                <aside class="toc"><h4>Daftar isi</h4><ol><li style="margin-left:0px"><a href="#apa-yang-sebenarnya-terjadi">Apa yang sebenarnya terjadi</a></li><li style="margin-left:0px"><a href="#triknya-file-startup-bukan-import">Triknya: file startup, bukan import</a></li><li style="margin-left:0px"><a href="#auditnya-lima-pemeriksaan-sesuai-urutan">Auditnya: lima pemeriksaan, sesuai urutan</a></li><li style="margin-left:0px"><a href="#pembersihannya-uninstall-saja-tidak-cukup">Pembersihannya: uninstall saja tidak cukup</a></li><li style="margin-left:0px"><a href="#pelajaran-yang-bertahan-lebih-lama-dari-insiden-ini">Pelajaran yang bertahan lebih lama dari insiden ini</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>catatan keamanan dari sisi gelap internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="cari artikel…" aria-label="search">
+    <div class="search-hint">ketik minimal 2 huruf · esc untuk tutup · ctrl+k dari mana saja</div>
+    <div class="search-results" data-empty="nggak ketemu — coba kata kunci lain."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

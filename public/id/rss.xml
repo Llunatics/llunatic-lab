@@ -4,7 +4,11 @@
 <title>llunatic-lab (id)</title><link>https://lab.llunaticsys.web.id/id/</link>
 <description>Catatan keamanan dari sisi gelap internet</description>
 <language>id</language>
-<item><title>Terinstal tapi Tak Pernah Diimpor — dan Kunci Anda Tetap Dicuri: Memburu Stealer .pth LiteLLM</title>
+<item><title>Sudah Di-patch, Sudah Di-upgrade — Masih Rentan: Celah GitLab yang Bersembunyi di Ruby</title>
+            <link>https://lab.llunaticsys.web.id/id/artikel/gitlab-cve-2026-97229-alpine-ruby-gap/</link>
+            <description>Alpine Linux meng-upgrade GitLab-nya dua kali dan tetap rentan, karena celah CVSS 10.0 CVE-2026-97229 tidak tinggal di kode GitLab, melainkan di interpreter Ruby di bawahnya. Ini linimasanya, jebakannya, dan cara memeriksa instance-mu sendiri.</description>
+            <pubDate>Sun, 01 Nov 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/gitlab-cve-2026-97229-alpine-ruby-gap/</guid></item><item><title>Terinstal tapi Tak Pernah Diimpor — dan Kunci Anda Tetap Dicuri: Memburu Stealer .pth LiteLLM</title>
             <link>https://lab.llunaticsys.web.id/id/artikel/litellm-pth-stealer-audit/</link>
             <description>Pada 21 Oktober 2026, rilis LiteLLM 1.107.0 yang diracuni menyembunyikan pencuri kredensial di dalam file startup Python — sehingga ia berjalan di setiap proses Python di host tersebut, bahkan yang tak pernah menyentuh LiteLLM. Inilah cara memeriksa apakah ia menyentuh Anda, dan cara membersihkannya dengan benar.</description>
             <pubDate>Fri, 30 Oct 2026 00:00:00 -0000</pubDate>

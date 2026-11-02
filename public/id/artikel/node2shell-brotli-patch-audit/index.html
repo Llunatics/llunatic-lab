@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sudah Di-patch di Atas Kertas, Masih Rentan di Produksi: Audit Hands-On Node2Shell — llunatic-lab</title>
+<meta name="description" content="Node.js memperbaiki Node2Shell pada 21 Oktober, tapi string versi berbohong, runtime bersembunyi di dalam container, dan npm update tidak berpengaruh apa-apa. Audit ini menunjukkan cara membuktikan — bukan sekadar mengasumsikan — bahwa setiap Node.js di estate kamu benar-benar sudah di-patch.">
+<meta property="og:title" content="Sudah Di-patch di Atas Kertas, Masih Rentan di Produksi: Audit Hands-On Node2Shell">
+<meta property="og:description" content="Node.js memperbaiki Node2Shell pada 21 Oktober, tapi string versi berbohong, runtime bersembunyi di dalam container, dan npm update tidak berpengaruh apa-apa. Audit ini menunjukkan cara membuktikan — bukan sekadar mengasumsikan — bahwa setiap Node.js di estate kamu benar-benar sudah di-patch.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/node2shell-brotli-patch-audit.jpg"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/node2shell-brotli-patch-audit/"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/node2shell-brotli-patch-audit/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/id/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/id/arsip/">Arsip</a>
+      <a href="/id/tentang/">Tentang</a>
+      <a class="lang-toggle" href="/artikel/node2shell-brotli-patch-audit/">EN</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>artikel</div>
+              <h1>Sudah Di-patch di Atas Kertas, Masih Rentan di Produksi: Audit Hands-On Node2Shell</h1>
+              <div class="meta"><span>2 November 2026</span><span>·</span>
+              <span>9 mnt baca</span><a class="tag" href="/id/tag/hands-on/">hands-on</a> <a class="tag" href="/id/tag/nodejs/">nodejs</a> <a class="tag" href="/id/tag/vulnerability/">vulnerability</a> <a class="tag" href="/id/tag/patching/">patching</a></div>
+              <img class="cover" src="/assets/covers/node2shell-brotli-patch-audit.jpg" alt="Sudah Di-patch di Atas Kertas, Masih Rentan di Produksi: Audit Hands-On Node2Shell">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Ada satu bentuk rasa aman yang palsu, yang baru muncul setelah patch Tuesday yang terasa sudah beres. Kamu membaca advisory, menjalankan upgrade, dashboard berubah hijau — dan di suatu tempat, di dalam container image yang tidak pernah di-rebuild, runtime lama masih melayani traffic. <span class="gterm" data-term="CVE" data-def="Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.">CVE</span>-2026-111497, yang dijuluki Node2Shell, memang dirancang untuk menghukum rasa percaya diri semacam itu. Perbaikannya rilis pada 21 Oktober 2026. Audit yang membuktikan kamu benar-benar sudah menerapkannya adalah topik artikel ini.</p>
+<p>Node2Shell adalah <span class="gterm" data-term="out-of-bounds write" data-def="Bug memori ketika program menulis data melewati ujung buffer yang dialokasikan, merusak memori di sebelahnya dan berpotensi memungkinkan eksekusi kode.">out-of-bounds write</span> di dalam decoder <span class="gterm" data-term="Brotli" data-def="Format kompresi buatan Google, dipakai bersama gzip untuk mengecilkan traffic HTTP; Node.js membundel decoder Brotli di node:zlib.">Brotli</span> yang dibundel bersama <span class="gterm" data-term="Node.js" data-def="Runtime JavaScript yang dibangun di atas engine V8 Chrome, banyak dipakai untuk aplikasi dan API sisi server.">Node.js</span>. Brotli adalah format kompresi yang dipakai browser dan server berdampingan dengan gzip untuk mengecilkan traffic HTTP, dan Node.js menyertakan decoder Brotli di dalam <code>node:zlib</code>. Ketika decoder bertemu stream buatan penyerang dengan block-type switch yang tidak valid, ia salah menangani error tersebut dan terus menulis melewati ujung buffer internal yang kecil. Korupsi memori itu bisa membuat proses crash, membocorkan isi memori, atau — seperti yang didemonstrasikan Red Team Imperva pada 22 Oktober — menjalankan kode buatan penyerang. Proof of concept mereka menjalankan kode di dalam image resmi <span class="gterm" data-term="Node.js" data-def="Runtime JavaScript yang dibangun di atas engine V8 Chrome, banyak dipakai untuk aplikasi dan API sisi server.">Node.js</span> 24.22.0 Linux arm64 tanpa debugger dan tanpa custom build, lewat body request terkompresi maupun response terkompresi. Input yang sama ditolak oleh rilis perbaikan 24.22.1. CNA Google memberi skor CVSS 9.2 untuk celah ini; Node.js sendiri menilainya High. Pada 27 Oktober, <span class="gterm" data-term="CISA" data-def="Cybersecurity and Infrastructure Security Agency AS, yang mengelola katalog Known Exploited Vulnerabilities (KEV) berisi celah yang terkonfirmasi dieksploitasi di lapangan.">CISA</span> memasukkannya ke katalog <span class="gterm" data-term="KEV" data-def="Katalog Known Exploited Vulnerabilities milik CISA: daftar singkat celah yang terbukti dieksploitasi di lapangan. Instansi federal AS wajib memperbaikinya sebelum tenggat tertentu — praktisi memperlakukan setiap entri sebagai &#x27;patch sekarang&#x27;.">KEV</span>, dengan tenggat perbaikan federal 10 November 2026 — sinyal formal bahwa penyerang sudah memanfaatkannya. Firma threat-intel ELLIO melaporkan exploit buatan penyerang mencapai sensor mereka pada 26 Oktober, dan scanner sudah aktif memindai host yang men-decompress body Brotli.</p>
+<h2 id="kenapa-celah-ini-menjangkau-kamu-meski-kamu-tidak-pernah-menyentuh-kompresi"><span class="hnum">01</span>Kenapa celah ini menjangkau kamu meski kamu tidak pernah menyentuh kompresi</h2>
+<p>Sebagian besar tim yang menjalankan Node.js tidak pernah menulis satu baris pun kode Brotli, dan justru di situlah masalahnya. Decoder ini dijangkau lewat tiga jalur yang mungkin tidak pernah kamu pilih secara sadar.</p>
+<p>Pertama, request masuk. Express 5 dan body-parser 2 men-decompress body request yang dikirim dengan <code>Content-Encoding: br</code> secara default, karena opsi <code>inflate</code> di body-parser aktif kecuali kamu mematikannya. Aplikasi dengan <code>app.use(express.json())</code> yang biasa saja pun bisa dijangkau oleh satu request buatan penyerang, sebelum login apa pun, sebelum kode aplikasimu sendiri berjalan. Aplikasi Koa dan NestJS mewarisi perilaku yang sama lewat parser mereka.</p>
+<p>Kedua, request keluar. <code>fetch()</code> bawaan Node.js meminta dan men-decompress response Brotli secara otomatis. Server apa pun yang dipanggil kodemu — webhook yang kamu panggil balik, link previewer, scraper, AI agent yang mengambil URL kiriman user — bisa menyodorkan stream berbahaya ke decoder kamu. Penyerang bahkan tidak perlu menyentuh servermu; cukup mengendalikan server yang dihubungi servermu.</p>
+<p>Ketiga, pemanggilan langsung. Kode apa pun yang memanggil fungsi Brotli di <code>node:zlib</code> atas data dari luar ikut terekspos. Server HTTP Node.js polos yang tidak pernah men-decompress apa pun memang tidak terekspos — decoding harus terjadi agar celah terpicu — tapi begitu middleware atau library melakukannya untukmu, kamu masuk ke dalam scope.</p>
+<p>Blast radius-nya tidak berhenti di Node.js. Bug ini hidup di library Brotli C milik Google, sehingga ikut memengaruhi Bun (diperbaiki di 1.4.4), paket Python Brotli (1.2.1) dan brotlicffi (1.2.1.0), serta .NET, yang Microsoft tambal lewat update out-of-band pada 25 Oktober. Tapi audit ini fokus ke Node.js, karena di sanalah jebakan versinya berada.</p>
+<h2 id="jebakannya-string-versi-berbohong"><span class="hnum">02</span>Jebakannya: string versi berbohong</h2>
+<p>Inilah detail yang membuat audit ini layak dilakukan alih-alih mempercayai dashboard. Node.js mengambil perbaikan Brotli lewat cherry-pick tanpa mengubah string versi Brotli yang dibundel. Akibatnya <code>process.versions.brotli</code> melaporkan <code>1.2.0</code> baik di build yang sudah di-patch maupun yang belum. Script inventaris, scanner, atau cek compliance apa pun yang membaca versi Brotli akan menyebut server rentan sebagai sudah aman. Satu-satunya cek yang bisa diandalkan adalah versi Node.js itu sendiri: 22.23.4, 24.22.1, atau 26.12.1 — atau rilis yang lebih baru di lini yang masih didukung. Dan <code>npm update</code> tidak ada gunanya di sini, karena celah ini ada di runtime, bukan di paket. Lini Node.js 20.x dan yang lebih lama tidak mendapat perbaikan sama sekali; mereka sudah end of life, dan satu-satunya jalan adalah migrasi ke lini yang masih didukung.</p>
+<p>Lebih parah lagi, runtime ini pandai bersembunyi. <code>node -v</code> di laptopmu tidak memberi tahu apa-apa tentang binary Node di dalam container image, CI runner, bundle serverless, atau developer tool yang membawa runtime sendiri. Audit di bawah ini dirancang untuk menemukan salinan-salinan itu.</p>
+<h2 id="latihan-1-inventarisasi-semua-node-js-bukan-cuma-milikmu"><span class="hnum">03</span>Latihan 1: inventarisasi semua Node.js, bukan cuma milikmu</h2>
+<p>Mulai dari mesin yang kamu kelola, lalu beralih ke artefak yang kamu kirim. Di host mana pun, daftarkan runtime yang terinstal maupun proses yang sedang berjalan:</p>
+<pre><code class="language-bash"># Runtime yang terinstal: version manager, paket sistem, container
+which -a node; ls ~/.nvm/versions/node 2&gt;/dev/null; ls /usr/local/bin/node* 2&gt;/dev/null
+ps aux | grep -E &quot;node|bun&quot; | grep -v grep
+node -v  # bandingkan dengan 22.23.4, 24.22.1, 26.12.1</code></pre>
+<p>Lalu audit image-nya, karena di sanalah runtime lama bertahan melewati upgrade. Cari base image di setiap Dockerfile dan definisi CI, dan periksa apa isinya sebenarnya:</p>
+<pre><code class="language-bash">grep -rn &quot;FROM node:&quot; --include=&quot;Dockerfile*&quot; .
+docker run --rm node:24.22.0 node -v  # contoh: membuktikan tag, bukan fleet kamu</code></pre>
+<p>Aturannya sederhana: base-image tag yang belum di-pull ulang sejak 21 Oktober patut dicurigai, meski kode aplikasimu berubah kemarin. Rebuild image dengan tag yang sudah diperbaiki, deploy ulang, dan restart setiap proses yang masih memakai runtime lama — binary yang sudah di-patch tapi hanya tersimpan di disk tidak melindungi apa pun selama proses lama terus berjalan.</p>
+<h2 id="latihan-2-temukan-jalur-eksposur-di-kodemu"><span class="hnum">04</span>Latihan 2: temukan jalur eksposur di kodemu</h2>
+<p>Mengetahui versimu baru setengah audit. Runtime yang sudah di-patch aman apa pun yang terjadi, tapi runtime yang belum di-patch berbahaya sebanding dengan seberapa banyak Brotli tak tepercaya yang ia decode. Petakan permukaan itu dengan dua pencarian di codebase:</p>
+<pre><code class="language-bash"># Decompress body request: default inflate Express 5 / body-parser
+grep -rn &quot;express.json\|express.urlencoded\|express.text\|express.raw\|bodyParser&quot; --include=&quot;*.js&quot; --include=&quot;*.ts&quot; .
+
+# Decoding outbound: fetch() dan pemakaian zlib langsung atas data luar
+grep -rn &quot;fetch(\|brotliDecompress\|createBrotliDecompress&quot; --include=&quot;*.js&quot; --include=&quot;*.ts&quot; . | head -50</code></pre>
+<p>Setiap hasil dari pencarian pertama adalah route yang bisa dijangkau lewat body request buatan penyerang. Setiap hasil dari pencarian kedua adalah tempat di mana server jahat bisa menjangkau decoder kamu. Prioritaskan layanan yang menghadap internet dulu, lalu apa pun yang mengambil URL kiriman user — kategori kedua inilah yang paling sering dilupakan tim, karena penyerang tidak pernah menyentuh server mereka secara langsung.</p>
+<h2 id="latihan-3-buru-probing-yang-mungkin-sudah-terjadi"><span class="hnum">05</span>Latihan 3: buru probing yang mungkin sudah terjadi</h2>
+<p>Eksploitasi meninggalkan bentuk yang khas di log, dan scanner sudah aktif sejak akhir Oktober. Cari tiga sinyal ini di log reverse-proxy dan aplikasi:</p>
+<ol>
+<li><strong>Request POST dengan <code>Content-Encoding: br</code></strong> ke API yang tidak pernah menerima body terkompresi secara sah. Kebanyakan API JSON tidak punya alasan menerima body request Brotli sama sekali.</li>
+<li><strong>Body terkompresi yang luar biasa besar</strong>, atau ledakan request terkompresi dari satu sumber — traffic exploit publik yang teramati sejauh ini mencakup request sekitar 23 MB yang diarahkan ke Node.js 24.22.0.</li>
+<li><strong>Crash atau restart proses yang tidak bisa dijelaskan</strong> di layanan Node.js, terutama yang berkorelasi dengan request terkompresi. Crash adalah dampak pertama yang paling mungkin dari celah ini, dan ia juga sinyal tersendiri: perlakukan crash decoder sebagai kemungkinan serangan, bukan deploy yang flaky, dan periksa apakah core dump sempat menangkap memori proses sebelum di-rotasi.</li>
+</ol>
+<p>Tidak satu pun dari ketiganya membuktikan compromise dengan sendirinya. Bersama-sama, mereka memberi tahu apakah ada yang sudah mengetuk pintu — dan apakah tenggat patching kamu dihitung dalam hari atau menit.</p>
+<h2 id="latihan-4-patch-dengan-benar-lalu-lapisi-fallback"><span class="hnum">06</span>Latihan 4: patch dengan benar, lalu lapisi fallback</h2>
+<p>Perbaikannya, dalam urutan prioritas:</p>
+<ol>
+<li><strong>Upgrade runtime di semua tempat ia berjalan</strong> — 22.23.4, 24.22.1, atau 26.12.1 atau yang lebih baru di linimu — termasuk container image, CI runner, dan runtime yang dibundel. Restart atau deploy ulang setiap proses setelahnya.</li>
+<li><strong>Migrasikan lini end-of-life.</strong> Node.js 20.x dan yang lebih lama tidak menerima perbaikan. Pindah ke LTS 22 atau 24 adalah bagian dari patch ini, bukan proyek terpisah.</li>
+<li><strong>Perbaiki saudara-saudaranya.</strong> Bun ke 1.4.4, Python Brotli ke 1.2.1, brotlicffi ke 1.2.1.0, dan .NET ke update out-of-band Microsoft 25 Oktober, di mana pun runtime itu ada di estate kamu.</li>
+<li><strong>Baru setelah itu, lapisi mitigasi interim untuk apa pun yang belum bisa di-patch.</strong> Set <code>inflate: false</code> pada parser Express 5 dan body-parser 2, atau tolak <code>Content-Encoding: br</code> di <span class="gterm" data-term="reverse proxy" data-def="Server yang berada di depan layanan web dan meneruskan request klien ke layanan tersebut; tempat umum untuk menegakkan filtering, TLS, dan aturan akses.">reverse proxy</span> kamu. Jujurlah soal apa yang dibeli langkah ini: ia hanya menutup jalur inbound, tidak berbuat apa-apa untuk decoding <code>fetch()</code> outbound, dan bisa merusak traffic terkompresi yang sah. Ini tourniquet, bukan obat — dan advisory tidak mencantumkan workaround apa pun di dalam Node.js sendiri.</li>
+</ol>
+<p>Tutup loop dengan menjalankan ulang Latihan 1 setelah upgrade dan mencatat hasilnya. Audit yang tidak pernah dijalankan ulang setelah patching hanyalah laporan; proses kedua itulah yang mengubahnya menjadi bukti.</p>
+<h2 id="pelajaran-yang-layak-disimpan"><span class="hnum">07</span>Pelajaran yang layak disimpan</h2>
+<p>Node2Shell bukan vulnerability paling eksotis di Oktober 2026, dan justru karena itulah ia guru yang baik. Tidak ada yang membutuhkannya: bukan zero-day di kodemu, bukan misconfig yang kamu buat, bukan dependency yang kamu pilih dengan buruk. Yang dibutuhkan hanyalah: kamu menjalankan runtime populer, library yang tidak pernah kamu pikirkan men-decompress data yang tidak pernah kamu periksa, dan inventarismu mempercayai string versi yang tidak berubah saat bug diperbaiki. Celah berikutnya dari keluarga ini akan bersembunyi di tempat yang sama: library yang dibundel, decoder transitif, base image yang tidak pernah di-pull ulang.</p>
+<p>Patch runtime-nya. Rebuild image-nya. Restart prosesnya. Lalu periksa — dengan versi yang benar-benar berkata jujur — bahwa kamu sudah melakukannya.</p>
+<hr>
+<p><em>Sources: <a href="https://www.imperva.com/blog/node2shell-from-brotli-data-to-remote-code-execution/">Node2Shell: From Brotli Data to Remote Code Execution (Imperva, October 2026)</a>; <a href="https://thehackernews.com/2026/10/researchers-demonstrate-node2shell-rce.html">Researchers Demonstrate Node2Shell RCE Exploit on Node.js Build (The Hacker News, October 2026)</a>; <a href="https://www.csoonline.com/article/4241027/node2shell-puts-microsoft-and-node-js-on-brotli-patch-duty.html">Node2Shell puts Microsoft and Node.js on Brotli patch duty (CSO Online, October 2026)</a>; <a href="https://cybersecuritynews.com/node2shell-vulnerability/">Node2Shell Vulnerability Actively Exploited in the Wild, CISA Warns (CybersecurityNews, October 2026)</a>; <a href="https://kagesecuritylab.com/intel/node2shell-cve-2026-111497/">Node2Shell (CVE-2026-111497): the Brotli flaw reaching Node.js, Python and beyond (Kage Security Lab, October 2026)</a>.</em></p><div class="author-box"><div class="kicker"><span class="dot"></span>ditulis oleh</div><p><strong>kou</strong> mendokumentasikan threat intel, attack surface, dan pertahanan praktis — dari sisi gelap internet.</p></div><div class="pager"><a href="/id/artikel/gitlab-cve-2026-97229-alpine-ruby-gap/"><span class="dir">← sebelumnya</span><span class="t">Sudah Di-patch, Sudah Di-upgrade — Masih Rentan: Celah GitLab yang Bersembunyi di Ruby</span></a><span></span></div></div>
+                <aside class="toc"><h4>Daftar isi</h4><ol><li style="margin-left:0px"><a href="#kenapa-celah-ini-menjangkau-kamu-meski-kamu-tidak-pernah-menyentuh-kompresi">Kenapa celah ini menjangkau kamu meski kamu tidak pernah menyentuh kompresi</a></li><li style="margin-left:0px"><a href="#jebakannya-string-versi-berbohong">Jebakannya: string versi berbohong</a></li><li style="margin-left:0px"><a href="#latihan-1-inventarisasi-semua-node-js-bukan-cuma-milikmu">Latihan 1: inventarisasi semua Node.js, bukan cuma milikmu</a></li><li style="margin-left:0px"><a href="#latihan-2-temukan-jalur-eksposur-di-kodemu">Latihan 2: temukan jalur eksposur di kodemu</a></li><li style="margin-left:0px"><a href="#latihan-3-buru-probing-yang-mungkin-sudah-terjadi">Latihan 3: buru probing yang mungkin sudah terjadi</a></li><li style="margin-left:0px"><a href="#latihan-4-patch-dengan-benar-lalu-lapisi-fallback">Latihan 4: patch dengan benar, lalu lapisi fallback</a></li><li style="margin-left:0px"><a href="#pelajaran-yang-layak-disimpan">Pelajaran yang layak disimpan</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>catatan keamanan dari sisi gelap internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="cari artikel…" aria-label="search">
+    <div class="search-hint">ketik minimal 2 huruf · esc untuk tutup · ctrl+k dari mana saja</div>
+    <div class="search-results" data-empty="nggak ketemu — coba kata kunci lain."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

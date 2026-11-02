@@ -257,5 +257,21 @@
   "regular expression": {
     "en": "A pattern language for matching text (regex). When a pattern comes from untrusted input and is compiled by a buggy engine, it can become a code-execution vector.",
     "id": "Bahasa pola untuk mencocokkan teks (regex). Ketika pola berasal dari input yang tidak tepercaya dan di-compile oleh engine yang buggy, pola itu bisa menjadi vektor eksekusi kode."
+  },
+  "Brotli": {
+    "en": "A compression format by Google, used alongside gzip to shrink HTTP traffic; Node.js bundles a Brotli decoder in node:zlib.",
+    "id": "Format kompresi buatan Google, dipakai bersama gzip untuk mengecilkan traffic HTTP; Node.js membundel decoder Brotli di node:zlib."
+  },
+  "Node.js": {
+    "en": "A JavaScript runtime built on Chrome's V8 engine, widely used for server-side applications and APIs.",
+    "id": "Runtime JavaScript yang dibangun di atas engine V8 Chrome, banyak dipakai untuk aplikasi dan API sisi server."
+  },
+  "out-of-bounds write": {
+    "en": "A memory bug where a program writes data past the end of its allocated buffer, corrupting adjacent memory and potentially enabling code execution.",
+    "id": "Bug memori ketika program menulis data melewati ujung buffer yang dialokasikan, merusak memori di sebelahnya dan berpotensi memungkinkan eksekusi kode."
+  },
+  "reverse proxy": {
+    "en": "A server that sits in front of web services, forwarding client requests to them; a common place to enforce filtering, TLS, and access rules.",
+    "id": "Server yang berada di depan layanan web dan meneruskan request klien ke layanan tersebut; tempat umum untuk menegakkan filtering, TLS, dan aturan akses."
   }
 }

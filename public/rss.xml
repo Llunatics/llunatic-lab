@@ -4,7 +4,11 @@
 <title>llunatic-lab (en)</title><link>https://lab.llunaticsys.web.id/</link>
 <description>Security notes from the dark side of the internet</description>
 <language>en</language>
-<item><title>Patched, Upgraded — Still Vulnerable: The GitLab Flaw That Hid in Ruby</title>
+<item><title>Patched on Paper, Vulnerable in Production: A Hands-On Node2Shell Audit</title>
+            <link>https://lab.llunaticsys.web.id/artikel/node2shell-brotli-patch-audit/</link>
+            <description>Node.js fixed Node2Shell on October 21, but the version string lies, the runtime hides in containers, and npm update does nothing. This audit walks you through proving — not assuming — that every Node.js in your estate is actually patched.</description>
+            <pubDate>Mon, 02 Nov 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/artikel/node2shell-brotli-patch-audit/</guid></item><item><title>Patched, Upgraded — Still Vulnerable: The GitLab Flaw That Hid in Ruby</title>
             <link>https://lab.llunaticsys.web.id/artikel/gitlab-cve-2026-97229-alpine-ruby-gap/</link>
             <description>Alpine Linux upgraded its GitLab twice and stayed vulnerable both times, because the CVSS 10.0 flaw CVE-2026-97229 lived not in GitLab&#x27;s code but in the Ruby interpreter underneath it. Here is the timeline, the trap, and how to check your own instance.</description>
             <pubDate>Sun, 01 Nov 2026 00:00:00 -0000</pubDate>

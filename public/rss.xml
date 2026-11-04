@@ -4,7 +4,11 @@
 <title>llunatic-lab (en)</title><link>https://lab.llunaticsys.web.id/</link>
 <description>Security notes from the dark side of the internet</description>
 <language>en</language>
-<item><title>Patched on Paper, Vulnerable in Production: A Hands-On Node2Shell Audit</title>
+<item><title>When the Editor Is the Exploit: Why an Unauthenticated Admin Panel Is Already Remote Code Execution</title>
+            <link>https://lab.llunaticsys.web.id/artikel/when-the-editor-is-the-exploit/</link>
+            <description>Node-RED&#x27;s editor lets anyone who can reach it write and run code — by design. When Siemens disclosed CVE-2026-58115 in August 2026, attackers needed no exploit chain, no stolen password, and no malware trick: the editor itself was the exploit, and by October 30 it was being used in the wild.</description>
+            <pubDate>Wed, 04 Nov 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/artikel/when-the-editor-is-the-exploit/</guid></item><item><title>Patched on Paper, Vulnerable in Production: A Hands-On Node2Shell Audit</title>
             <link>https://lab.llunaticsys.web.id/artikel/node2shell-brotli-patch-audit/</link>
             <description>Node.js fixed Node2Shell on October 21, but the version string lies, the runtime hides in containers, and npm update does nothing. This audit walks you through proving — not assuming — that every Node.js in your estate is actually patched.</description>
             <pubDate>Mon, 02 Nov 2026 00:00:00 -0000</pubDate>

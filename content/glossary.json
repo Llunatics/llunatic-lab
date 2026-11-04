@@ -273,5 +273,21 @@
   "reverse proxy": {
     "en": "A server that sits in front of web services, forwarding client requests to them; a common place to enforce filtering, TLS, and access rules.",
     "id": "Server yang berada di depan layanan web dan meneruskan request klien ke layanan tersebut; tempat umum untuk menegakkan filtering, TLS, dan aturan akses."
+  },
+  "Node-RED": {
+    "en": "A flow-based programming tool built on Node.js: users wire nodes together in a browser-based editor to automate devices, APIs, and services. Its editor can run shell commands, so an instance without authentication is effectively remote code execution.",
+    "id": "Tool flow-based programming yang dibangun di atas Node.js: pengguna menghubungkan node-node di editor berbasis browser untuk mengotomasi perangkat, API, dan layanan. Editornya bisa menjalankan shell command, jadi instance tanpa autentikasi praktis sudah berarti remote code execution."
+  },
+  "OT": {
+    "en": "Operational Technology — the hardware and software that monitors and controls physical processes in factories, utilities, and infrastructure, as opposed to IT systems that handle data.",
+    "id": "Operational Technology — perangkat keras dan lunak yang memantau dan mengendalikan proses fisik di pabrik, utilitas, dan infrastruktur, berbeda dengan sistem IT yang menangani data."
+  },
+  "canary": {
+    "en": "A decoy system or file deliberately exposed to attackers so that any interaction with it signals an intrusion attempt — used by researchers to catch exploitation in the wild.",
+    "id": "Sistem atau file umpan yang sengaja diekspos ke penyerang sehingga interaksi apa pun dengannya menandakan upaya intrusi — dipakai peneliti untuk menangkap eksploitasi di lapangan."
+  },
+  "flow-based programming": {
+    "en": "A programming style where an application is built by connecting processing nodes on a visual canvas; data flows from node to node instead of following written control-flow code.",
+    "id": "Gaya pemrograman di mana aplikasi dibangun dengan menghubungkan node pemrosesan di atas kanvas visual; data mengalir dari satu node ke node lain, bukan mengikuti kode control-flow tertulis."
   }
 }

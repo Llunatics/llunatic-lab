@@ -4,7 +4,11 @@
 <title>llunatic-lab (en)</title><link>https://lab.llunaticsys.web.id/</link>
 <description>Security notes from the dark side of the internet</description>
 <language>en</language>
-<item><title>When the Editor Is the Exploit: Why an Unauthenticated Admin Panel Is Already Remote Code Execution</title>
+<item><title>Turn Your Coding Agent Into a Security Auditor: Inside Cloudflare&#x27;s Security-Audit Skill</title>
+            <link>https://lab.llunaticsys.web.id/artikel/cloudflare-security-audit-skill/</link>
+            <description>Cloudflare open-sourced the skill that seeded its fleet-wide vulnerability discovery harness: a six-phase audit workflow where a fresh agent tries to disprove every finding before it counts. Here&#x27;s how it works, what it costs, and the sandbox rule you must not skip.</description>
+            <pubDate>Fri, 06 Nov 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/artikel/cloudflare-security-audit-skill/</guid></item><item><title>When the Editor Is the Exploit: Why an Unauthenticated Admin Panel Is Already Remote Code Execution</title>
             <link>https://lab.llunaticsys.web.id/artikel/when-the-editor-is-the-exploit/</link>
             <description>Node-RED&#x27;s editor lets anyone who can reach it write and run code — by design. When Siemens disclosed CVE-2026-58115 in August 2026, attackers needed no exploit chain, no stolen password, and no malware trick: the editor itself was the exploit, and by October 30 it was being used in the wild.</description>
             <pubDate>Wed, 04 Nov 2026 00:00:00 -0000</pubDate>

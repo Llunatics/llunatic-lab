@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Turn Your Coding Agent Into a Security Auditor: Inside Cloudflare&#x27;s Security-Audit Skill — llunatic-lab</title>
+<meta name="description" content="Cloudflare open-sourced the skill that seeded its fleet-wide vulnerability discovery harness: a six-phase audit workflow where a fresh agent tries to disprove every finding before it counts. Here&#x27;s how it works, what it costs, and the sandbox rule you must not skip.">
+<meta property="og:title" content="Turn Your Coding Agent Into a Security Auditor: Inside Cloudflare&#x27;s Security-Audit Skill">
+<meta property="og:description" content="Cloudflare open-sourced the skill that seeded its fleet-wide vulnerability discovery harness: a six-phase audit workflow where a fresh agent tries to disprove every finding before it counts. Here&#x27;s how it works, what it costs, and the sandbox rule you must not skip.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/cloudflare-security-audit-skill.jpg"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/cloudflare-security-audit-skill/"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/cloudflare-security-audit-skill/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/arsip/">Archive</a>
+      <a href="/tentang/">About</a>
+      <a class="lang-toggle" href="/id/artikel/cloudflare-security-audit-skill/">ID</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>article</div>
+              <h1>Turn Your Coding Agent Into a Security Auditor: Inside Cloudflare&#x27;s Security-Audit Skill</h1>
+              <div class="meta"><span>6 November 2026</span><span>·</span>
+              <span>8 min read</span><a class="tag" href="/tag/tools/">tools</a> <a class="tag" href="/tag/ai-security/">ai-security</a> <a class="tag" href="/tag/code-audit/">code-audit</a> <a class="tag" href="/tag/cloudflare/">cloudflare</a></div>
+              <img class="cover" src="/assets/covers/cloudflare-security-audit-skill.jpg" alt="Turn Your Coding Agent Into a Security Auditor: Inside Cloudflare&#x27;s Security-Audit Skill">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Ask a coding agent to &quot;review this code for security issues&quot; and you will get an answer. Ask it twice and you will get two different answers. Ask it to prove the bug is real and it will usually just repeat itself more confidently. That is the gap Cloudflare&#x27;s security team ran into when it tried to turn AI code review into something it could run across its fleet — and it is the gap the company&#x27;s newly open-sourced <code>security-audit-skill</code> is built to close.</p>
+<p>The repository, <code>cloudflare/security-audit-skill</code>, is MIT licensed and picked up tens of thousands of GitHub stars within weeks of release. But the star count is the least interesting thing about it. What matters is the design: it does not trust the model that found the bug. Every candidate finding is handed to a fresh agent whose only job is to disprove it — and only the findings that survive that attack get filed as confirmed.</p>
+<h2 id="where-it-came-from"><span class="hnum">01</span>Where it came from</h2>
+<p>In June 2026, Cloudflare published a blog post, &quot;Build your own vulnerability harness&quot;, describing how the team went from a single skill to a multi-stage system. The starting point was a roughly 450-line <span class="gterm" data-term="agent skill" data-def="A folder of structured instructions (prompts, workflows, scripts) that a coding agent loads and follows to perform a specialized task — here, a security audit. Skills are reusable and versioned like code.">agent skill</span> run against one repository, tuned until it surfaced real bugs. From the first slash-command run to a scanner covering 128 repositories took about six weeks. Along the way the team hit three walls a single skill cannot solve: context exhaustion, no persistence after a crash, and no cross-repo reasoning. The open-source repo is that single-repo starting point — the seed the harness grew from, not the harness itself. One detail from that post explains most of the design: Cloudflare uses one model for discovery and a different model for validation, so the two double-check each other.</p>
+<h2 id="the-six-phases"><span class="hnum">02</span>The six phases</h2>
+<p>A full audit runs as a pipeline, and each stage hands structured state to the next instead of passing prose around:</p>
+<ol>
+<li><strong>Reconnaissance.</strong> Map the architecture, trust boundaries, input surfaces, and prior evidence into <code>architecture.md</code> and a <span class="gterm" data-term="coverage ledger" data-def="A deterministic JSON record (coverage-ledger.json) of every unit of a codebase that must be audited — architecture, trust boundaries, input surfaces. Hunters work from it, critics check it for gaps, and repeat runs reuse it to target what was missed.">coverage ledger</span> (<code>coverage-ledger.json</code>) — a deterministic record of what exists, and therefore what must be examined.</li>
+<li><strong>Coverage-led hunting.</strong> Isolated hunter agents are assigned units drawn from the ledger, record every check they perform, and coverage critics hunt for the gaps the hunters left.</li>
+<li><strong>Candidate validation.</strong> Every unique candidate goes to a fresh verifier whose instruction is to disprove it.</li>
+<li><strong>Structured output.</strong> Findings are written as <code>confirmed</code>, <code>needs_validation</code>, or <code>rejected</code> records in <code>findings.json</code>, validated against a JSON schema (<code>report-schema.json</code>).</li>
+<li><strong>Independent record verification.</strong> Fresh agents re-check the final source claims, and any material replacement gets yet another independent verifier.</li>
+<li><strong>Target-neutral reporting.</strong> Human-readable <code>REPORT.md</code>, <code>FINDINGS-DETAIL.md</code>, and <code>NEEDS-VALIDATION.md</code> are derived from the verified records and the coverage ledger.</li>
+</ol>
+<p>Two small scripts enforce the structure instead of trusting the model to hold the format: <code>validate-coverage-ledger.cjs</code> runs after the ledger is created and after each update, and <code>validate-findings.cjs</code> runs in phase 4 and after every phase 5 replacement. Both are zero-dependency Node scripts, so the discipline does not depend on the model&#x27;s memory.</p>
+<p>The skill ships with eleven domain attack matrices — memory safety and binaries, AI and LLM targets, web protocols and auth, client-side code, <span class="gterm" data-term="supply chain attack" data-def="An attack that reaches its target through a trusted supplier, vendor, or software update instead of attacking the target directly.">supply chain attack</span> and release, cloud and deployment, RPC and messaging, resource exhaustion, data isolation, and desktop, mobile, and local IPC. It picks the classes that match the target, so a TypeScript web app does not get kernel-fuzzing prompts.</p>
+<h2 id="the-three-verdicts-and-why-the-middle-one-matters-most"><span class="hnum">03</span>The three verdicts — and why the middle one matters most</h2>
+<div class="tbl-wrap"><table><thead><tr><th>Verdict</th><th>Meaning</th></tr></thead><tbody><tr><td><code>confirmed</code></td><td>Complete source trace and a bounded, observed result</td></tr><tr><td><code>needs_validation</code></td><td>An exact unresolved fact, and no severity assigned</td></tr><tr><td><code>rejected</code></td><td>A candidate that was disproved</td></tr></tbody></table></div>
+<p>The middle category is the useful one. Most AI audit tools present every suspicion as a finding. Here, a lead that cannot be proven stays labeled as unproven, with the specific question that blocks it. An independent field test of the skill reported 46 records from one codebase: 10 confirmed and 36 held at <code>needs_validation</code>, each with the exact fact a human would need to resolve.</p>
+<p>Five design principles sit underneath the workflow, and they read like a checklist for any agentic review:</p>
+<ul>
+<li><strong>Only confirm established boundary failures.</strong> A blocked but source-grounded lead stays <code>needs_validation</code>.</li>
+<li><strong><span class="gterm" data-term="adversarial validation" data-def="A review pattern where the agent that checks a finding is never the agent that found it. The verifier is a fresh agent whose explicit job is to try to disprove the candidate — only survivors count as confirmed.">Adversarial validation</span>.</strong> The agent that checks a finding is never the agent that found it.</li>
+<li><strong>Severity requires impact.</strong> Likelihood times impact, not deviation from a checklist.</li>
+<li><strong>Defense-in-depth gaps are not vulnerabilities.</strong> If layer A prevents the attack, the missing layer B is a hardening note.</li>
+<li><strong>Multiple runs improve coverage.</strong> Cloudflare says a single run found roughly half of what repeated runs found in total.</li>
+</ul>
+<h2 id="how-to-install-and-run-it"><span class="hnum">04</span>How to install and run it</h2>
+<p>Install with the Skills CLI:</p>
+<pre><code class="language-bash">npx skills add https://github.com/cloudflare/security-audit-skill \
+  --skill security-audit</code></pre>
+<p>Add <code>--global</code> for a user-level install. Then start your coding agent — Claude Code, Codex, Cursor, or another agent with tool use and parallel sub-agents — in the target codebase and ask in plain language:</p>
+<pre><code class="language-text">security audit this codebase
+find security vulnerabilities in ./src
+do a security review, output to ~/audits/my-project</code></pre>
+<p>A direct audit request uses full audit mode; security questions and focused <span class="gterm" data-term="vulnerability" data-def="A weakness in a system or application that attackers can exploit.">vulnerability</span> work use a lighter guidance mode unless you ask for report artifacts. In full mode, an unspecified output directory defaults to <code>~/security-audit-skill/&lt;repo-name&gt;/run-&lt;N&gt;</code>, and the workflow writes inside the target repository only if you explicitly choose a directory there. Repeat runs are additive: they reuse the prior ledger to target gaps and revalidate changed source instead of starting from zero.</p>
+<h2 id="the-requirement-people-skip-the-sandbox"><span class="hnum">05</span>The requirement people skip: the sandbox</h2>
+<p>The README is explicit about what you need: a coding agent whose model supports tool use and parallel sub-agents, Node.js for the validators, and an OS-enforced <span class="gterm" data-term="sandbox" data-def="An OS-enforced isolated environment for running untrusted code: no external network, sanitized allowlisted environment variables, resource limits, and writes restricted to assigned scratch paths. Running target code outside one risks executing attacker-controlled build scripts.">sandbox</span> for anything target-controlled — builds, tests, processes, browsers, emulators, fuzzers, fixtures. That sandbox must disable external networking, use a sanitized allowlisted environment, enforce resource limits, and allow writes only to assigned scratch paths. Without those controls, the workflow keeps the lead as <code>needs_validation</code> instead of executing target code.</p>
+<p>Why it matters: to validate a bug, the skill may build and run the code under audit, and an untrusted repository can execute anything in its build scripts. If you point this at code you did not write, treat the sandbox as mandatory. This is the same class of risk as <span class="gterm" data-term="prompt injection" data-def="An attack that smuggles instructions into data an LLM reads — a webpage, email, tool description, or file — so the model treats attacker text as commands. MITRE ATT&amp;CK v20 (October 2026) lists Direct and Indirect Prompt Injection as distinct techniques.">prompt injection</span> and <span class="gterm" data-term="tool poisoning" data-def="Hidden malicious instructions embedded in an MCP tool&#x27;s description. The agent reads the description as trusted context and follows the instructions — no exploit needed, just text in a JSON field. Named and demonstrated by Invariant Labs in April 2025.">tool poisoning</span> in <span class="gterm" data-term="MCP" data-def="Model Context Protocol — Anthropic&#x27;s open standard (November 2024) letting AI assistants call external tools such as filesystems, APIs, databases, and developer utilities. MCP servers execute real system actions on the model&#x27;s behalf.">MCP</span> servers — only here the skill itself is the one running the code. A container or VM with networking disabled is the minimum; a bare host checkout is not a place to run this.</p>
+<h2 id="what-it-costs-and-what-it-does-not-promise"><span class="hnum">06</span>What it costs, and what it does not promise</h2>
+<p>The honest part of the story is the cost. Cloudflare publishes no per-run token figure in the README. One Hacker News commenter reported spending about 1M tokens on a medium codebase without a result to show for it — a single commenter&#x27;s report, not a verified measurement, but consistent with what a multi-agent, multi-phase audit should cost. The fair reply to skeptics who call it &quot;just a markdown file&quot; is that the value lies in the orchestration and the validators, not in any one prompt — they make the output machine-checkable, which a plain code-review prompt does not.</p>
+<p>Cloudflare has also not published precision or false-positive rates for the open-source skill, and how many real vulnerabilities it has found outside Cloudflare&#x27;s own fleet is unknown. Treat it as what it is: a strong starting point for structured auditing, not a scanner with a benchmark.</p>
+<h2 id="what-to-do-this-week"><span class="hnum">07</span>What to do this week</h2>
+<ol>
+<li><strong>Run it on a repo you own</strong>, inside a container or VM with networking disabled.</li>
+<li><strong>Run it at least twice.</strong> Repeat runs find more, and the skill uses prior ledgers to target gaps.</li>
+<li><strong>Read <code>NEEDS-VALIDATION.md</code> first.</strong> The unresolved leads show where the agent could not prove something — and what fact is missing.</li>
+<li><strong>Do not file bug reports from <code>confirmed</code> records without reading the source trace yourself.</strong> A verified trace is still a claim until a human reads it.</li>
+<li><strong>Track token cost per run</strong> before scheduling it in CI.</li>
+</ol>
+<p>The bigger pattern here is worth naming. Labs and vendors are moving from &quot;can a model find a bug&quot; to &quot;how do you run this as a repeatable pipeline&quot; — Anthropic&#x27;s Frontier Red Team publishing AI-built exploit research, OpenAI rolling out GPT-6 Cyber to vetted customers, Trail of Bits publishing agent plugins for patching. Cloudflare&#x27;s contribution is the least glamorous and possibly the most useful: a workflow that assumes the finder is wrong until a stranger proves it right. That is not how most AI tools are built. It is how audits are supposed to work.</p>
+<hr>
+<p><em>Sources: <a href="https://explainx.ai/blog/cloudflare-security-audit-skill-open-source-agent-vulnerability-hunting-2026">Cloudflare security-audit-skill: 6 Phases, 25.6k Stars (explainx.ai, November 2026)</a>; <a href="https://www.devpik.com/open-source/security-audit-skill">Cloudflare Security Audit Skill for Claude Code (devpik.com)</a>; <a href="https://dev.to/max_quimby/who-audits-the-agent-security-review-is-a-category-g4e">Who Audits the Agent? Security Review Is a Category (dev.to, November 2026)</a>; <a href="https://norforge.com/blog/field-notes-cloudflare-security-audit-skill">Field notes: running Cloudflare&#x27;s open-source security-audit-skill on a real codebase (norforge.com)</a>; <a href="https://github.com/cloudflare/security-audit-skill">cloudflare/security-audit-skill (GitHub)</a>.</em></p><div class="author-box"><div class="kicker"><span class="dot"></span>written by</div><p><strong>kou</strong> documents what’s learned about threat intel, attack surface, and practical defense — from the dark side of the internet.</p></div><div class="pager"><a href="/artikel/when-the-editor-is-the-exploit/"><span class="dir">← previous</span><span class="t">When the Editor Is the Exploit: Why an Unauthenticated Admin Panel Is Already Remote Code Execution</span></a><span></span></div></div>
+                <aside class="toc"><h4>Contents</h4><ol><li style="margin-left:0px"><a href="#where-it-came-from">Where it came from</a></li><li style="margin-left:0px"><a href="#the-six-phases">The six phases</a></li><li style="margin-left:0px"><a href="#the-three-verdicts-and-why-the-middle-one-matters-most">The three verdicts — and why the middle one matters most</a></li><li style="margin-left:0px"><a href="#how-to-install-and-run-it">How to install and run it</a></li><li style="margin-left:0px"><a href="#the-requirement-people-skip-the-sandbox">The requirement people skip: the sandbox</a></li><li style="margin-left:0px"><a href="#what-it-costs-and-what-it-does-not-promise">What it costs, and what it does not promise</a></li><li style="margin-left:0px"><a href="#what-to-do-this-week">What to do this week</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>security notes from the dark side of the internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="search articles…" aria-label="search">
+    <div class="search-hint">type at least 2 characters · esc to close · ctrl+k anywhere</div>
+    <div class="search-results" data-empty="nothing found — try another keyword."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

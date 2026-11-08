@@ -4,7 +4,11 @@
 <title>llunatic-lab (en)</title><link>https://lab.llunaticsys.web.id/</link>
 <description>Security notes from the dark side of the internet</description>
 <language>en</language>
-<item><title>Turn Your Coding Agent Into a Security Auditor: Inside Cloudflare&#x27;s Security-Audit Skill</title>
+<item><title>One Guarantor, 189 Banks: The SMBC Consumer Finance Breach</title>
+            <link>https://lab.llunaticsys.web.id/artikel/smbc-consumer-finance-breach/</link>
+            <description>You never opened an account with SMBC Consumer Finance — but if you took a card loan from one of 189 Japanese banks, your name, income, and driver&#x27;s license number may have sat in its guarantee system. On November 2, an intruder walked out with records on up to 320,118 people.</description>
+            <pubDate>Sun, 08 Nov 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/artikel/smbc-consumer-finance-breach/</guid></item><item><title>Turn Your Coding Agent Into a Security Auditor: Inside Cloudflare&#x27;s Security-Audit Skill</title>
             <link>https://lab.llunaticsys.web.id/artikel/cloudflare-security-audit-skill/</link>
             <description>Cloudflare open-sourced the skill that seeded its fleet-wide vulnerability discovery harness: a six-phase audit workflow where a fresh agent tries to disprove every finding before it counts. Here&#x27;s how it works, what it costs, and the sandbox rule you must not skip.</description>
             <pubDate>Fri, 06 Nov 2026 00:00:00 -0000</pubDate>
@@ -80,10 +84,6 @@
             <link>https://lab.llunaticsys.web.id/artikel/mythos-ai-vulnerability-hunter/</link>
             <description>Anthropic&#x27;s secretive Mythos model chained two ordinary-looking bugs into a critical auth bypass — then attackers exploited it within 24 hours of disclosure. This is what machine-speed vulnerability research looks like.</description>
             <pubDate>Wed, 07 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/artikel/mythos-ai-vulnerability-hunter/</guid></item><item><title>EASM: Mapping Your Attack Surface Before Attackers Do</title>
-            <link>https://lab.llunaticsys.web.id/artikel/easm-memetakan-permukaan-serangan/</link>
-            <description>Most organizations aren&#x27;t breached through the front door, but through assets they didn&#x27;t even know existed. EASM is the discipline of finding them first.</description>
-            <pubDate>Tue, 06 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/artikel/easm-memetakan-permukaan-serangan/</guid></item>
+            <guid>https://lab.llunaticsys.web.id/artikel/mythos-ai-vulnerability-hunter/</guid></item>
 </channel>
 </rss>

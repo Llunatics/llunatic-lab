@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Satu Penjamin, 189 Bank: Pembobolan SMBC Consumer Finance — llunatic-lab</title>
+<meta name="description" content="Kamu tidak pernah membuka rekening di SMBC Consumer Finance — tapi kalau kamu pernah mengambil pinjaman kartu dari salah satu dari 189 bank Jepang, nama, penghasilan, dan nomor SIM kamu mungkin tersimpan di sistem penjaminnya. Pada 2 November, seorang penyusup membawa pergi data hingga 320.118 orang.">
+<meta property="og:title" content="Satu Penjamin, 189 Bank: Pembobolan SMBC Consumer Finance">
+<meta property="og:description" content="Kamu tidak pernah membuka rekening di SMBC Consumer Finance — tapi kalau kamu pernah mengambil pinjaman kartu dari salah satu dari 189 bank Jepang, nama, penghasilan, dan nomor SIM kamu mungkin tersimpan di sistem penjaminnya. Pada 2 November, seorang penyusup membawa pergi data hingga 320.118 orang.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/smbc-consumer-finance-breach.jpg"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/smbc-consumer-finance-breach/"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/smbc-consumer-finance-breach/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/id/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/id/arsip/">Arsip</a>
+      <a href="/id/tentang/">Tentang</a>
+      <a class="lang-toggle" href="/artikel/smbc-consumer-finance-breach/">EN</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>artikel</div>
+              <h1>Satu Penjamin, 189 Bank: Pembobolan SMBC Consumer Finance</h1>
+              <div class="meta"><span>8 November 2026</span><span>·</span>
+              <span>8 mnt baca</span><a class="tag" href="/id/tag/case-breakdown/">case-breakdown</a> <a class="tag" href="/id/tag/data-breach/">data-breach</a> <a class="tag" href="/id/tag/third-party-risk/">third-party-risk</a> <a class="tag" href="/id/tag/japan/">japan</a></div>
+              <img class="cover" src="/assets/covers/smbc-consumer-finance-breach.jpg" alt="Satu Penjamin, 189 Bank: Pembobolan SMBC Consumer Finance">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Kamu tidak pernah membuka rekening di SMBC Consumer Finance. Mungkin kamu bahkan belum pernah mendengar namanya. Tapi kalau kamu pernah mengambil pinjaman kartu dari salah satu dari 189 bank Jepang, nama, penghasilan, dan nomor SIM kamu mungkin tersimpan di sistem mereka — dan pada 2 November 2026, seorang penyusup membawa pergi data hingga 320.118 orang.</p>
+<p>Begitulah bentuk <span class="gterm" data-term="data breach" data-def="Insiden ketika data sensitif, terlindungi, atau rahasia diakses, disalin, atau diungkap tanpa izin.">data breach</span> modern: perusahaan yang kehilangan datamu sering kali bukan perusahaan yang kamu beri data itu.</p>
+<h2 id="penjamin-di-balik-meja"><span class="hnum">01</span>Penjamin di balik meja</h2>
+<p>SMBC Consumer Finance — SMBCCF — adalah anak perusahaan pembiayaan konsumen dari Sumitomo Mitsui Financial Group dan operator merek pinjaman Promise. Tapi bisnisnya yang paling berdampak adalah bisnis yang hampir tidak pernah dilihat nasabah: menjadi penjamin pinjaman pribadi untuk 189 lembaga keuangan mitra.</p>
+<p>Begini cara model itu bekerja. Sebuah bank regional memasarkan pinjaman kartu bermerek kepada nasabahnya. Di balik layar, bank itu menyerahkan penilaian risiko kredit dan jaminan gagal bayar kepada SMBCCF. Kalau peminjam gagal bayar, SMBCCF membayar bank sebesar pokok dan bunga yang tertunggak — langkah yang dalam perbankan Jepang disebut subrogasi — lalu memegang hak untuk menagih utang itu langsung dari peminjam. SMBCCF juga menjadi tuan rumah formulir aplikasi web bermerek putih yang dipakai nasabah untuk mengajukan pinjaman ini, sehingga bank-bank kecil tidak perlu membangun sistem pendaftaran digital sendiri.</p>
+<h2 id="linimasa-kabar-aman-yang-bertahan-tiga-hari"><span class="hnum">02</span>Linimasa: kabar &quot;aman&quot; yang bertahan tiga hari</h2>
+<p>Pada Senin, 2 November 2026, teknisi SMBCCF melihat lalu lintas yang tidak biasa pada sistem yang menjalankan bisnis penjaminan. Dalam hitungan jam, lingkungan itu diputus dari jaringan eksternal — dan perusahaan menyampaikan kepada bank mitra bahwa belum ada kehilangan data pribadi yang terkonfirmasi.</p>
+<p>Penilaian itu bertahan sekitar tiga hari. Saat tim respons insiden menelusuri log lalu lintas keluar dan merekonstruksi linimasa, mereka menemukan bahwa pihak tak berwenang telah melakukan query ke database penjaminan dan mengirim data keluar sebelum penahanan dilakukan. SMBCCF menarik pernyataan sebelumnya dan mengungkapkan pembobolan itu pada Kamis, 5 November. Pemberitahuan dari bank-bank mitra menyusul pada 5 dan 6 November — Resona, Kansai Mirai, Minato, Bank of Yokohama, Docomo SMTB Net Bank, dan sedikitnya delapan bank regional lainnya.</p>
+<p>Tidak satu pun dari bank-bank itu yang dibobol secara langsung — sistem inti mereka tidak tersentuh. Paparan itu sepenuhnya datang lewat platform bersama yang mereka andalkan: contoh klasik <span class="gterm" data-term="third-party risk" data-def="Paparan keamanan yang diwariskan organisasi dari vendor, mitra, dan kontraktornya — setiap pihak ketiga yang punya akses ke sistem atau data menjadi jalur serangan potensial.">third-party risk</span>.</p>
+<p>Pelakunya masih belum diketahui, dan SMBCCF belum mengungkapkan bagaimana penyusup itu masuk. Platform pinjaman konsumen Promise berjalan di infrastruktur terpisah dan tidak terdampak. Sampai pemberitahuan diterbitkan, belum ada kerusakan sekunder yang terkonfirmasi — penipuan yang sudah dilakukan dengan data itu. Sistem penjaminan ditangguhkan, dan beberapa bank menghentikan sementara penerbitan pinjaman online baru.</p>
+<h2 id="apa-yang-bocor-dan-apa-yang-tidak"><span class="hnum">03</span>Apa yang bocor — dan apa yang tidak</h2>
+<p>Di seluruh pemberitahuan, data yang terdampak memuat hingga empat belas kolom, dalam tiga kelompok:</p>
+<ul>
+<li><strong>Identitas dan kontak:</strong> nama lengkap, jenis kelamin, tanggal lahir, alamat rumah, telepon rumah, nomor ponsel, alamat email, dan nomor SIM Jepang dua belas digit.</li>
+<li><strong>Pekerjaan dan underwriting:</strong> nama pemberi kerja dan informasi tempat kerja, nomor telepon tempat kerja, dan penghasilan tahunan yang dideklarasikan.</li>
+<li><strong>Metadata kontrak dan perbankan:</strong> kode lembaga keuangan empat digit, nomor nasabah internal bank, batas pinjaman yang dijamin, dan tanggal mulai penjaminan.</li>
+</ul>
+<p>Dua hal <em>tidak</em> ikut diambil, dan keduanya penting. Berkas gambar yang dipakai untuk verifikasi identitas — hasil pindai atau foto ponsel dari SIM, kartu My Number, dan sertifikat domisili yang diserahkan saat onboarding eKYC — tidak mengalami <span class="gterm" data-term="exfiltration" data-def="Transfer data tanpa izin keluar dari jaringan ke infrastruktur milik penyerang — pencurian sunyi yang mendahului enkripsi pada ransomware modern.">exfiltration</span>. Begitu juga nomor rekening bank, PIN kartu tunai, dan kata sandi perbankan online. Arsitekturnya menjelaskan kenapa: gambar KYC berada di penyimpanan dokumen terpisah, dan kredensial perbankan inti tidak pernah melewati batas API ke sistem penjamin. Penyerang punya akses baca dan egress ke tabel pemohon — bukan ke seluruh domain.</p>
+<p>Perbedaan itu membatasi kerusakan, tapi tidak menetralkannya. Dataset yang dicuri adalah dosier kredit yang hampir lengkap: cukup untuk menyamar sebagai korban di call center, untuk lolos pemeriksaan berbasis pengetahuan, dan untuk merancang penipuan yang datang dengan sudah mengetahui hal-hal yang seharusnya hanya diketahui bank.</p>
+<h2 id="ekor-data-25-tahun"><span class="hnum">04</span>Ekor data 25 tahun</h2>
+<p>Detail paling aneh dalam pemberitahuan itu bukan skalanya. Melainkan usia datanya.</p>
+<p>Docomo SMTB Net Bank mengungkapkan hingga 122.635 nasabah pinjaman kartu terdampak — lebih dari sepertiga dari batas itu. Tiga bank Resona Group menceritakan kisah berbeda: seluruh 5.935 data mereka yang terdampak adalah milik <em>mantan</em> nasabah yang kontrak pinjamannya sudah sepenuhnya berakhir dan ditutup. 139 data Resona Bank berasal dari pinjaman kartu yang ditangani antara April 2001 dan Desember 2005 oleh mantan Nara Bank, yang merger ke Resona pada Januari 2006. 5.793 data Kansai Mirai Bank mencakup pinjaman yang diterbitkan antara 2002 dan 2019 lewat mantan Kinki Osaka Bank. Minato Bank menambah tiga data saja.</p>
+<p>Data dari tahun 2001 masih duduk di database produksi yang terhubung ke internet pada November 2026. Hukum Jepang memang mewajibkan menyimpan riwayat kontrak yang sudah ditutup, tapi tidak sampai 25 tahun: Commercial Code menetapkan sepuluh tahun, dan Undang-Undang Pencegahan Transfer Hasil Kejahatan mewajibkan tujuh tahun penyimpanan data KYC setelah kontrak berakhir. Ketika Nara Bank merger ke Resona pada 2006, dan ketika Resona Group kemudian mengakhiri kerja sama penjaminannya dengan SMBCCF, data lama itu tidak pernah dihapus, juga tidak dipindah ke penyimpanan dingin terenkripsi yang terisolasi. Data itu tetap berada di samping data underwriting aktif sampai seorang penyerang menjalankan query ke seluruh database. Merger adalah tempat kebijakan retensi data mati — dan data yang mati itu tetap bisa dijangkau.</p>
+<h2 id="kenapa-dataset-ini-berbahaya"><span class="hnum">05</span>Kenapa dataset ini berbahaya</h2>
+<p>SMBCCF dan bank-bank mitranya menekankan bahwa tanpa kata sandi rekening atau foto identitas, transfer dana tanpa izin tidak bisa langsung dilakukan. Pembingkaian itu meremehkan datasetnya.</p>
+<p>Nomor SIM dua belas digit yang bocor bersama nama lengkap, tanggal lahir, dan alamat merusak sebuah authenticator statis yang diandalkan layanan keuangan non-bank, operator telekomunikasi, dan biro kredit. Nomor itu bukan acak: dua digit pertama mengidentifikasi komisi keamanan publik prefektur penerbit, dua digit berikutnya memberi tahun penerbitan pertama. Penyerang tidak bisa lolos pemeriksaan eKYC biometrik langsung tanpa kartu fisik — tapi mereka bisa lolos pertanyaan <span class="gterm" data-term="knowledge-based authentication" data-def="Verifikasi identitas dengan mengajukan pertanyaan yang seharusnya hanya diketahui orang aslinya — tanggal lahir, nomor rekening, alamat lama — yang kini melemah karena banyaknya data itu bocor dalam pembobolan.">knowledge-based authentication</span> di saluran dukungan telepon dan mencocokkan korban dengan database bocor lainnya.</p>
+<p>Lalu ada dalih penipuannya. Nomor telepon tempat kerja, detail pemberi kerja, penghasilan tahunan, dan jumlah jaminan pinjaman yang persis memberi penjahat semua yang dibutuhkan untuk <em>Tokushu Sagi</em> — penipuan khusus Jepang, biasanya <span class="gterm" data-term="vishing" data-def="Phishing lewat suara — penipuan lewat panggilan telepon, di mana penyerang menyamar sebagai institusi tepercaya untuk memancing kredensial atau uang.">vishing</span> lewat suara. Bayangkan seorang penelepon menghubungi ponsel korban atau sentral telepon tempat kerjanya, menyamar sebagai divisi manajemen risiko Bank of Yokohama, dan menyebutkan tanggal persis korban membuka pinjaman kartu pada 2014, batas kredit, dan gaji yang terdaftar saat underwriting. Keraguan kebanyakan orang akan hilang di titik itu — dan dari sana, tautan SMS ke domain tiruan memanen kredensial perbankan online, kata sandi sekali pakai, dan PIN kartu tunai secara real time.</p>
+<p>Minggu yang sama menegaskan bahwa ini bukan insiden terisolasi. Pada 5 November, NTT Docomo mengungkapkan pembobolan terpisah pada toko online dan sistem My docomo-nya, dengan informasi pribadi hingga sekitar 300.000 pelanggan bocor. Dua raksasa Jepang, dua pembobolan, satu minggu.</p>
+<h2 id="tiga-kegagalan-struktural"><span class="hnum">06</span>Tiga kegagalan struktural</h2>
+<p>Insiden ini menunjuk tiga masalah rekayasa yang harus diperbaiki oleh ekosistem keuangan bersama.</p>
+<p><strong>1. Skema database <span class="gterm" data-term="multi-tenant" data-def="Arsitektur sistem di mana satu aplikasi atau database bersama melayani banyak organisasi terpisah (tenant), yang dipisahkan hanya oleh kontrol di tingkat software.">multi-tenant</span> yang monolitik.</strong> Menyimpan data underwriting untuk 189 lembaga dalam satu lingkungan relasional bersama berarti satu kredensial aplikasi yang disusupi bisa membaca semua partisi tenant. Penyedia penjaminan harus menegakkan isolasi tenant secara kriptografis: kunci enkripsi per tenant, keamanan tingkat baris yang terikat pada token layanan berumur pendek dan berlingkup sempit. Penyusupan lewat formulir web satu bank mitra tidak boleh bisa melakukan query ke data lembaga lain.</p>
+<p><strong>2. Intake web publik yang terhubung ke penyimpanan historis.</strong> Tautan antara formulir aplikasi yang menghadap internet dan database backend kontrak penjaminan historis membiarkan penyerang eksternal menjangkau jauh ke dalam arsip. Portal pinjaman publik seharusnya berada di DMZ terisolasi sebagai antrean ingestion yang stateless, menulis payload terenkripsi ke message broker yang tidak punya koneksi ke database underwriting internal.</p>
+<p><strong>3. Retensi data manual yang gagal setelah merger.</strong> Data Nara Bank berusia 25 tahun membuktikan bahwa kebijakan retensi manual rusak saat merger bank dan migrasi sistem. Database keuangan membutuhkan aturan time-to-live otomatis dan crypto-shredding: begitu kontrak pinjaman berakhir dan masa retensinya habis, atribut identitas pribadi harus dihapus secara ireversibel atau diganti dengan hash anonim di database produksi.</p>
+<p>Regulator sedang memperhatikan. Financial Services Agency (FSA) dan Personal Information Protection Commission (PPC) Jepang telah memperketat pengawasan atas risiko konsentrasi vendor pihak ketiga setelah serangkaian <span class="gterm" data-term="supply chain attack" data-def="Serangan yang mencapai target lewat pemasok, vendor, atau update software tepercaya, alih-alih menyerang target secara langsung.">supply chain attack</span> — dan berdasarkan Pasal 24 Banking Act, outsourcing underwriting tidak mengalihkan kewajiban hukum dari bank asal.</p>
+<h2 id="apa-yang-harus-dilakukan-sekarang"><span class="hnum">07</span>Apa yang harus dilakukan sekarang</h2>
+<p><strong>Kalau kamu nasabah bank yang terdampak:</strong> SMBCCF memberitahu orang yang terdampak satu per satu lewat bank mitra. Perlakukan setiap pesan semacam itu sebagai klaim yang harus diverifikasi — hubungi bankmu lewat aplikasi resminya atau nomor yang sudah kamu percaya, jangan pernah lewat tautan di dalam pesan. Periksa laporan rekeningmu untuk pinjaman atau perubahan akun baru yang tidak kamu minta. Dan kalau ada yang menelepon mengaku dari bankmu sambil menyebutkan detail pinjamanmu, tutup teleponnya dan hubungi balik lewat nomor di kartumu: detail yang mereka sebutkan mungkin benar, dan dicuri.</p>
+<p><strong>Kalau kamu menjalankan platform yang diandalkan perusahaan lain:</strong> anggap data tenant-mu hanya berjarak satu kredensial dari query massal, dan rancanglah seperti itu: isolasi tenant, token berumur pendek dan berlingkup sempit, pemantauan egress yang menandai pembacaan massal, dan retensi otomatis dengan crypto-shredding adalah pembeda antara insiden satu pelanggan dan insiden 189 bank.</p>
+<p><strong>Kalau kamu melakukan outsourcing atas sesuatu yang sensitif:</strong> pembobolan vendormu adalah pembobolanmu. Petakan setiap pihak ketiga yang memegang data nasabahmu, mintalah bukti isolasi tenant dan penegakan retensi mereka, dan latihlah hari ketika &quot;belum ada kehilangan data yang terkonfirmasi&quot; berubah menjadi ralat.</p>
+<p>Pembobolan SMBCCF tidak terjadi karena satu bank ceroboh. Ia terjadi karena 189 bank berbagi satu penjamin, satu database, dan satu asumsi: bahwa sistem orang lain adalah masalah orang lain. Padahal tidak pernah begitu.</p>
+<hr>
+<p><em>Sumber: Pemberitahuan SMBCCF 5 November 2026 sebagaimana dilaporkan The CyberSec Guru, Security Taisaku Lab, dan pemberitahuan bank mitra dari Resona Group, Bank of Yokohama, dan Docomo SMTB Net Bank; pemberitahuan NTT Docomo 5 November 2026.</em></p><div class="author-box"><div class="kicker"><span class="dot"></span>ditulis oleh</div><p><strong>kou</strong> mendokumentasikan threat intel, attack surface, dan pertahanan praktis — dari sisi gelap internet.</p></div><div class="pager"><a href="/id/artikel/cloudflare-security-audit-skill/"><span class="dir">← sebelumnya</span><span class="t">Ubah Agen Coding-mu Menjadi Auditor Keamanan: Mengenal Security-Audit Skill Open-Source dari Cloudflare</span></a><span></span></div></div>
+                <aside class="toc"><h4>Daftar isi</h4><ol><li style="margin-left:0px"><a href="#penjamin-di-balik-meja">Penjamin di balik meja</a></li><li style="margin-left:0px"><a href="#linimasa-kabar-aman-yang-bertahan-tiga-hari">Linimasa: kabar &quot;aman&quot; yang bertahan tiga hari</a></li><li style="margin-left:0px"><a href="#apa-yang-bocor-dan-apa-yang-tidak">Apa yang bocor — dan apa yang tidak</a></li><li style="margin-left:0px"><a href="#ekor-data-25-tahun">Ekor data 25 tahun</a></li><li style="margin-left:0px"><a href="#kenapa-dataset-ini-berbahaya">Kenapa dataset ini berbahaya</a></li><li style="margin-left:0px"><a href="#tiga-kegagalan-struktural">Tiga kegagalan struktural</a></li><li style="margin-left:0px"><a href="#apa-yang-harus-dilakukan-sekarang">Apa yang harus dilakukan sekarang</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>catatan keamanan dari sisi gelap internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="cari artikel…" aria-label="search">
+    <div class="search-hint">ketik minimal 2 huruf · esc untuk tutup · ctrl+k dari mana saja</div>
+    <div class="search-results" data-empty="nggak ketemu — coba kata kunci lain."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

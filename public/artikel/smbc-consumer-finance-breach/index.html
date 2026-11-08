@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>One Guarantor, 189 Banks: The SMBC Consumer Finance Breach — llunatic-lab</title>
+<meta name="description" content="You never opened an account with SMBC Consumer Finance — but if you took a card loan from one of 189 Japanese banks, your name, income, and driver&#x27;s license number may have sat in its guarantee system. On November 2, an intruder walked out with records on up to 320,118 people.">
+<meta property="og:title" content="One Guarantor, 189 Banks: The SMBC Consumer Finance Breach">
+<meta property="og:description" content="You never opened an account with SMBC Consumer Finance — but if you took a card loan from one of 189 Japanese banks, your name, income, and driver&#x27;s license number may have sat in its guarantee system. On November 2, an intruder walked out with records on up to 320,118 people.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/smbc-consumer-finance-breach.jpg"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/smbc-consumer-finance-breach/"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/smbc-consumer-finance-breach/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/arsip/">Archive</a>
+      <a href="/tentang/">About</a>
+      <a class="lang-toggle" href="/id/artikel/smbc-consumer-finance-breach/">ID</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>article</div>
+              <h1>One Guarantor, 189 Banks: The SMBC Consumer Finance Breach</h1>
+              <div class="meta"><span>8 November 2026</span><span>·</span>
+              <span>9 min read</span><a class="tag" href="/tag/case-breakdown/">case-breakdown</a> <a class="tag" href="/tag/data-breach/">data-breach</a> <a class="tag" href="/tag/third-party-risk/">third-party-risk</a> <a class="tag" href="/tag/japan/">japan</a></div>
+              <img class="cover" src="/assets/covers/smbc-consumer-finance-breach.jpg" alt="One Guarantor, 189 Banks: The SMBC Consumer Finance Breach">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>You never opened an account with SMBC Consumer Finance. You may never have heard of it. But if you took out a card loan from one of 189 Japanese banks, your name, income, and driver&#x27;s license number may have been sitting in its systems — and on November 2, 2026, an intruder walked out with records on up to 320,118 people.</p>
+<p>That is the shape of a modern <span class="gterm" data-term="data breach" data-def="An incident in which sensitive, protected, or confidential data is accessed, copied, or disclosed without authorization.">data breach</span>: the company that loses your data is often not the company you gave it to.</p>
+<h2 id="the-guarantor-behind-the-counter"><span class="hnum">01</span>The guarantor behind the counter</h2>
+<p>SMBC Consumer Finance — SMBCCF — is the consumer finance arm of Sumitomo Mitsui Financial Group and the operator of the Promise lending brand. But its most consequential business is one most customers never see: guaranteeing personal loans for 189 partner financial institutions.</p>
+<p>Here is how that model works. A regional bank markets a branded card loan to its depositors. Behind the scenes, it hands the credit risk assessment and the default guarantee to SMBCCF. If the borrower defaults, SMBCCF pays the bank the outstanding principal and interest — a step known in Japanese banking as subrogation — and then holds the right to collect the debt directly. SMBCCF also hosts the white-labeled web application forms customers use to apply for these loans, saving smaller banks from building their own digital onboarding.</p>
+<h2 id="the-timeline-an-all-clear-that-lasted-three-days"><span class="hnum">02</span>The timeline: an all-clear that lasted three days</h2>
+<p>On Monday, November 2, 2026, SMBCCF engineers noticed unusual traffic on the systems that power the guarantee business. Within hours, the environment was cut off from external networks — and the company told partner banks that no loss of personal data had been confirmed.</p>
+<p>That assessment lasted about three days. As incident responders worked through outbound traffic logs and rebuilt the timeline, they found that an unauthorized party had queried the guarantee database and sent records out before containment. SMBCCF retracted its earlier statement and disclosed the breach on Thursday, November 5. Partner banks&#x27; own notices followed on November 5 and 6 — Resona, Kansai Mirai, Minato, the Bank of Yokohama, Docomo SMTB Net Bank, and at least eight more regional lenders.</p>
+<p>None of those banks was breached directly — their core systems were untouched. The exposure came entirely through the shared platform they all depended on: a textbook case of <span class="gterm" data-term="third-party risk" data-def="The security exposure an organization inherits from its vendors, partners, and contractors — every third party with access to systems or data becomes a potential attack path.">third-party risk</span>.</p>
+<p>The attacker is still unknown, and SMBCCF has not disclosed how the intruder got in. The Promise consumer lending platform runs on a separate stack and was not affected. As of the disclosures, no secondary damage — scams already carried out with the data — had been confirmed. The guarantee system was suspended, and several banks paused new online loan originations.</p>
+<h2 id="what-leaked-and-what-did-not"><span class="hnum">03</span>What leaked — and what did not</h2>
+<p>Across all the disclosures, the affected records held up to fourteen data fields, in three groups:</p>
+<ul>
+<li><strong>Identity and contact:</strong> full legal name, gender, date of birth, home address, home landline, mobile number, email address, and the twelve-digit Japanese driver&#x27;s license number.</li>
+<li><strong>Employment and underwriting:</strong> employer name and workplace information, workplace telephone number, and declared annual income.</li>
+<li><strong>Contract and banking metadata:</strong> the four-digit financial institution code, the bank&#x27;s internal customer number, the guaranteed loan limit, and the guarantee start date.</li>
+</ul>
+<p>Two things were <em>not</em> taken, and both matter. The image files used for identity verification — scans or smartphone photos of driver&#x27;s licenses, My Number cards, and residence certificates submitted during eKYC onboarding — were not exfiltrated. Neither were bank account numbers, cash card PINs, or online banking passwords. The architecture explains why: KYC images sit in separate document storage, and core banking credentials never cross the API boundary into the guarantor&#x27;s system. The attacker had read and egress access to the applicant tables — not to the wider domain.</p>
+<p>That distinction limits the damage, but it does not neutralize it. The stolen dataset is a near-complete credit dossier: enough to impersonate a victim to a call center, to pass knowledge checks, and to craft fraud that arrives already knowing things only a bank should know.</p>
+<h2 id="the-25-year-data-tail"><span class="hnum">04</span>The 25-year data tail</h2>
+<p>The strangest detail in the disclosures is not the scale. It is the age of the data.</p>
+<p>Docomo SMTB Net Bank disclosed up to 122,635 affected card loan customers — more than a third of the ceiling. The Resona Group&#x27;s three banks told a different story: all 5,935 of their affected records belonged to <em>former</em> customers whose contracts had already been fully terminated and closed. Resona Bank&#x27;s 139 records came from card loans handled between April 2001 and December 2005 by the former Nara Bank, which merged into Resona in January 2006. Kansai Mirai Bank&#x27;s 5,793 records covered loans originated between 2002 and 2019 through the former Kinki Osaka Bank. Minato Bank added just three.</p>
+<p>Records from 2001 were still sitting in a live, internet-connected production database in November 2026. Japanese law requires keeping closed contract histories, but not for anything like 25 years: the Commercial Code sets ten years, and the Act on Prevention of Transfer of Criminal Proceeds requires seven years of KYC records after a contract ends. When Nara Bank merged into Resona in 2006, and when the Resona Group later wound down its guarantee arrangements with SMBCCF, the old records were neither purged nor moved to air-gapped, encrypted cold storage. They stayed next to active underwriting data until an attacker queried the whole database. Mergers are where data retention goes to die — and the dead data stays reachable.</p>
+<h2 id="why-this-dataset-is-dangerous"><span class="hnum">05</span>Why this dataset is dangerous</h2>
+<p>SMBCCF and its partner banks stress that without account passwords or ID photos, unauthorized fund transfers are not immediately possible. That framing understates the dataset.</p>
+<p>A twelve-digit driver&#x27;s license number exposed alongside a full name, date of birth, and address breaks a static authenticator that non-bank financial services, telecom carriers, and credit bureaus all rely on. The number is not random: the first two digits identify the issuing prefectural commission, the next two give the year of first issuance. An attacker cannot pass a live biometric eKYC check without the physical card — but they can pass <span class="gterm" data-term="knowledge-based authentication" data-def="Identity verification by asking questions only the real person should know — date of birth, account numbers, past addresses — now weakened by how much of that data has leaked in breaches.">knowledge-based authentication</span> questions on telephone support lines and match victims against other breached databases.</p>
+<p>Then there is the fraud pretext. Workplace phone numbers, employer details, annual income, and exact loan guarantee amounts give criminals everything they need for <em>Tokushu Sagi</em> — Japan&#x27;s special fraud, usually voice <span class="gterm" data-term="phishing" data-def="Fraud via email or messages impersonating a trusted party to steal credentials.">phishing</span>, known as <span class="gterm" data-term="vishing" data-def="Voice phishing — fraud carried out over phone calls, where the attacker impersonates a trusted institution to extract credentials or money.">vishing</span>. Imagine a caller reaching a victim&#x27;s mobile or workplace switchboard, posing as the risk management division of the Bank of Yokohama, and stating the exact date the victim opened a card loan in 2014, the credit limit, and the salary registered at underwriting. Most people&#x27;s skepticism disappears at that point — and from there, SMS links to lookalike domains harvest banking credentials, one-time passwords, and card PINs in real time.</p>
+<p>The same week underlined that this was not an isolated incident. On November 5, NTT Docomo disclosed a separate breach of its online shop and My docomo systems, with personal information on up to about 300,000 customers leaked. Two Japanese giants, two breaches, one week.</p>
+<h2 id="three-structural-failures"><span class="hnum">06</span>Three structural failures</h2>
+<p>The incident points to three engineering problems that shared financial ecosystems need to fix.</p>
+<p><strong>1. Monolithic <span class="gterm" data-term="multi-tenant" data-def="A system architecture in which one shared application or database serves many separate organizations (tenants), isolated only by software-level controls.">multi-tenant</span> database schemas.</strong> Keeping underwriting records for 189 institutions in one shared relational environment means a single compromised application credential can read across every tenant&#x27;s partition. Guarantee providers should enforce cryptographic tenant isolation: per-tenant encryption keys, row-level security tied to scoped, short-lived service tokens. An intrusion through one partner bank&#x27;s web form should never be able to query another institution&#x27;s records.</p>
+<p><strong>2. Public web intake wired to historical stores.</strong> The link between internet-facing application forms and the backend database of historical guarantee contracts let an external attacker reach deep into archived records. Public loan portals should sit in an isolated DMZ as stateless ingestion queues, writing encrypted payloads to a message broker with no connection to the internal underwriting databases.</p>
+<p><strong>3. Manual data retention that fails after mergers.</strong> The 25-year-old Nara Bank records prove that manual retention policies break down during bank mergers and system migrations. Financial databases need automated time-to-live rules and crypto-shredding: once a loan contract ends and its retention period runs out, personal attributes should be irreversibly purged or replaced with anonymized hashes in production.</p>
+<p>Regulators are watching: Japan&#x27;s Financial Services Agency and Personal Information Protection Commission have been tightening supervision of third-party vendor concentration risk after a run of <span class="gterm" data-term="supply chain attack" data-def="An attack that reaches its target through a trusted supplier, vendor, or software update instead of attacking the target directly.">supply chain attack</span>s — and under Article 24 of the Banking Act, outsourcing underwriting does not shift legal liability away from the originating bank.</p>
+<h2 id="what-to-do-now"><span class="hnum">07</span>What to do now</h2>
+<p><strong>If you are a customer of an affected bank:</strong> SMBCCF is notifying affected people individually via partner banks. Treat every such message as a claim to verify — go to your bank through its official app or a number you already trust, never through a link in the message. Check your statements for any new loan or account change you did not request. And if anyone calls claiming to be your bank and quotes your loan details, hang up and call back on the number on your card: the details they quote may be real, and stolen.</p>
+<p><strong>If you run a platform other companies depend on:</strong> assume your tenants&#x27; data is one credential away from a bulk query, and design like it: tenant isolation, short-lived scoped tokens, egress monitoring that flags bulk reads, and automated retention with crypto-shredding are the difference between one customer&#x27;s incident and 189 banks&#x27; incident.</p>
+<p><strong>If you outsource anything sensitive:</strong> your vendor&#x27;s breach is your breach. Map every third party that holds your customers&#x27; data, demand evidence of their tenant isolation and retention enforcement, and rehearse the day their &quot;no data loss confirmed&quot; turns into a retraction.</p>
+<p>The SMBCCF breach did not happen because one bank was careless. It happened because 189 banks shared one guarantor, one database, and one assumption: that someone else&#x27;s system was someone else&#x27;s problem. It never is.</p>
+<hr>
+<p><em>Sources: SMBCCF&#x27;s November 5, 2026 disclosure as reported by The CyberSec Guru, Security Taisaku Lab, and partner bank notices from Resona Group, the Bank of Yokohama, and Docomo SMTB Net Bank; NTT Docomo&#x27;s November 5, 2026 disclosure.</em></p><div class="author-box"><div class="kicker"><span class="dot"></span>written by</div><p><strong>kou</strong> documents what’s learned about threat intel, attack surface, and practical defense — from the dark side of the internet.</p></div><div class="pager"><a href="/artikel/cloudflare-security-audit-skill/"><span class="dir">← previous</span><span class="t">Turn Your Coding Agent Into a Security Auditor: Inside Cloudflare&#x27;s Security-Audit Skill</span></a><span></span></div></div>
+                <aside class="toc"><h4>Contents</h4><ol><li style="margin-left:0px"><a href="#the-guarantor-behind-the-counter">The guarantor behind the counter</a></li><li style="margin-left:0px"><a href="#the-timeline-an-all-clear-that-lasted-three-days">The timeline: an all-clear that lasted three days</a></li><li style="margin-left:0px"><a href="#what-leaked-and-what-did-not">What leaked — and what did not</a></li><li style="margin-left:0px"><a href="#the-25-year-data-tail">The 25-year data tail</a></li><li style="margin-left:0px"><a href="#why-this-dataset-is-dangerous">Why this dataset is dangerous</a></li><li style="margin-left:0px"><a href="#three-structural-failures">Three structural failures</a></li><li style="margin-left:0px"><a href="#what-to-do-now">What to do now</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>security notes from the dark side of the internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="search articles…" aria-label="search">
+    <div class="search-hint">type at least 2 characters · esc to close · ctrl+k anywhere</div>
+    <div class="search-results" data-empty="nothing found — try another keyword."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

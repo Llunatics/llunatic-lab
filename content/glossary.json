@@ -7,10 +7,22 @@
     "en": "Adversary-in-the-middle: a phishing technique that proxies the victim's browser to the real login page instead of cloning it, capturing credentials and session tokens. Defeats code-based MFA.",
     "id": "Adversary-in-the-middle: teknik phishing yang meneruskan browser korban ke halaman login asli alih-alih menirunya, menangkap kredensial dan token sesi. Mampu menembus MFA berbasis kode."
   },
-  "Amass": "Open-source tool for subdomain enumeration and attack surface mapping.",
-  "CVE": "Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.",
-  "Censys": "Internet-wide scanning platform that maps certificates, hosts, and publicly exposed services.",
-  "DDoS": "Distributed Denial of Service — an attack that floods a server with traffic until it collapses.",
+  "Amass": {
+    "en": "Open-source tool for subdomain enumeration and attack surface mapping.",
+    "id": "Tool open-source untuk enumerasi subdomain dan pemetaan attack surface."
+  },
+  "CVE": {
+    "en": "Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.",
+    "id": "Common Vulnerabilities and Exposures — sistem penomoran resmi untuk kerentanan keamanan yang dipublikasikan."
+  },
+  "Censys": {
+    "en": "Internet-wide scanning platform that maps certificates, hosts, and publicly exposed services.",
+    "id": "Platform pemindaian internet yang memetakan sertifikat, host, dan layanan yang terekspos ke publik."
+  },
+  "DDoS": {
+    "en": "Distributed Denial of Service — an attack that floods a server with traffic until it collapses.",
+    "id": "Distributed Denial of Service — serangan yang membanjiri server dengan lalu lintas trafik hingga tumbang."
+  },
   "DKIM": {
     "en": "DomainKeys Identified Mail: a cryptographic signature the sender's server adds to the email headers. The receiver verifies it against a public key published in the sender's DNS, proving the message was not altered in transit.",
     "id": "DomainKeys Identified Mail: tanda tangan kriptografis yang ditambahkan server pengirim ke header email. Penerima memverifikasinya terhadap kunci publik di DNS pengirim, membuktikan isi pesan tidak diubah dalam perjalanan."
@@ -19,7 +31,10 @@
     "en": "Domain-based Message Authentication, Reporting and Conformance: a DNS policy telling receivers what to do (none, quarantine, reject) when SPF or DKIM checks fail for a domain, and where to send failure reports.",
     "id": "Domain-based Message Authentication, Reporting and Conformance: kebijakan DNS yang memberi tahu penerima apa yang harus dilakukan (none, quarantine, reject) saat pemeriksaan SPF atau DKIM gagal untuk suatu domain, serta ke mana laporan kegagalan dikirim."
   },
-  "EASM": "External Attack Surface Management — the practice of discovering and monitoring every internet-exposed digital asset before attackers do.",
+  "EASM": {
+    "en": "External Attack Surface Management — the practice of discovering and monitoring every internet-exposed digital asset before attackers do.",
+    "id": "External Attack Surface Management — praktik menemukan dan memantau setiap aset digital yang terekspos internet sebelum ditemukan penyerang."
+  },
   "EDR": {
     "en": "'Endpoint Detection and Response' — security software that monitors endpoints for suspicious behavior and can isolate or remediate threats automatically.",
     "id": "'Endpoint Detection and Response' — perangkat lunak keamanan yang memantau endpoint untuk perilaku mencurigakan dan dapat mengisolasi atau menangani ancaman secara otomatis."
@@ -40,7 +55,10 @@
     "en": "Model Context Protocol — Anthropic's open standard (November 2024) letting AI assistants call external tools such as filesystems, APIs, databases, and developer utilities. MCP servers execute real system actions on the model's behalf.",
     "id": "Model Context Protocol — standar terbuka dari Anthropic (November 2024) yang memungkinkan asisten AI memanggil tool eksternal seperti filesystem, API, database, dan utilitas developer. MCP server mengeksekusi aksi sistem yang nyata atas nama model."
   },
-  "MFA": "Multi-Factor Authentication — layered verification beyond a password, e.g. OTP codes or hardware keys.",
+  "MFA": {
+    "en": "Multi-Factor Authentication — layered verification beyond a password, e.g. OTP codes or hardware keys.",
+    "id": "Multi-Factor Authentication — verifikasi berlapis di luar kata sandi, seperti kode OTP atau kunci keamanan fisik."
+  },
   "MITRE ATT&CK": {
     "en": "A public knowledge base of adversary tactics and techniques, organized from initial access to impact — the common language defenders use to describe attacker behavior.",
     "id": "Basis pengetahuan publik berisi taktik dan teknik penyerang, tersusun dari akses awal hingga dampak — bahasa umum yang dipakai defender untuk mendeskripsikan perilaku penyerang."
@@ -61,7 +79,10 @@
     "en": "Fast, open-source template-based vulnerability scanner by ProjectDiscovery — security checks are written as shareable YAML templates covering CVEs, misconfigurations, and exposures.",
     "id": "Pemindai kerentanan open-source yang cepat dan berbasis template dari ProjectDiscovery — pemeriksaan keamanan ditulis sebagai template YAML yang bisa dibagikan, mencakup CVE, miskonfigurasi, dan exposure."
   },
-  "OSINT": "Open-Source Intelligence — gathering information from public sources for security research.",
+  "OSINT": {
+    "en": "Open-Source Intelligence — gathering information from public sources for security research.",
+    "id": "Open-Source Intelligence — pengumpulan informasi dari sumber-sumber publik untuk riset keamanan."
+  },
   "PRNG": {
     "en": "Pseudorandom number generator — an algorithm producing number sequences that look random but are fully determined by an internal state (seed). Non-cryptographic PRNGs must never be used for security secrets.",
     "id": "Pseudorandom number generator — algoritma yang menghasilkan deretan angka yang terlihat acak tetapi sepenuhnya ditentukan oleh state internal (seed). PRNG non-kriptografis tidak boleh dipakai untuk rahasia keamanan."
@@ -74,12 +95,18 @@
     "en": "Security Information and Event Management — a platform that collects logs from across the network and correlates them to detect attacks in real time.",
     "id": "Security Information and Event Management — platform yang mengumpulkan log dari seluruh jaringan dan mengorelasikannya untuk mendeteksi serangan secara real-time."
   },
-  "SOC": "Security Operations Center — the team that monitors and responds to security incidents around the clock.",
+  "SOC": {
+    "en": "Security Operations Center — the team that monitors and responds to security incidents around the clock.",
+    "id": "Security Operations Center — tim yang memantau dan merespons insiden keamanan selama 24 jam nonstop."
+  },
   "SPF": {
     "en": "Sender Policy Framework: a DNS record listing which mail servers may send email for a domain. Receivers reject or flag mail arriving from unlisted servers.",
     "id": "Sender Policy Framework: catatan DNS yang mendaftarkan server email mana saja yang boleh mengirim email atas nama suatu domain. Penerima menolak atau menandai email yang datang dari server yang tidak terdaftar."
   },
-  "Shodan": "A search engine for internet-connected devices — finds publicly exposed servers, cameras, and databases.",
+  "Shodan": {
+    "en": "A search engine for internet-connected devices — finds publicly exposed servers, cameras, and databases.",
+    "id": "Mesin pencari untuk perangkat yang terhubung ke internet — menemukan server, kamera, dan basis data yang terekspos publik."
+  },
   "Sigma": {
     "en": "An open, vendor-neutral format for writing detection rules that can be converted to queries for SIEMs like Splunk, Elastic, or Sentinel — shareable blue-team knowledge.",
     "id": "Format terbuka dan netral-vendor untuk menulis rule deteksi yang bisa dikonversi menjadi query SIEM seperti Splunk, Elastic, atau Sentinel — pengetahuan blue-team yang bisa dibagikan."
@@ -88,8 +115,14 @@
     "en": "An SMT (satisfiability modulo theories) solver developed by Microsoft Research, used for software verification, program analysis, and constraint solving — in the Mythos case, for recovering a PRNG's internal state.",
     "id": "Solver SMT (satisfiability modulo theories) yang dikembangkan Microsoft Research, dipakai untuk verifikasi perangkat lunak, analisis program, dan pemecahan constraint — dalam kasus Mythos, untuk memulihkan state internal sebuah PRNG."
   },
-  "attack surface": "The sum of all points (servers, apps, APIs, subdomains) that can be attacked from the outside.",
-  "blue team": "The defenders — the side that protects, monitors, and responds to attacks on systems.",
+  "attack surface": {
+    "en": "The sum of all points (servers, apps, APIs, subdomains) that can be attacked from the outside.",
+    "id": "Total seluruh titik (server, aplikasi, API, subdomain) yang dapat diserang dari luar."
+  },
+  "blue team": {
+    "en": "The defenders — the side that protects, monitors, and responds to attacks on systems.",
+    "id": "Pihak bertahan — tim yang melindungi, memantau, dan merespons serangan terhadap sistem."
+  },
   "cryptojacking": {
     "en": "Unauthorized use of someone else's computing resources to mine cryptocurrency — silent theft of CPU cycles and electricity.",
     "id": "Penggunaan sumber daya komputasi milik orang lain secara diam-diam untuk menambang cryptocurrency — pencurian siklus CPU dan listrik tanpa izin."
@@ -98,13 +131,22 @@
     "en": "Ransomware tactic where attackers both encrypt the victim's data and threaten to publish stolen copies — defeating backups as a defense.",
     "id": "Taktik ransomware di mana penyerang mengenkripsi data korban SEKALIGUS mengancam mempublikasikan salinan yang dicuri — membuat backup tak lagi cukup sebagai pertahanan."
   },
-  "encryption": "The process of turning data into scrambled code that can't be read without the right key.",
+  "encryption": {
+    "en": "The process of turning data into scrambled code that can't be read without the right key.",
+    "id": "Proses mengubah data menjadi kode acak yang tidak dapat dibaca tanpa kunci dekripsi yang tepat."
+  },
   "exfiltration": {
     "en": "The unauthorized transfer of data out of a network to attacker-controlled infrastructure — the quiet theft that precedes encryption in modern ransomware.",
     "id": "Transfer data tanpa izin keluar dari jaringan ke infrastruktur milik penyerang — pencurian sunyi yang mendahului enkripsi pada ransomware modern."
   },
-  "exploit": "A piece of code or technique that takes advantage of a vulnerability.",
-  "firewall": "A system that filters network traffic based on defined security rules.",
+  "exploit": {
+    "en": "A piece of code or technique that takes advantage of a vulnerability.",
+    "id": "Kode atau teknik yang memanfaatkan kerentanan keamanan untuk menyerang sistem."
+  },
+  "firewall": {
+    "en": "A system that filters network traffic based on defined security rules.",
+    "id": "Sistem yang menyaring lalu lintas jaringan berdasarkan aturan keamanan yang telah ditetapkan."
+  },
   "incident response": {
     "en": "The organized process of detecting, containing, eradicating, and recovering from a security incident, usually following a rehearsed playbook.",
     "id": "Proses terorganisir untuk mendeteksi, membatasi, membersihkan, dan memulihkan dari insiden keamanan, biasanya mengikuti playbook yang sudah dilatih."
@@ -125,13 +167,22 @@
     "en": "The security principle that every account, process, or service should hold only the minimum access needed to do its job — nothing more.",
     "id": "Prinsip keamanan bahwa setiap akun, proses, atau layanan hanya boleh memegang akses minimum yang dibutuhkan untuk pekerjaannya — tidak lebih."
   },
-  "malware": "Malicious software: viruses, worms, trojans, ransomware, and the like.",
-  "penetration testing": "An authorized simulated attack against systems to find holes before criminals do.",
+  "malware": {
+    "en": "Malicious software: viruses, worms, trojans, ransomware, and the like.",
+    "id": "Perangkat lunak berbahaya: virus, worm, trojan, ransomware, dan sejenisnya."
+  },
+  "penetration testing": {
+    "en": "An authorized simulated attack against systems to find holes before criminals do.",
+    "id": "Simulasi serangan berizin terhadap sistem untuk menemukan celah keamanan sebelum dieksploitasi penjahat siber."
+  },
   "persistence": {
     "en": "Techniques an attacker uses to survive reboots and cleanup — services, scheduled tasks, registry keys — so access remains after the initial foothold.",
     "id": "Teknik yang dipakai penyerang agar tetap bertahan melewati reboot dan pembersihan — service, scheduled task, registry key — sehingga akses tetap ada setelah pijakan awal."
   },
-  "phishing": "Fraud via email or messages impersonating a trusted party to steal credentials.",
+  "phishing": {
+    "en": "Fraud via email or messages impersonating a trusted party to steal credentials.",
+    "id": "Penipuan melalui email atau pesan yang menyamar sebagai pihak tepercaya untuk mencuri kredensial."
+  },
   "prompt injection": {
     "en": "An attack that smuggles instructions into data an LLM reads — a webpage, email, tool description, or file — so the model treats attacker text as commands. MITRE ATT&CK v20 (October 2026) lists Direct and Indirect Prompt Injection as distinct techniques.",
     "id": "Serangan yang menyelundupkan instruksi ke dalam data yang dibaca LLM — halaman web, email, deskripsi tool, atau file — sehingga model memperlakukan teks penyerang sebagai perintah. MITRE ATT&CK v20 (Oktober 2026) mencatat Direct dan Indirect Prompt Injection sebagai teknik tersendiri."
@@ -140,8 +191,14 @@
     "en": "A working demonstration that a vulnerability can actually be exploited, usually published to pressure vendors and warn defenders.",
     "id": "Demonstrasi yang menunjukkan bahwa sebuah kerentanan benar-benar bisa dieksploitasi, biasanya dipublikasikan untuk menekan vendor dan memperingatkan defender."
   },
-  "ransomware": "Malware that encrypts victim data and demands payment for its return.",
-  "red team": "The attackers — the side that simulates attacks to test defenses (ethical hacking).",
+  "ransomware": {
+    "en": "Malware that encrypts victim data and demands payment for its return.",
+    "id": "Malware yang mengenkripsi data korban dan menuntut tebusan untuk pemulihannya."
+  },
+  "red team": {
+    "en": "The attackers — the side that simulates attacks to test defenses (ethical hacking).",
+    "id": "Pihak penyerang — tim yang mensimulasikan serangan nyata untuk menguji keandalan pertahanan (ethical hacking)."
+  },
   "rug pull": {
     "en": "In MCP security, a server that scans clean on first review but swaps its tool definitions for malicious ones afterwards. Countered with tool pinning: hashing tool metadata and alerting when it changes.",
     "id": "Dalam keamanan MCP, server yang lolos pemindaian awal lalu menukar definisi tool-nya dengan yang jahat. Dilawan dengan tool pinning: meng-hash metadata tool dan memberi peringatan saat berubah."
@@ -154,7 +211,10 @@
     "en": "Sending crafted requests that falsely present themselves as already authenticated or trusted — the server skips its checks because the request 'looks' legitimate. CVE-2026-104935 abuses this to bypass authentication entirely.",
     "id": "Mengirim permintaan yang dibuat-buat agar tampak sudah terotentikasi atau terpercaya — server melewatkan pemeriksaannya karena permintaan 'terlihat' sah. CVE-2026-104935 menyalahgunakan ini untuk melewati otentikasi sepenuhnya."
   },
-  "subdomain": "Part of a main domain; e.g. blog.example.com is a subdomain of example.com. Often a forgotten entry point.",
+  "subdomain": {
+    "en": "Part of a main domain; e.g. blog.example.com is a subdomain of example.com. Often a forgotten entry point.",
+    "id": "Bagian dari domain utama; misalnya blog.example.com adalah subdomain dari example.com. Kerap menjadi celah masuk yang terlupakan."
+  },
   "supply chain attack": {
     "en": "An attack that reaches its target through a trusted supplier, vendor, or software update instead of attacking the target directly.",
     "id": "Serangan yang mencapai target lewat pemasok, vendor, atau update software tepercaya, alih-alih menyerang target secara langsung."
@@ -163,7 +223,10 @@
     "en": "The security exposure an organization inherits from its vendors, partners, and contractors — every third party with access to systems or data becomes a potential attack path.",
     "id": "Paparan keamanan yang diwariskan organisasi dari vendor, mitra, dan kontraktornya — setiap pihak ketiga yang punya akses ke sistem atau data menjadi jalur serangan potensial."
   },
-  "threat intelligence": "Structured information about attacker tactics, techniques, and behavior.",
+  "threat intelligence": {
+    "en": "Structured information about attacker tactics, techniques, and behavior.",
+    "id": "Informasi terstruktur mengenai taktik, teknik, dan perilaku penyerang siber."
+  },
   "tool poisoning": {
     "en": "Hidden malicious instructions embedded in an MCP tool's description. The agent reads the description as trusted context and follows the instructions — no exploit needed, just text in a JSON field. Named and demonstrated by Invariant Labs in April 2025.",
     "id": "Instruksi jahat tersembunyi yang disisipkan dalam deskripsi tool MCP. Agen membaca deskripsi sebagai konteks tepercaya lalu menuruti instruksinya — tanpa exploit, hanya teks dalam field JSON. Dinamai dan didemonstrasikan oleh Invariant Labs pada April 2025."
@@ -172,7 +235,10 @@
     "en": "An MCP attack in which a malicious tool quietly overrides a legitimate one under the same name, so the agent calls the attacker's code while the user sees a familiar label.",
     "id": "Serangan MCP di mana tool jahat diam-diam menimpa tool sah dengan nama yang sama, sehingga agen memanggil kode penyerang sementara pengguna melihat label yang familiar."
   },
-  "vulnerability": "A weakness in a system or application that attackers can exploit.",
+  "vulnerability": {
+    "en": "A weakness in a system or application that attackers can exploit.",
+    "id": "Celah kelemahan dalam sistem atau aplikasi yang dapat dimanfaatkan penyerang."
+  },
   "webshell": {
     "en": "A malicious script uploaded to a web server that gives an attacker remote command execution through the browser — a permanent backdoor disguised as a web page.",
     "id": "Script jahat yang diunggah ke web server dan memberi penyerang eksekusi perintah jarak jauh lewat browser — backdoor permanen yang menyamar sebagai halaman web."
@@ -181,7 +247,10 @@
     "en": "A fast, non-cryptographic PRNG algorithm used by the V8 JavaScript engine's Math.random(). Its outputs are reversible, so observing enough values lets an attacker recover its internal state.",
     "id": "Algoritma PRNG non-kriptografis yang cepat, dipakai Math.random() pada engine JavaScript V8. Output-nya bisa dibalik, sehingga pengamat yang melihat cukup banyak nilai dapat memulihkan state internal-nya."
   },
-  "zero-day": "A security flaw unknown to the public and the vendor — no patch exists when it's exploited.",
+  "zero-day": {
+    "en": "A security flaw unknown to the public and the vendor — no patch exists when it's exploited.",
+    "id": "Celah keamanan yang belum diketahui publik maupun vendor pengembang — belum ada patch resmi saat dieksploitasi."
+  },
   "remote code execution": {
     "en": "An attacker running their own code on a victim system, usually the most severe outcome of a vulnerability.",
     "id": "Penyerang menjalankan kodenya sendiri di sistem korban, biasanya dampak paling berat dari sebuah kerentanan."

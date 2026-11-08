@@ -7,11 +7,13 @@
 <meta name="description" content="{{description}}">
 <meta property="og:title" content="{{title}}">
 <meta property="og:description" content="{{description}}">
-<meta property="og:type" content="website">
+<meta property="og:type" content="{{og_type}}">
+<link rel="alternate" type="application/rss+xml" title="llunatic-lab ({{s:lang}})" href="{{s:rss_url}}">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<script>(function(){try{var t=localStorage.getItem("llunatic-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 <link rel="stylesheet" href="/assets/css/style.css">
 {{extra_head}}
 </head>
@@ -22,8 +24,8 @@
   <div class="nav-inner">
     <a class="brand" href="{{s:home_url}}">LLUNATIC<span class="cursor">_</span></a>
     <div class="nav-links">
-      <a href="{{s:nav_archive_url}}">{{s:nav_archive}}</a>
-      <a href="{{s:nav_about_url}}">{{s:nav_about}}</a>
+      <a href="{{s:nav_archive_url}}"{{nav_archive_active}}>{{s:nav_archive}}</a>
+      <a href="{{s:nav_about_url}}"{{nav_about_active}}>{{s:nav_about}}</a>
       <a class="lang-toggle" href="{{s:lang_url}}">{{s:other_label}}</a>
       <button class="icon-btn search-toggle" aria-label="search"></button>
       <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
@@ -40,7 +42,7 @@
     <div class="foot-row">
       <span>© <span class="js-year">2026</span> llunaticsys</span>
       <span>{{s:foot_tag}}</span>
-      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+      <span><a href="{{s:rss_url}}">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
     </div>
   </div>
 </footer>

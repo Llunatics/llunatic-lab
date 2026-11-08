@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """llunatic-lab static site generator — stdlib only, bilingual EN/ID."""
-import re, json, html, shutil
+import re, json, html, shutil, sys
 from pathlib import Path
 from datetime import datetime
 from email.utils import format_datetime
@@ -152,18 +152,25 @@ def tag_url(t, lang):
 # ---------------- inline markdown ----------------
 def inline_md(s, glossary, lang):
     s = html.escape(s)
+    def _norm(t):
+        return re.sub(r"[\s-]+", " ", html.unescape(t).strip().lower())
     def gterm(m):
-        term = m.group(1)
-        key = next((k for k in glossary if k.lower() == term.lower()), None)
+        raw = m.group(1)
+        if "|" in raw:
+            raw_term, display_label = raw.split("|", 1)
+        else:
+            raw_term, display_label = raw, raw
+        norm_term = _norm(raw_term)
+        key = next((k for k in glossary if _norm(k) == norm_term), None)
         if not key:
-            return term
+            return display_label
         d = glossary[key]
         definition = d.get(lang, d.get("en", "")) if isinstance(d, dict) else d
         return (f'<span class="gterm" data-term="{html.escape(key)}" '
-                f'data-def="{html.escape(definition)}">{html.escape(term)}</span>')
+                f'data-def="{html.escape(definition)}" tabindex="0" role="button">{display_label}</span>')
     s = re.sub(r"\[\[([^\]]+)\]\]", gterm, s)
     s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
-    s = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", s)
+    s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
     s = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<em>\1</em>", s)
     # URL: tolak scheme berbahaya (javascript:, data:, vbscript:, …) — http/https,
     # path relatif, dan anchor tetap boleh. URL jahat -> jadi teks polos.
@@ -175,11 +182,15 @@ def inline_md(s, glossary, lang):
         return u
     def _img(m):
         src = _safe_url(m.group(2))
-        return (f'<img src="{src}" alt="{m.group(1)}" loading="lazy">' if src
+        return (f'<img src="{src}" alt="{m.group(1)}" loading="lazy" decoding="async">' if src
                 else m.group(1))
     def _link(m):
         href = _safe_url(m.group(2))
-        return f'<a href="{href}">{m.group(1)}</a>' if href else m.group(1)
+        if not href:
+            return m.group(1)
+        if href.startswith("http://") or href.startswith("https://"):
+            return f'<a href="{href}" target="_blank" rel="noopener noreferrer">{m.group(1)}</a>'
+        return f'<a href="{href}">{m.group(1)}</a>'
     s = re.sub(r"!\[([^\]]*)\]\(([^)]+)\)", _img, s)
     s = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", _link, s)
     return s
@@ -226,18 +237,19 @@ def md_to_html(body, glossary, lang):
         if mh:
             close_lists()
             lvl, txt = len(mh.group(1)), mh.group(2)
-            hid = slugify(txt)
+            inner = inline_md(txt, glossary, lang)
+            clean_txt = html.unescape(re.sub(r"<[^>]+>", "", inner))
+            hid = slugify(clean_txt)
             # heading kembar -> id unik agar TOC & anchor tidak tabrakan
             seen_ids[hid] = seen_ids.get(hid, 0) + 1
             if seen_ids[hid] > 1:
                 hid = f"{hid}-{seen_ids[hid]}"
-            inner = inline_md(txt, glossary, lang)
             if lvl == 2:
                 h2n += 1
-                toc.append((2, hid, re.sub(r"<[^>]+>", "", txt)))
+                toc.append((2, hid, clean_txt))
                 out.append(f'<h2 id="{hid}"><span class="hnum">{h2n:02d}</span>{inner}</h2>')
             elif lvl == 3:
-                toc.append((3, hid, re.sub(r"<[^>]+>", "", txt)))
+                toc.append((3, hid, clean_txt))
                 out.append(f'<h3 id="{hid}">{inner}</h3>')
             else:
                 out.append(f"<h{lvl}>{inner}</h{lvl}>")
@@ -292,21 +304,36 @@ def md_to_html(body, glossary, lang):
     return "\n".join(out), toc
 
 # ---------------- templates ----------------
-def page(title, desc, content, lang, lang_url=None, extra=""):
+def page(title, desc, content, lang, lang_url=None, extra="", og_type="website"):
     t = (TEMPLATES / "base.html").read_text(encoding="utf-8")
     st = dict(S[lang])
     st["nav_archive_url"] = f"/{pfx(lang)}arsip/"
     st["nav_about_url"] = f"/{pfx(lang)}tentang/"
     st["home_url"] = f"/{pfx(lang)}"
+    st["rss_url"] = f"/{pfx(lang)}rss.xml"
+
+    canonical = f'<link rel="canonical" href="{SITE_URL}{page._cur}">'
+    og_url = f'<meta property="og:url" content="{SITE_URL}{page._cur}">'
     hreflang = ""
     if lang_url:
         other = st["other_lang"]
-        hreflang = (f'<link rel="alternate" hreflang="{lang}" href="{SITE_URL}{page._cur}">'
-                    f'<link rel="alternate" hreflang="{other}" href="{SITE_URL}{lang_url}">')
+        en_url = page._cur if lang == "en" else lang_url
+        hreflang = (f'\n<link rel="alternate" hreflang="{lang}" href="{SITE_URL}{page._cur}">'
+                    f'\n<link rel="alternate" hreflang="{other}" href="{SITE_URL}{lang_url}">'
+                    f'\n<link rel="alternate" hreflang="x-default" href="{SITE_URL}{en_url}">')
+    extra_head_content = f"{canonical}\n{og_url}{hreflang}"
+    if extra:
+        extra_head_content += f"\n{extra}"
+
+    is_arch = page._cur == f"/{pfx(lang)}arsip/"
+    is_about = page._cur == f"/{pfx(lang)}tentang/"
+    t = t.replace("{{nav_archive_active}}", ' aria-current="page" class="active"' if is_arch else "")
+    t = t.replace("{{nav_about_active}}", ' aria-current="page" class="active"' if is_about else "")
+
     t = (t.replace("{{title}}", html.escape(title))
           .replace("{{description}}", html.escape(desc))
-          .replace("{{content}}", content)
-          .replace("{{extra_head}}", extra + hreflang))
+          .replace("{{og_type}}", og_type)
+          .replace("{{extra_head}}", extra_head_content))
     for k, v in st.items():
         t = t.replace("{{s:" + k + "}}", v)
     if lang_url:
@@ -314,10 +341,11 @@ def page(title, desc, content, lang, lang_url=None, extra=""):
     else:
         t = re.sub(r'<a class="lang-toggle"[^>]*>.*?</a>', "", t)
         t = t.replace("{{s:lang_url}}", "#")
+    t = t.replace("{{content}}", content)
     return t
 
 def index_row(a, n, lang):
-    thumb = (f'<img class="thumb" src="{a["cover"]}" alt="" loading="lazy">'
+    thumb = (f'<img class="thumb" src="{a["cover"]}" alt="" width="190" height="128" loading="lazy" decoding="async">'
              if a["cover"] else "")
     tags = " ".join(f'<a class="tag" href="{tag_url(t, lang)}">{t}</a>' for t in a["tags"])
     return f"""<li class="index-row rv">
@@ -363,10 +391,23 @@ def main():
 
     if PUBLIC.exists(): shutil.rmtree(PUBLIC)
     (PUBLIC / "assets").mkdir(parents=True)
-    for sub in ("css", "js", "covers"):
+    for sub in ("css", "js"):
         src = ASSETS / sub
         if src.exists():
             shutil.copytree(src, PUBLIC / "assets" / sub)
+    (PUBLIC / "assets" / "covers").mkdir(parents=True, exist_ok=True)
+    valid_cover_exts = {".jpg", ".jpeg", ".png", ".webp", ".avif", ".svg"}
+    if (ASSETS / "covers").exists():
+        for f in (ASSETS / "covers").iterdir():
+            if f.is_file() and f.suffix.lower() in valid_cover_exts and not f.name.startswith("."):
+                shutil.copy2(f, PUBLIC / "assets" / "covers" / f.name)
+
+    # Validate that every article cover exists in PUBLIC
+    for a in parsed:
+        if a.get("cover"):
+            cover_file = PUBLIC / a["cover"].lstrip("/")
+            if not cover_file.exists() or cover_file.stat().st_size == 0:
+                print(f"WARNING: cover missing or empty: {a['cover']} for {a['slug']}", file=sys.stderr)
 
     for lang in ("en", "id"):
         st = S[lang]
@@ -410,7 +451,7 @@ def main():
             prev_a = pairs[others[idx + 1]][lang] if idx + 1 < len(others) else None
             next_a = pairs[others[idx - 1]][lang] if idx - 1 >= 0 else None
             tags = " ".join(f'<a class="tag" href="{tag_url(t, lang)}">{t}</a>' for t in a["tags"])
-            cover = (f'<img class="cover" src="{a["cover"]}" alt="{html.escape(a["title"])}">'
+            cover = (f'<img class="cover" src="{a["cover"]}" alt="{html.escape(a["title"])}" width="1470" height="630" fetchpriority="high" decoding="async">'
                      if a["cover"] else "")
             other_lang = st["other_lang"]
             has_other = other_lang in pairs[slug]
@@ -442,7 +483,8 @@ def main():
             page._cur = art_url(slug, lang)
             (d / "index.html").write_text(
                 page(a["title"], a["excerpt"], art, lang, lang_url=lang_url,
-                     extra=(f'<meta property="og:image" content="{SITE_URL}{a["cover"]}">' if a["cover"] else "")),
+                     extra=(f'<meta property="og:image" content="{SITE_URL}{a["cover"]}">' if a["cover"] else ""),
+                     og_type="article"),
                 encoding="utf-8")
 
         # ---- archive ----

@@ -36,12 +36,13 @@ Vercel auto-deploys on every push to the main branch.
    - Code blocks always declare a language (```bash, ```python, etc.).
 
 4. **Generate the cover** via `media.generate_image`:
-   - `output_dir`: `/home/hatch/workspace/llunatic-lab/assets/covers`
+   - `output_dir`: `/home/kou/Development/llunatic-lab/assets/covers`
    - `name`: article slug, `output_format`: `jpg`
    - Prompt: dark editorial illustration, lime-green accents, cinematic,
      minimalist, **absolutely no text, letters, or numbers**.
+   - **Important**: If `media.generate_image` outputs a `media-generation-*.json` file instead of `<slug>.jpg`, download/convert the attachment URL (`attachments[0].url`) to `assets/covers/<slug>.jpg` and delete the `.json` file before running `build.py`. Never leave raw `.json` files in `assets/covers/`.
 
-5. **Build**: `cd /home/hatch/workspace/llunatic-lab && python3 scripts/build.py`.
+5. **Build**: `cd /home/kou/Development/llunatic-lab && python3 scripts/build.py`.
    Must complete with no errors and the new article must appear in `public/`.
 
 6. **Push**: `git add -A && git commit -m "article: <slug>"` then push
@@ -51,7 +52,7 @@ Vercel auto-deploys on every push to the main branch.
 7. **Notify the user** on WhatsApp (this chat): "🤖 New article published:
    <title> — <1 sentence on what it's about>. Read it: <link> (llunatic-lab)".
    Link INLINE followed by text, NEVER at the end of the message. First check
-   that https://llunatic-lab.vercel.app/artikel/<slug>/ loads; if it's not live
+   that https://lab.llunaticsys.web.id/artikel/<slug>/ loads; if it's not live
    yet (user hasn't connected Vercel), link the markdown file on GitHub instead.
 
 ## Hard rules

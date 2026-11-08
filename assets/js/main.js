@@ -20,7 +20,9 @@
   setTheme(saved || "dark");
   document.querySelectorAll(".theme-toggle").forEach(function (b) {
     b.addEventListener("click", function () {
+      root.classList.add("theme-transition");
       setTheme(root.getAttribute("data-theme") === "light" ? "dark" : "light");
+      setTimeout(function () { root.classList.remove("theme-transition"); }, 400);
     });
   });
 
@@ -122,6 +124,16 @@
     el.addEventListener("mouseleave", function () {
       hideTimer = setTimeout(hidePop, 180);
     });
+    el.addEventListener("focus", function () {
+      clearTimeout(hideTimer);
+      show();
+    });
+    el.addEventListener("blur", function () {
+      hidePop();
+    });
+    el.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") hidePop();
+    });
     el.addEventListener("click", function (e) {
       e.preventDefault();
       if (pop.classList.contains("show")) hidePop();
@@ -139,6 +151,7 @@
 
   function openSearch() {
     overlay.classList.add("open");
+    document.body.style.overflow = "hidden";
     input.value = "";
     results.innerHTML = "";
     setTimeout(function () { input.focus(); }, 60);
@@ -148,7 +161,10 @@
         .then(function (j) { index = j; });
     }
   }
-  function closeSearch() { overlay.classList.remove("open"); }
+  function closeSearch() {
+    overlay.classList.remove("open");
+    document.body.style.overflow = "";
+  }
 
   document.querySelectorAll(".search-toggle").forEach(function (b) {
     b.addEventListener("click", openSearch);
@@ -160,6 +176,34 @@
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); openSearch(); }
     if (e.key === "Escape") closeSearch();
   });
+  if (overlay) {
+    overlay.addEventListener("keydown", function (e) {
+      var links = Array.prototype.slice.call(results.querySelectorAll("a"));
+      if (!links.length) return;
+      var active = document.activeElement;
+      var idx = links.indexOf(active);
+
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        if (active === input || idx === -1) {
+          links[0].focus();
+        } else if (idx < links.length - 1) {
+          links[idx + 1].focus();
+        } else {
+          links[0].focus();
+        }
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        if (idx > 0) {
+          links[idx - 1].focus();
+        } else if (idx === 0) {
+          input.focus();
+        } else {
+          links[links.length - 1].focus();
+        }
+      }
+    });
+  }
   var SEARCH_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>';
   document.querySelectorAll(".search-toggle").forEach(function (b) { b.innerHTML = SEARCH_ICON; });
 

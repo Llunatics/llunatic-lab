@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>sshole: The OpenSSH Bug That Logs You Into Accounts With No Password — llunatic-lab</title>
+<meta name="description" content="On November 5, OpenSSH shipped an emergency fix for CVE-2026-123158 — a logic bug that lets anyone log into a passwordless account on Alpine Linux with a password nobody set. The first exploitation attempts arrived within nine hours.">
+<meta property="og:title" content="sshole: The OpenSSH Bug That Logs You Into Accounts With No Password">
+<meta property="og:description" content="On November 5, OpenSSH shipped an emergency fix for CVE-2026-123158 — a logic bug that lets anyone log into a passwordless account on Alpine Linux with a password nobody set. The first exploitation attempts arrived within nine hours.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/sshole-openssh-alpine-auth-bypass.jpg"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/sshole-openssh-alpine-auth-bypass/"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/sshole-openssh-alpine-auth-bypass/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/arsip/">Archive</a>
+      <a href="/tentang/">About</a>
+      <a class="lang-toggle" href="/id/artikel/sshole-openssh-alpine-auth-bypass/">ID</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>article</div>
+              <h1>sshole: The OpenSSH Bug That Logs You Into Accounts With No Password</h1>
+              <div class="meta"><span>9 November 2026</span><span>·</span>
+              <span>9 min read</span><a class="tag" href="/tag/threat-intel/">threat-intel</a> <a class="tag" href="/tag/openssh/">openssh</a> <a class="tag" href="/tag/vulnerability/">vulnerability</a> <a class="tag" href="/tag/alpine/">alpine</a></div>
+              <img class="cover" src="/assets/covers/sshole-openssh-alpine-auth-bypass.jpg" alt="sshole: The OpenSSH Bug That Logs You Into Accounts With No Password">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>There is a special kind of vulnerability that does not need a stolen credential, a brute-force campaign, or a single line of malware. It needs a password that is deliberately too long — and an account that was never supposed to accept any password at all.</p>
+<p>On November 5, 2026, <span class="gterm" data-term="OpenSSH" data-def="The open-source implementation of the SSH protocol, maintained by the OpenBSD project; its server component (sshd) is the standard way to administer Linux systems remotely.">OpenSSH</span> released Portable OpenSSH 10.6p2, an emergency fix for <span class="gterm" data-term="CVE" data-def="Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.">CVE</span>-2026-123158, nicknamed &quot;sshole&quot; by its finder, Özgün Kültekin of Wakefield. The flaw scores 8.1 High under CVSS 3.1 and is classified as <span class="gterm" data-term="CWE" data-def="Common Weakness Enumeration — a community-developed catalog of software and hardware weakness types, e.g. CWE-394 for unexpected status codes.">CWE</span>-394, an unexpected status code or return value. Threat intelligence firm Previdian told Help Net Security it saw the first exploitation attempt less than nine hours after publication — and confirmed root access on an Alpine Linux honeypot. <span class="gterm" data-term="OpenSSH" data-def="The open-source implementation of the SSH protocol, maintained by the OpenBSD project; its server component (sshd) is the standard way to administer Linux systems remotely.">OpenSSH</span> developer Damien Miller called it critical and told administrators of affected systems to disable password logins, or SSH altogether, immediately.</p>
+<p>The behaviour is simple to state and uncomfortable to read. On an affected system, an attacker who can reach the SSH port can log in to an account that has no password, by sending a password that is deliberately too long. No stolen credential. No key. No brute force. Just a very long string of characters, and a comparison that was never supposed to succeed.</p>
+<h2 id="three-reasonable-decisions-fourteen-years-apart"><span class="hnum">01</span>Three reasonable decisions, fourteen years apart</h2>
+<p>CVE-2026-123158 is a logic bug, not memory corruption, and it lives in the gap between projects rather than inside any one of them. Three decisions, each defensible on its own, combine into an authentication bypass.</p>
+<p><strong>2012, <span class="gterm" data-term="musl" data-def="musl libc — a small, lightweight C standard library used by Alpine Linux and other minimal Linux distributions, instead of the larger glibc.">musl</span> libc.</strong> The POSIX standard says <code>crypt()</code> — the function that hashes passwords — should return a null pointer when hashing fails. Too many callers never checked the return value and crashed, so musl chose to return the literal string <code>*</code> instead. A defensive decision, and a defensible one in isolation.</p>
+<p><strong>The same library caps key length.</strong> musl&#x27;s SHA-based <code>crypt()</code> refuses any password longer than 256 bytes, as protection against wasting CPU on absurd inputs. Past that limit, it fails — and failure now means returning <code>*</code>.</p>
+<p><strong>2016, OpenSSH.</strong> To fix CVE-2016-6210, a timing side channel that let attackers enumerate valid usernames by measuring whether <span class="gterm" data-term="sshd" data-def="The OpenSSH server daemon — the process that listens for incoming SSH connections and handles authentication and remote sessions.">sshd</span> bothered to hash anything, OpenSSH 7.3 added salt borrowing. For an account with no real hash, sshd now takes a <code>$5$</code> or <code>$6$</code> salt from another local account and hashes the submitted password anyway, so valid and invalid usernames take the same time. A sound fix for a real problem.</p>
+<p><strong>A long-standing Unix convention.</strong> A single <code>*</code> in the password field of <code>/etc/shadow</code> marks an account that must never authenticate by password. Key-only accounts, service accounts, LDAP-mapped users — and root on Alpine — commonly carry it.</p>
+<p>Put those together. An attacker offers a 300-byte password for an account whose shadow field is a single asterisk. Because of the 2016 change, sshd does not short-circuit: it borrows a salt from another account and calls <code>crypt()</code>. Because of the 2012 change and the 256-byte cap, musl returns the string asterisk. sshd compares that return value against the stored field, finds two identical asterisks, and treats the comparison as a successful authentication.</p>
+<pre><code class="language-text">attacker password : &quot;AAAA…&quot; (257 to 1024 bytes)
+stored shadow field : *
+sshd borrows salt  : $6$&lt;salt from another account&gt;$
+musl crypt() returns: *   &lt;- failure token, not a hash
+sshd compares       : * == *  &lt;- match, login accepted</code></pre>
+<p>The upper bound exists because sshd discards passwords over 1024 bytes, which is why the working range is roughly 257 to 1024. The fix in 10.6p2 is correspondingly narrow: sshd now rejects any stored hash shorter than four characters, whatever <code>crypt()</code> hands back.</p>
+<h2 id="who-is-exposed-precisely"><span class="hnum">02</span>Who is exposed, precisely</h2>
+<p>This one has unusually tight preconditions, which is good news if you check them and bad news if you assume them. Every condition below has to hold at once.</p>
+<ul>
+<li><strong>sshd is linked against musl libc.</strong> <span class="gterm" data-term="Alpine Linux" data-def="A minimal, security-oriented Linux distribution built on musl libc and BusyBox; the default small base image for most container ecosystems.">Alpine Linux</span> is the common case; OpenWrt, Buildroot, and Yocto builds are also named in reporting.</li>
+<li><strong><span class="gterm" data-term="PAM" data-def="Pluggable Authentication Modules — the standard Linux framework that lets applications delegate authentication to configurable modules instead of checking passwords themselves.">PAM</span> is not in use.</strong> With PAM handling authentication, sshd never performs the <code>crypt()</code> comparison that fails open. Alpine&#x27;s default OpenSSH server configuration does not use PAM.</li>
+<li><strong>Password authentication is enabled.</strong> This is the OpenSSH default, so it holds unless someone deliberately turned it off.</li>
+<li><strong>A target account has a bare asterisk in its shadow field.</strong> The account the attacker wants — commonly root or a service account.</li>
+<li><strong>Another local account has a real <code>$5$</code> or <code>$6$</code> hash.</strong> The salt has to be borrowed from somewhere, so a system where no account has a usable password hash does not present the condition.</li>
+</ul>
+<p>Equally important is what is <em>not</em> affected. Systems built on glibc — Debian, Ubuntu, RHEL and their derivatives — return a null pointer or the token <code>*0</code> on failure, neither of which can equal a stored asterisk, and sshd already rejects those. Systems using PAM are out of scope. Dropbear is reported as unaffected.</p>
+<h2 id="why-this-lands-hardest-on-containers"><span class="hnum">03</span>Why this lands hardest on containers</h2>
+<p>Reading the conditions above as a server problem will understate the exposure badly. Alpine is the default small base image across most container ecosystems, chosen precisely because it is minimal — and minimal is the reason PAM is absent.</p>
+<p>Three consequences follow, and each one breaks a different assumption.</p>
+<p>First, <strong>the count is higher than your server inventory suggests.</strong> An organisation with no Alpine servers can still run thousands of Alpine containers. The question is not how many hosts run musl, it is how many images do.</p>
+<p>Second, <strong>most of those containers should not be running sshd at all</strong> — and many do, inherited from a base image or added for debugging and never removed. An sshd in a container that nobody remembers enabling is both the exposure and the finding.</p>
+<p>Third, <strong>the fix travels by rebuild, not by upgrade.</strong> Patching the host does nothing for an image built before November 5. Alpine published fixed OpenSSH packages across its supported branches — 3.24 ships <code>10.3_p1-r2</code>, 3.23 <code>10.2_p1-r1</code>, 3.22 <code>10.0_p1-r11</code>, 3.21 <code>9.9_p2-r1</code>, and 3.16–3.20 are also patched — so the action is to rebuild on a patched base and redeploy, a different workflow from a package upgrade and a slower one.</p>
+<p>The practical exposure question for a platform team is therefore narrow and answerable: which running containers have an sshd listening, and of those, which are musl-based and reachable from anywhere an attacker sits. In most estates the honest answer to the first part is not known without checking.</p>
+<pre><code class="language-bash"># containers with a listening SSH port
+kubectl get pods -A -o json | jq -r &#x27;.items[] | select(.spec.containers[].ports[]? | .containerPort == 22) | &quot;\(.metadata.namespace)/\(.metadata.name)&quot;&#x27;
+
+# on a host, confirm the libc and whether PAM is compiled in
+ldd /usr/sbin/sshd | grep -E &#x27;musl|libc&#x27;
+sshd -T 2&gt;/dev/null | grep -E &#x27;usepam|passwordauthentication&#x27;</code></pre>
+<h2 id="detection-the-gift-this-bug-gives-defenders"><span class="hnum">04</span>Detection: the gift this bug gives defenders</h2>
+<p>Memory-corruption bugs are hard to detect because failure looks like instability. This one is the opposite, and the <span class="gterm" data-term="SOC" data-def="Security Operations Center — the team that monitors and responds to security incidents around the clock.">SOC</span> should take the gift. Successful exploitation produces a specific, logged event that has no legitimate counterpart: a password authentication succeeds for an account whose password field says it can never accept one.</p>
+<p>The detection is a join between an authentication event and account state:</p>
+<pre><code class="language-text">rule:     ssh_password_login_to_locked_account
+source:   sshd auth log
+match:    &quot;Accepted password for &lt;user&gt;&quot;
+where:    &lt;user&gt; shadow field is &quot;*&quot; or &quot;!&quot; at the time of login
+and:      host libc is musl
+severity: critical, no tuning expected</code></pre>
+<p>Supporting signals worth collecting alongside it, each weaker on its own and useful for confirming a case:</p>
+<ol>
+<li><strong>&quot;Accepted password for root&quot;</strong> on any Alpine host or container. Root on Alpine commonly carries the asterisk field, so this is close to decisive in that environment.</li>
+<li><strong>Authentication on a container that should have no interactive access.</strong> Any successful SSH login to a workload container is worth an alert on its own merits, independent of this CVE.</li>
+<li><strong>Unusually large SSH authentication requests.</strong> The attack requires a password of at least 257 bytes. Where network telemetry allows it, an anomalous request size at the auth stage is a direct indicator of an attempt rather than a success.</li>
+<li><strong>Repeat attempts across accounts.</strong> An operator will try root and then service accounts in sequence from the same source, which forms the usual spray pattern and gives a strong correlation key.</li>
+</ol>
+<h2 id="what-to-do-in-order"><span class="hnum">05</span>What to do, in order</h2>
+<ol>
+<li><strong>Hunt retrospectively before anything else.</strong> Exploitation was reported within nine hours of publication, so the question is whether it already happened. Run the detection above against stored authentication logs back to November 5, rather than only forward from today.</li>
+<li><strong>Disable password authentication where it is not needed.</strong> Setting <code>PasswordAuthentication no</code> removes the precondition entirely and is a reversible configuration change rather than a rebuild. For container images that should never accept interactive logins, removing sshd is better still.</li>
+<li><strong>Rebuild and redeploy Alpine-based images</strong> on patched packages, treating this as a distinct workstream from host patching, with its own completion tracking.</li>
+<li><strong>Check reachability rather than assuming it.</strong> A vulnerable container that no attacker can reach is a different priority from one behind a load balancer. Confirm which SSH ports are exposed outside the cluster rather than inferring it from network policy intent.</li>
+</ol>
+<p>One honest caveat on the reporting: Previdian&#x27;s observation of attempts within nine hours and root on a honeypot is specific and credited, but other vendor write-ups published on November 6 describe no confirmed in-the-wild exploitation, and at the time of writing the flaw is not listed in CISA&#x27;s <span class="gterm" data-term="KEV" data-def="CISA&#x27;s Known Exploited Vulnerabilities catalog: a shortlist of flaws confirmed exploited in the wild. US federal agencies must remediate entries by a set deadline — practitioners treat every listing as &#x27;patch now&#x27;.">KEV</span> catalog. Both statements can be true at once — honeypot compromise and confirmed victim organisations are different evidentiary bars. Treat it as being exploited, and verify the KEV position at publication. The <span class="gterm" data-term="EPSS" data-def="Exploit Prediction Scoring System — a data-driven estimate of the probability that a vulnerability will be exploited in the next 30 days.">EPSS</span> score stood at 0.98% on November 6, which says the models do not expect mass exploitation — but models do not patch your containers.</p>
+<p>Ownership of the defect is also disputed. OpenSSH shipped the fix, and musl&#x27;s maintainer has described the problem as incorrect use of <code>crypt()</code> by the caller rather than a musl defect, while indicating the error behaviour is likely to change in a future release. That disagreement does not change what you have to do.</p>
+<p>The lesson of sshole is not that Alpine is unsafe or that musl is broken. It is that the boundary between &quot;an account that can never log in&quot; and &quot;an account that just did&quot; was a single character — <code>*</code> — and two separate projects each had a good reason to treat that character as a harmless placeholder. Audit your assumptions the way you audit your packages: check what your locked accounts actually are, check which of your images run sshd, and check your logs back to November 5.</p>
+<p><em>Sources: OpenSSH 10.6p2 release (5 Nov 2026); Help Net Security via Previdian; Alpine Linux security advisory; hawk-eye.io analysis; zerohunt.ai; walterstein.eu.</em></p><div class="author-box"><div class="kicker"><span class="dot"></span>written by</div><p><strong>kou</strong> documents what’s learned about threat intel, attack surface, and practical defense — from the dark side of the internet.</p></div><div class="pager"><a href="/artikel/smbc-consumer-finance-breach/"><span class="dir">← previous</span><span class="t">One Guarantor, 189 Banks: The SMBC Consumer Finance Breach</span></a><span></span></div></div>
+                <aside class="toc"><h4>Contents</h4><ol><li style="margin-left:0px"><a href="#three-reasonable-decisions-fourteen-years-apart">Three reasonable decisions, fourteen years apart</a></li><li style="margin-left:0px"><a href="#who-is-exposed-precisely">Who is exposed, precisely</a></li><li style="margin-left:0px"><a href="#why-this-lands-hardest-on-containers">Why this lands hardest on containers</a></li><li style="margin-left:0px"><a href="#detection-the-gift-this-bug-gives-defenders">Detection: the gift this bug gives defenders</a></li><li style="margin-left:0px"><a href="#what-to-do-in-order">What to do, in order</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>security notes from the dark side of the internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="search articles…" aria-label="search">
+    <div class="search-hint">type at least 2 characters · esc to close · ctrl+k anywhere</div>
+    <div class="search-results" data-empty="nothing found — try another keyword."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

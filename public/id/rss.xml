@@ -4,7 +4,11 @@
 <title>llunatic-lab (id)</title><link>https://lab.llunaticsys.web.id/id/</link>
 <description>Catatan keamanan dari sisi gelap internet</description>
 <language>id</language>
-<item><title>Satu Penjamin, 189 Bank: Pembobolan SMBC Consumer Finance</title>
+<item><title>sshole: Bug OpenSSH yang Membuatmu Login ke Akun Tanpa Password</title>
+            <link>https://lab.llunaticsys.web.id/id/artikel/sshole-openssh-alpine-auth-bypass/</link>
+            <description>Pada 5 November, OpenSSH merilis perbaikan darurat untuk CVE-2026-123158 — bug logika yang memungkinkan siapa pun login ke akun tanpa password di Alpine Linux dengan password yang tidak pernah diatur. Upaya eksploitasi pertama muncul kurang dari sembilan jam kemudian.</description>
+            <pubDate>Mon, 09 Nov 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/sshole-openssh-alpine-auth-bypass/</guid></item><item><title>Satu Penjamin, 189 Bank: Pembobolan SMBC Consumer Finance</title>
             <link>https://lab.llunaticsys.web.id/id/artikel/smbc-consumer-finance-breach/</link>
             <description>Kamu tidak pernah membuka rekening di SMBC Consumer Finance — tapi kalau kamu pernah mengambil pinjaman kartu dari salah satu dari 189 bank Jepang, nama, penghasilan, dan nomor SIM kamu mungkin tersimpan di sistem penjaminnya. Pada 2 November, seorang penyusup membawa pergi data hingga 320.118 orang.</description>
             <pubDate>Sun, 08 Nov 2026 00:00:00 -0000</pubDate>
@@ -80,10 +84,6 @@
             <link>https://lab.llunaticsys.web.id/id/artikel/atlassian-cve-2026-21589-exploited-hours/</link>
             <description>Satu shared library mengubah delapan produk Atlassian Data Center menjadi satu target raksasa — dan penyerang mulai menggedor honeypot di hari yang sama write-up teknisnya terbit.</description>
             <pubDate>Fri, 09 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/id/artikel/atlassian-cve-2026-21589-exploited-hours/</guid></item><item><title>Mythos: AI Pemburu Zero-Day</title>
-            <link>https://lab.llunaticsys.web.id/id/artikel/mythos-ai-vulnerability-hunter/</link>
-            <description>Model rahasia Anthropic bernama Mythos merangkai dua bug yang terlihat biasa menjadi auth bypass kritis — lalu penyerang mengeksploitasinya dalam 24 jam setelah publikasi. Beginilah riset kerentanan berkecepatan mesin.</description>
-            <pubDate>Wed, 07 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/id/artikel/mythos-ai-vulnerability-hunter/</guid></item>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/atlassian-cve-2026-21589-exploited-hours/</guid></item>
 </channel>
 </rss>

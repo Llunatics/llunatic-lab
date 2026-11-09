@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>sshole: Bug OpenSSH yang Membuatmu Login ke Akun Tanpa Password — llunatic-lab</title>
+<meta name="description" content="Pada 5 November, OpenSSH merilis perbaikan darurat untuk CVE-2026-123158 — bug logika yang memungkinkan siapa pun login ke akun tanpa password di Alpine Linux dengan password yang tidak pernah diatur. Upaya eksploitasi pertama muncul kurang dari sembilan jam kemudian.">
+<meta property="og:title" content="sshole: Bug OpenSSH yang Membuatmu Login ke Akun Tanpa Password">
+<meta property="og:description" content="Pada 5 November, OpenSSH merilis perbaikan darurat untuk CVE-2026-123158 — bug logika yang memungkinkan siapa pun login ke akun tanpa password di Alpine Linux dengan password yang tidak pernah diatur. Upaya eksploitasi pertama muncul kurang dari sembilan jam kemudian.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/sshole-openssh-alpine-auth-bypass.jpg"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/sshole-openssh-alpine-auth-bypass/"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/sshole-openssh-alpine-auth-bypass/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/id/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/id/arsip/">Arsip</a>
+      <a href="/id/tentang/">Tentang</a>
+      <a class="lang-toggle" href="/artikel/sshole-openssh-alpine-auth-bypass/">EN</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>artikel</div>
+              <h1>sshole: Bug OpenSSH yang Membuatmu Login ke Akun Tanpa Password</h1>
+              <div class="meta"><span>9 November 2026</span><span>·</span>
+              <span>9 mnt baca</span><a class="tag" href="/id/tag/threat-intel/">threat-intel</a> <a class="tag" href="/id/tag/openssh/">openssh</a> <a class="tag" href="/id/tag/vulnerability/">vulnerability</a> <a class="tag" href="/id/tag/alpine/">alpine</a></div>
+              <img class="cover" src="/assets/covers/sshole-openssh-alpine-auth-bypass.jpg" alt="sshole: Bug OpenSSH yang Membuatmu Login ke Akun Tanpa Password">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Ada jenis kerentanan khusus yang tidak butuh kredensial curian, kampanye brute-force, atau satu baris malware pun. Yang dibutuhkan hanya sebuah password yang sengaja dibuat terlalu panjang — dan sebuah akun yang seharusnya tidak pernah menerima password apa pun.</p>
+<p>Pada 5 November 2026, <span class="gterm" data-term="OpenSSH" data-def="Implementasi open-source dari protokol SSH yang dikelola proyek OpenBSD; komponen server-nya (sshd) adalah cara standar untuk mengadministrasikan sistem Linux dari jarak jauh.">OpenSSH</span> merilis Portable OpenSSH 10.6p2, perbaikan darurat untuk <span class="gterm" data-term="CVE" data-def="Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.">CVE</span>-2026-123158, yang dijuluki &quot;sshole&quot; oleh penemunya, Özgün Kültekin dari Wakefield. Celah ini mendapat skor 8.1 High di CVSS 3.1 dan diklasifikasikan sebagai <span class="gterm" data-term="CWE" data-def="Common Weakness Enumeration — katalog jenis kelemahan software dan hardware yang dikembangkan komunitas, contohnya CWE-394 untuk status code yang tidak terduga.">CWE</span>-394, status code atau return value yang tidak terduga. Firma threat intelligence Previdian mengatakan kepada Help Net Security bahwa mereka melihat upaya eksploitasi pertama kurang dari sembilan jam setelah publikasi — dan mengonfirmasi akses root pada sebuah honeypot Alpine Linux. Developer <span class="gterm" data-term="OpenSSH" data-def="Implementasi open-source dari protokol SSH yang dikelola proyek OpenBSD; komponen server-nya (sshd) adalah cara standar untuk mengadministrasikan sistem Linux dari jarak jauh.">OpenSSH</span> Damien Miller menyebutnya kritis dan meminta administrator sistem yang terdampak untuk segera menonaktifkan login password, atau SSH sepenuhnya.</p>
+<p>Perilakunya sederhana untuk dijelaskan dan tidak nyaman untuk dibaca. Pada sistem yang terdampak, penyerang yang bisa menjangkau port SSH dapat login ke akun yang tidak punya password, dengan mengirimkan password yang sengaja dibuat terlalu panjang. Tanpa kredensial curian. Tanpa key. Tanpa brute force. Hanya deretan karakter yang sangat panjang, dan sebuah perbandingan yang seharusnya tidak pernah berhasil.</p>
+<h2 id="tiga-keputusan-yang-masuk-akal-empat-belas-tahun-terpisah"><span class="hnum">01</span>Tiga keputusan yang masuk akal, empat belas tahun terpisah</h2>
+<p>CVE-2026-123158 adalah bug logika, bukan kerusakan memori, dan ia hidup di celah antar proyek, bukan di dalam satu proyek saja. Tiga keputusan, masing-masing bisa dibenarkan sendiri-sendiri, bergabung menjadi sebuah authentication bypass.</p>
+<p><strong>2012, <span class="gterm" data-term="musl" data-def="musl libc — pustaka standar C yang kecil dan ringan, dipakai Alpine Linux dan distribusi Linux minimal lainnya sebagai pengganti glibc yang lebih besar.">musl</span> libc.</strong> Standar POSIX mengatakan <code>crypt()</code> — fungsi yang melakukan hashing password — harus mengembalikan null pointer saat hashing gagal. Terlalu banyak program pemanggil yang tidak pernah memeriksa nilai kembaliannya lalu crash, sehingga musl memilih mengembalikan string literal <code>*</code>. Keputusan defensif, dan bisa dibenarkan jika dilihat sendiri.</p>
+<p><strong>Library yang sama membatasi panjang key.</strong> <code>crypt()</code> berbasis SHA milik musl menolak password yang lebih panjang dari 256 byte, sebagai perlindungan agar CPU tidak terbuang untuk input yang absurd. Melewati batas itu berarti gagal — dan kegagalan kini berarti mengembalikan <code>*</code>.</p>
+<p><strong>2016, OpenSSH.</strong> Untuk memperbaiki CVE-2016-6210, sebuah side channel timing yang memungkinkan penyerang mengenali username yang valid dengan mengukur apakah <span class="gterm" data-term="sshd" data-def="Daemon server OpenSSH — proses yang mendengarkan koneksi SSH masuk serta menangani autentikasi dan sesi jarak jauh.">sshd</span> sempat melakukan hashing, OpenSSH 7.3 menambahkan salt borrowing. Untuk akun tanpa hash asli, sshd kini mengambil salt <code>$5$</code> atau <code>$6$</code> dari akun lokal lain dan tetap melakukan hashing terhadap password yang dikirim, sehingga username valid dan tidak valid memakan waktu yang sama. Juga perbaikan yang masuk akal untuk masalah nyata.</p>
+<p><strong>Konvensi Unix yang sudah lama ada.</strong> Satu karakter <code>*</code> di field password pada <code>/etc/shadow</code> menandai akun yang tidak boleh autentikasi dengan password. Akun key-only, service account, pengguna yang dipetakan dari LDAP — dan root di Alpine — umumnya membawa tanda itu.</p>
+<p>Gabungkan semuanya. Penyerang menawarkan password sepanjang 300 byte untuk akun yang field shadow-nya berupa satu asterisk. Karena perubahan 2016, sshd tidak melakukan short-circuit: ia meminjam salt dari akun lain dan memanggil <code>crypt()</code>. Karena perubahan 2012 dan batas 256 byte, musl mengembalikan string asterisk. sshd membandingkan nilai kembalian itu dengan field yang tersimpan, menemukan dua asterisk yang identik, dan menganggap perbandingan itu sebagai autentikasi yang berhasil.</p>
+<pre><code class="language-text">password penyerang : &quot;AAAA…&quot; (257 sampai 1024 byte)
+field shadow tersimpan : *
+sshd meminjam salt  : $6$&lt;salt dari akun lain&gt;$
+musl crypt() mengembalikan: *   &lt;- token kegagalan, bukan hash
+sshd membandingkan       : * == *  &lt;- cocok, login diterima</code></pre>
+<p>Batas atasnya ada karena sshd membuang password yang lebih panjang dari 1024 byte, sehingga rentang yang bekerja kira-kira 257 sampai 1024. Perbaikan di 10.6p2 pun sesempit itu: sshd kini menolak hash tersimpan yang lebih pendek dari empat karakter, apa pun yang dikembalikan <code>crypt()</code>.</p>
+<h2 id="siapa-yang-sebenarnya-terpapar"><span class="hnum">02</span>Siapa yang sebenarnya terpapar</h2>
+<p>Celah ini punya prasyarat yang luar biasa ketat — kabar baik kalau kamu memeriksanya, kabar buruk kalau kamu hanya mengasumsikannya. Semua kondisi di bawah ini harus terpenuhi sekaligus.</p>
+<ul>
+<li><strong>sshd ter-link ke musl libc.</strong> <span class="gterm" data-term="Alpine Linux" data-def="Distribusi Linux minimal yang berorientasi keamanan, dibangun di atas musl libc dan BusyBox; base image kecil yang menjadi default di sebagian besar ekosistem container.">Alpine Linux</span> adalah kasus yang paling umum; build OpenWrt, Buildroot, dan Yocto juga disebut dalam laporan.</li>
+<li><strong><span class="gterm" data-term="PAM" data-def="Pluggable Authentication Modules — framework standar Linux yang memungkinkan aplikasi mendelegasikan autentikasi ke modul yang bisa dikonfigurasi, alih-alih memeriksa password sendiri.">PAM</span> tidak digunakan.</strong> Dengan PAM yang menangani autentikasi, sshd tidak pernah melakukan perbandingan <code>crypt()</code> yang gagal terbuka itu. Konfigurasi server OpenSSH default di Alpine tidak memakai PAM.</li>
+<li><strong>Password authentication aktif.</strong> Ini adalah default OpenSSH, jadi kondisinya berlaku kecuali seseorang sengaja mematikannya.</li>
+<li><strong>Akun target punya asterisk tunggal di field shadow-nya.</strong> Akun yang diincar penyerang — umumnya root atau service account.</li>
+<li><strong>Ada akun lokal lain dengan hash <code>$5$</code> atau <code>$6$</code> yang asli.</strong> Salt harus dipinjam dari suatu tempat, jadi sistem yang tidak punya akun dengan password hash yang bisa dipakai tidak menghadirkan kondisi ini.</li>
+</ul>
+<p>Sama pentingnya untuk tahu apa yang <em>tidak</em> terdampak. Sistem yang dibangun di atas glibc — Debian, Ubuntu, RHEL dan turunannya — mengembalikan null pointer atau token <code>*0</code> saat gagal, dan keduanya tidak bisa sama dengan asterisk yang tersimpan, serta sshd sudah menolak keduanya. Sistem yang memakai PAM berada di luar cakupan. Dropbear dilaporkan tidak terdampak.</p>
+<h2 id="kenapa-dampaknya-paling-keras-di-container"><span class="hnum">03</span>Kenapa dampaknya paling keras di container</h2>
+<p>Membaca kondisi di atas sebagai masalah server akan sangat meremehkan paparannya. Alpine adalah base image kecil yang menjadi default di hampir semua ekosistem container, dipilih justru karena ia minimal — dan minimal itulah alasan PAM tidak ada.</p>
+<p>Tiga konsekuensi mengikutinya, dan masing-masing mematahkan asumsi yang berbeda.</p>
+<p>Pertama, <strong>jumlahnya lebih besar dari yang ditunjukkan inventaris server-mu.</strong> Organisasi tanpa satu pun server Alpine tetap bisa menjalankan ribuan container Alpine. Pertanyaannya bukan berapa host yang menjalankan musl, melainkan berapa image yang menjalankannya.</p>
+<p>Kedua, <strong>sebagian besar container itu seharusnya tidak menjalankan sshd sama sekali</strong> — dan banyak yang tetap menjalankannya, diwarisi dari base image atau ditambahkan untuk debugging lalu tidak pernah dihapus. Sebuah sshd di dalam container yang tidak ada yang ingat mengaktifkannya adalah paparan sekaligus temuan.</p>
+<p>Ketiga, <strong>perbaikan ini datang lewat rebuild, bukan lewat upgrade.</strong> Melakukan patch pada host tidak berpengaruh apa-apa terhadap image yang dibangun sebelum 5 November. Alpine telah menerbitkan paket OpenSSH yang diperbaiki di semua branch yang didukung — 3.24 membawa <code>10.3_p1-r2</code>, 3.23 <code>10.2_p1-r1</code>, 3.22 <code>10.0_p1-r11</code>, 3.21 <code>9.9_p2-r1</code>, dan 3.16–3.20 juga sudah di-patch — jadi aksinya adalah rebuild di atas base yang sudah diperbaiki lalu redeploy, sebuah workflow yang berbeda dari upgrade paket dan lebih lambat.</p>
+<p>Pertanyaan paparan yang praktis bagi tim platform karenanya sempit dan bisa dijawab: container mana yang sedang berjalan dan punya sshd yang listening, dan dari semua itu, mana yang berbasis musl dan bisa dijangkau dari mana pun penyerang berada. Di sebagian besar estate, jawaban jujur untuk bagian pertama tidak diketahui tanpa pengecekan.</p>
+<pre><code class="language-bash"># container dengan port SSH yang listening
+kubectl get pods -A -o json | jq -r &#x27;.items[] | select(.spec.containers[].ports[]? | .containerPort == 22) | &quot;\(.metadata.namespace)/\(.metadata.name)&quot;&#x27;
+
+# di host, konfirmasi libc dan apakah PAM ter-compile
+ldd /usr/sbin/sshd | grep -E &#x27;musl|libc&#x27;
+sshd -T 2&gt;/dev/null | grep -E &#x27;usepam|passwordauthentication&#x27;</code></pre>
+<h2 id="deteksi-hadiah-yang-diberikan-bug-ini-kepada-defender"><span class="hnum">04</span>Deteksi: hadiah yang diberikan bug ini kepada defender</h2>
+<p>Bug kerusakan memori sulit dideteksi karena kegagalan terlihat seperti ketidakstabilan. Yang ini justru sebaliknya, dan <span class="gterm" data-term="SOC" data-def="Security Operations Center — the team that monitors and responds to security incidents around the clock.">SOC</span> sebaiknya memanfaatkan hadiah itu. Eksploitasi yang berhasil menghasilkan event spesifik yang tercatat di log dan tidak punya padanan yang sah: autentikasi password berhasil untuk akun yang field password-nya menyatakan ia tidak akan pernah menerima password.</p>
+<p>Deteksinya adalah join antara event autentikasi dan state akun:</p>
+<pre><code class="language-text">rule:     ssh_password_login_to_locked_account
+source:   sshd auth log
+match:    &quot;Accepted password for &lt;user&gt;&quot;
+where:    field shadow &lt;user&gt; adalah &quot;*&quot; atau &quot;!&quot; saat login
+and:      libc host adalah musl
+severity: critical, no tuning expected</code></pre>
+<p>Sinyal pendukung yang layak dikumpulkan bersamanya, masing-masing lebih lemah sendiri-sendiri namun berguna untuk mengonfirmasi sebuah kasus:</p>
+<ol>
+<li><strong>&quot;Accepted password for root&quot;</strong> di host atau container Alpine mana pun. Root di Alpine umumnya membawa field asterisk, jadi ini hampir bisa dipastikan sebagai bukti di lingkungan itu.</li>
+<li><strong>Autentikasi pada container yang seharusnya tidak punya akses interaktif.</strong> Login SSH yang berhasil ke container workload layak mendapat alert atas dasarnya sendiri, terlepas dari CVE ini.</li>
+<li><strong>Request autentikasi SSH yang ukurannya tidak biasa.</strong> Serangan ini membutuhkan password minimal 257 byte. Ukuran paket saat autentikasi bukan sesuatu yang kebanyakan tim catat, tetapi di mana telemetri jaringan memungkinkannya, ukuran request yang anomali pada tahap auth adalah indikator langsung dari upaya, bukan keberhasilan.</li>
+<li><strong>Upaya berulang lintas akun.</strong> Seorang operator akan mencoba root lalu service account secara berurutan dari sumber yang sama, membentuk pola spray yang biasa dan memberikan kunci korelasi yang kuat.</li>
+</ol>
+<h2 id="apa-yang-harus-dilakukan-berurutan"><span class="hnum">05</span>Apa yang harus dilakukan, berurutan</h2>
+<ol>
+<li><strong>Hunt secara retrospektif sebelum apa pun.</strong> Eksploitasi dilaporkan dalam sembilan jam setelah publikasi, jadi pertanyaannya adalah apakah itu sudah terjadi. Jalankan deteksi di atas terhadap log autentikasi yang tersimpan hingga 5 November, bukan hanya ke depan dari hari ini.</li>
+<li><strong>Nonaktifkan password authentication di tempat yang tidak dibutuhkan.</strong> Mengatur <code>PasswordAuthentication no</code> menghilangkan prasyarat itu sepenuhnya dan merupakan perubahan konfigurasi yang bisa dibalik, bukan rebuild. Untuk image container yang seharusnya tidak pernah menerima login interaktif, menghapus sshd sepenuhnya lebih baik lagi.</li>
+<li><strong>Rebuild dan redeploy image berbasis Alpine</strong> di atas paket yang sudah diperbaiki, perlakukan ini sebagai workstream yang terpisah dari patching host, dengan pelacakan penyelesaiannya sendiri.</li>
+<li><strong>Periksa reachability, bukan mengasumsikannya.</strong> Container rentan yang tidak bisa dijangkau penyerang adalah prioritas yang berbeda dari yang berada di belakang load balancer. Konfirmasi port SSH mana yang terekspos ke luar cluster, bukan menyimpulkannya dari niat network policy.</li>
+</ol>
+<p>Satu catatan jujur soal pelaporan: observasi Previdian tentang upaya dalam sembilan jam dan root pada honeypot bersifat spesifik dan bisa dipercaya, tetapi write-up vendor lain yang diterbitkan 6 November tidak menggambarkan eksploitasi in-the-wild yang terkonfirmasi, dan saat tulisan ini dibuat celah tersebut belum tercantum di katalog <span class="gterm" data-term="KEV" data-def="Katalog Known Exploited Vulnerabilities milik CISA: daftar singkat celah yang terbukti dieksploitasi di lapangan. Instansi federal AS wajib memperbaikinya sebelum tenggat tertentu — praktisi memperlakukan setiap entri sebagai &#x27;patch sekarang&#x27;.">KEV</span> CISA. Kedua pernyataan itu bisa benar sekaligus — kompromi honeypot dan organisasi korban yang terkonfirmasi adalah standar bukti yang berbeda. Perlakukan seolah-olah ia sedang dieksploitasi, dan verifikasi posisi KEV saat publikasi. Skor <span class="gterm" data-term="EPSS" data-def="Exploit Prediction Scoring System — estimasi berbasis data tentang probabilitas sebuah kerentanan akan dieksploitasi dalam 30 hari ke depan.">EPSS</span> berada di 0.98% pada 6 November, yang berarti model tidak mengharapkan eksploitasi massal — tetapi model tidak melakukan patch pada container-mu.</p>
+<p>Kepemilikan atas cacat ini juga diperdebatkan. OpenSSH merilis perbaikan, dan maintainer musl menggambarkan masalah ini sebagai penggunaan <code>crypt()</code> yang salah oleh pemanggil, bukan cacat musl, sambil mengindikasikan perilaku error itu kemungkinan akan berubah di rilis mendatang. Perdebatan itu tidak mengubah apa yang harus kamu lakukan, dan menjadi pengingat yang berguna: cacat yang hidup di antara dua komponen yang masing-masing berperilaku benar bukan milik siapa-siapa sampai seseorang dikompromikan karenanya.</p>
+<p>Pelajaran sshole bukan bahwa Alpine tidak aman atau musl rusak. Pelajarannya adalah batas antara &quot;akun yang tidak akan pernah bisa login&quot; dan &quot;akun yang baru saja login&quot; ternyata hanya satu karakter — <code>*</code> — dan dua proyek yang terpisah masing-masing punya alasan yang bagus untuk memperlakukan karakter itu sebagai placeholder yang tidak berbahaya. Audit asumsimu seperti kamu mengaudit paketmu: periksa apa sebenarnya locked account-mu, periksa image mana yang menjalankan sshd, dan periksa log-mu hingga 5 November. Penyerang hanya butuh satu asterisk yang sejajar.</p>
+<p><em>Sumber: rilis OpenSSH 10.6p2 (5 Nov 2026); Help Net Security via Previdian; advisory keamanan Alpine Linux; analisis hawk-eye.io; zerohunt.ai; walterstein.eu.</em></p><div class="author-box"><div class="kicker"><span class="dot"></span>ditulis oleh</div><p><strong>kou</strong> mendokumentasikan threat intel, attack surface, dan pertahanan praktis — dari sisi gelap internet.</p></div><div class="pager"><a href="/id/artikel/smbc-consumer-finance-breach/"><span class="dir">← sebelumnya</span><span class="t">Satu Penjamin, 189 Bank: Pembobolan SMBC Consumer Finance</span></a><span></span></div></div>
+                <aside class="toc"><h4>Daftar isi</h4><ol><li style="margin-left:0px"><a href="#tiga-keputusan-yang-masuk-akal-empat-belas-tahun-terpisah">Tiga keputusan yang masuk akal, empat belas tahun terpisah</a></li><li style="margin-left:0px"><a href="#siapa-yang-sebenarnya-terpapar">Siapa yang sebenarnya terpapar</a></li><li style="margin-left:0px"><a href="#kenapa-dampaknya-paling-keras-di-container">Kenapa dampaknya paling keras di container</a></li><li style="margin-left:0px"><a href="#deteksi-hadiah-yang-diberikan-bug-ini-kepada-defender">Deteksi: hadiah yang diberikan bug ini kepada defender</a></li><li style="margin-left:0px"><a href="#apa-yang-harus-dilakukan-berurutan">Apa yang harus dilakukan, berurutan</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>catatan keamanan dari sisi gelap internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="cari artikel…" aria-label="search">
+    <div class="search-hint">ketik minimal 2 huruf · esc untuk tutup · ctrl+k dari mana saja</div>
+    <div class="search-results" data-empty="nggak ketemu — coba kata kunci lain."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

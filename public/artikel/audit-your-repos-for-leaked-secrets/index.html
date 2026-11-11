@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit Your Own Repos for Leaked Secrets: A Hands-On Gitleaks and TruffleHog Walkthrough — llunatic-lab</title>
+<meta name="description" content="GitGuardian counted 28.65 million new hardcoded secrets on public GitHub in 2025, and attackers now go from a leaked key to a drained cloud vault in five minutes. This walkthrough sets up Gitleaks and TruffleHog on your own repos — scan the history, block the next leak at commit time, and know exactly what to rotate when one slips through.">
+<meta property="og:title" content="Audit Your Own Repos for Leaked Secrets: A Hands-On Gitleaks and TruffleHog Walkthrough">
+<meta property="og:description" content="GitGuardian counted 28.65 million new hardcoded secrets on public GitHub in 2025, and attackers now go from a leaked key to a drained cloud vault in five minutes. This walkthrough sets up Gitleaks and TruffleHog on your own repos — scan the history, block the next leak at commit time, and know exactly what to rotate when one slips through.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/audit-your-repos-for-leaked-secrets.jpg"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/audit-your-repos-for-leaked-secrets/"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/audit-your-repos-for-leaked-secrets/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/arsip/">Archive</a>
+      <a href="/tentang/">About</a>
+      <a class="lang-toggle" href="/id/artikel/audit-your-repos-for-leaked-secrets/">ID</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>article</div>
+              <h1>Audit Your Own Repos for Leaked Secrets: A Hands-On Gitleaks and TruffleHog Walkthrough</h1>
+              <div class="meta"><span>11 November 2026</span><span>·</span>
+              <span>11 min read</span><a class="tag" href="/tag/hands-on/">hands-on</a> <a class="tag" href="/tag/secrets/">secrets</a> <a class="tag" href="/tag/gitleaks/">gitleaks</a> <a class="tag" href="/tag/git-security/">git-security</a></div>
+              <img class="cover" src="/assets/covers/audit-your-repos-for-leaked-secrets.jpg" alt="Audit Your Own Repos for Leaked Secrets: A Hands-On Gitleaks and TruffleHog Walkthrough">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Your code is probably leaking credentials right now, and the leak is not in the file you are looking at. It is in a commit from two years ago, in a <code>.env</code> file someone deleted but never purged, in an MCP config that got committed alongside a dotfile backup. On October 13, 2026, Meta told SecurityWeek it was notifying roughly 1,500 people — mostly its own US employees — after intruders used stolen employee credentials to reach its GitHub repositories. The repositories held secrets as well as code, and Meta rotated them. The company was not breached through a product vulnerability. Someone&#x27;s credentials opened the front door, and the secrets were simply sitting inside.</p>
+<p>That is the normal shape of a secrets incident. GitGuardian counted 28.65 million new <span class="gterm" data-term="hardcoded secret" data-def="A credential such as an API key, token, or password written directly into source code or configuration files instead of being loaded from a secret manager or environment variable.">hardcoded secret</span>s on public GitHub in 2025, up 34% on the year before, and more than 64% of the secrets it confirmed valid in 2022 were still valid when retested in January 2026. Secrets leaked to AI services rose 81% year over year, to 1,275,105. And the window between leak and abuse has collapsed: Microsoft observed an agentic framework go from a GitHub secret search to exfiltrating an Azure Key Vault in five minutes. Five minutes is not enough time to notice an alert, let alone hold a meeting about one. The only defence that works at that speed is one that was already in place before the leak happened.</p>
+<p>This article builds that defence on your own machine, hands-on: scan the history you already have, block new leaks at commit time, catch the rest in CI, and keep a rotation runbook ready for the day something slips through. The tools are free and open source — <span class="gterm" data-term="Gitleaks" data-def="Open-source secret scanner (MIT) that finds hardcoded credentials in git repositories using regex rules and entropy analysis. Fast and offline, so it fits pre-commit hooks.">Gitleaks</span> v8.30.1 and <span class="gterm" data-term="TruffleHog" data-def="Open-source secret scanner (AGPL-3.0) that classifies over 800 secret types and can verify a candidate credential by calling the provider&#x27;s API, proving whether it is still live.">TruffleHog</span> v3.99.3, versions verified on October 20, 2026 — and the whole setup takes about an hour.</p>
+<h2 id="why-grep-is-not-an-audit"><span class="hnum">01</span>Why <code>grep</code> is not an audit</h2>
+<p>The first mistake is reaching for <code>grep -r &quot;API_KEY&quot; .</code>. That only searches the files that exist right now. A secret committed in 2023 and deleted in 2024 is invisible to it — but it is still sitting in git history, one <code>git log -p</code> away from anyone who clones the repository. Any audit that does not walk every commit is a performance, not a check.</p>
+<p>The two scanners in this walkthrough attack the problem from opposite directions, which is why they work well together. Gitleaks is regex- and <span class="gterm" data-term="entropy" data-def="A measure of how random a string looks. Secret scanners use entropy to flag high-randomness strings (like API keys) that do not match any known credential format.">entropy</span>-based: it matches known credential formats (AWS keys, GitHub tokens, Stripe keys, hundreds more) and flags high-entropy strings that look random enough to be a secret. It is fast, works offline, and is ideal for a hook that runs on every commit. TruffleHog classifies over 800 secret types and, crucially, can <em>verify</em> a candidate by calling the provider&#x27;s API — turning &quot;this looks like a Stripe key&quot; into &quot;this is a live Stripe key&quot;. That verification is what makes it useful in CI, where you want few alerts and every one of them real.</p>
+<h2 id="step-1-install-the-tools"><span class="hnum">02</span>Step 1: Install the tools</h2>
+<p>On macOS or Linux with Homebrew, one command installs everything, including the two tools you will need later for history cleanup:</p>
+<pre><code class="language-bash">brew install gitleaks trufflehog pre-commit git-filter-repo
+
+gitleaks version        # expect: 8.30.1
+trufflehog --version    # expect: trufflehog 3.99.3
+pre-commit --version    # expect: pre-commit 4.7.0
+git filter-repo --version</code></pre>
+<p>The Python tools are also available through pipx (<code>pipx install pre-commit==4.7.0</code> and <code>pipx install git-filter-repo==2.47.0</code>). Pin the versions in CI later; on your laptop, the latest Homebrew formula is fine.</p>
+<h2 id="step-2-scan-the-history-you-already-have"><span class="hnum">03</span>Step 2: Scan the history you already have</h2>
+<p>Before adding any hook, find out what is already in the repository. Otherwise the first CI run will fail on a key committed years ago and someone will disable the job. Run both scanners over the full history:</p>
+<pre><code class="language-bash">cd your-repo
+
+# Gitleaks: scan every commit reachable from all refs, redact secrets in output
+gitleaks git --redact -v --log-opts=&quot;--all&quot; --report-path gitleaks-report.json .
+
+# TruffleHog: scan full history, show only credentials it could verify as live
+trufflehog git file://. --results=verified,unknown</code></pre>
+<p>Always pass <code>--redact</code> to Gitleaks: without it, the secret itself lands in your terminal scrollback and in the report file. Keep the report out of git (<code>echo &quot;gitleaks-report.json&quot; &gt;&gt; .gitignore</code>) — it can contain partial secrets.</p>
+<p>A Gitleaks finding looks like this, trimmed and redacted:</p>
+<pre><code class="language-code">Finding:     aws_secret_access_key = REDACTED
+Secret:      REDACTED
+RuleID:      aws-access-token
+File:        deploy/old-config.env
+Line:        4
+Commit:      9f2c1e7...
+Fingerprint: 9f2c1e7...:deploy/old-config.env:aws-access-token:4</code></pre>
+<p>Note the exit codes, because CI will depend on them: Gitleaks exits <code>1</code> when it finds leaks; TruffleHog exits <code>183</code> when results were found and <code>--fail</code> was passed. TruffleHog&#x27;s <code>--results=verified,unknown</code> is the right default for triage — verified findings are live credentials, exploitable right now, and they go first.</p>
+<p>For every real finding, jump to the rotation runbook in Step 6 <em>before</em> touching history. Then decide whether historical findings should block future scans: Gitleaks supports a baseline, so you can record the old findings and only fail on new ones:</p>
+<pre><code class="language-bash">gitleaks git --baseline-path gitleaks-report.json --report-path findings.json .</code></pre>
+<h2 id="step-3-block-the-next-leak-at-commit-time"><span class="hnum">04</span>Step 3: Block the next leak at commit time</h2>
+<p>A hook that runs before the commit exists is the cheapest layer you will ever build. Create <code>.pre-commit-config.yaml</code> at the repository root:</p>
+<pre><code class="language-yaml"># .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks          # runs: gitleaks git --pre-commit --redact --staged --verbose
+  - repo: https://github.com/trufflesecurity/trufflehog
+    rev: v3.99.3
+    hooks:
+      - id: trufflehog        # runs: trufflehog git file://. --since-commit HEAD --results=verified --fail</code></pre>
+<p>Then install it and run it once against every file:</p>
+<pre><code class="language-bash">pre-commit install            # writes .git/hooks/pre-commit
+pre-commit run --all-files    # first run builds both Go hooks, so it is slow once</code></pre>
+<p>Test it with a fake token that matches a real format (random, not a credential):</p>
+<pre><code class="language-bash">echo &#x27;token = &quot;ghp_A1b2C3d4E5f6G7h8I9j0K1l2M3n4O5p6Q7r8&quot;&#x27; &gt; leak-test.py
+git add leak-test.py
+git commit -m &quot;test&quot;</code></pre>
+<p>The commit should be refused with <code>Detect hardcoded secrets... Failed</code>, a <code>RuleID: github-pat</code>, and exit code 1. Clean up with <code>git rm --cached leak-test.py &amp;&amp; rm leak-test.py</code>. The TruffleHog hook will stay silent on this fake token, because it only reports verified results and the token is not live. That is by design — Gitleaks is the one that blocks locally.</p>
+<p>Be honest about what a hook is: a seatbelt, not a lock. Anyone can skip it with <code>git commit --no-verify</code>, and a fresh clone has no hooks until someone runs <code>pre-commit install</code>. That is why the next two layers exist.</p>
+<h2 id="step-4-handle-false-positives-without-disabling-the-scanner"><span class="hnum">05</span>Step 4: Handle false positives without disabling the scanner</h2>
+<p>The fastest way to kill a security tool is to let it cry wolf until someone turns it off. You have three tools for false positives, from narrowest to broadest. An inline comment for a known test value on one line:</p>
+<pre><code class="language-python">STRIPE_TEST_KEY = &quot;sk_test_placeholder_not_real&quot;  # gitleaks:allow</code></pre>
+<p>A <code>.gitleaksignore</code> entry for one specific finding, copied by fingerprint from the report (<code>commit:file:rule:line</code> for history scans):</p>
+<pre><code class="language-code">9f2c1e7d4b1a0c8e6f3d2b1a09f8e7d6c5b4a3f2:tests/fixtures/jwt.txt:jwt:12</code></pre>
+<p>And a <code>.gitleaks.toml</code> to extend the default rules with path allowlists — note the v8.25.0 syntax change to <code><span class="gterm" data-term="allowlists" data-def="Gitleaks configuration lists that exempt specific file paths or findings from scanning, so known test fixtures and lockfiles do not trigger false positives.">allowlists</span></code>:</p>
+<pre><code class="language-toml"># .gitleaks.toml (picked up automatically from the repo root)
+title = &quot;repo gitleaks config&quot;
+
+[extend]
+useDefault = true                 # keep all built-in rules
+
+[[allowlists]]
+description = &quot;test fixtures and lockfiles&quot;
+paths = [
+  &#x27;&#x27;&#x27;tests/fixtures/.*&#x27;&#x27;&#x27;,
+  &#x27;&#x27;&#x27;(.*?)package-lock\.json$&#x27;&#x27;&#x27;,
+]</code></pre>
+<p>Be stingy with path allowlists. A <code>tests/</code> exclusion is exactly where someone pastes a real staging key &quot;just for this test&quot;. And scan your agent tooling configs too: GitGuardian found 24,008 unique secrets in MCP-related configuration files in 2025. Directories like <code>.cursor/</code>, <code>.claude/</code>, and MCP config files belong inside the scan, not outside it.</p>
+<h2 id="step-5-push-protection-and-ci-the-layers-nobody-can-skip"><span class="hnum">06</span>Step 5: Push protection and CI — the layers nobody can skip</h2>
+<p><span class="gterm" data-term="Push protection" data-def="GitHub&#x27;s server-side check that rejects a push containing a recognised secret before it lands in the repository. On by default for public repositories.">Push protection</span> is GitHub&#x27;s server-side check: it rejects a push containing a recognised secret before it lands. User-level push protection is on by default for pushes to public repositories; repository-level protection on private repositories requires GitHub Secret Protection, priced at $19 per active committer per month. Enable it with the GitHub CLI:</p>
+<pre><code class="language-bash">OWNER=your-org REPO=your-repo
+gh api -X PATCH &quot;repos/$OWNER/$REPO&quot; \
+  -f &#x27;security_and_analysis[secret_scanning][status]=enabled&#x27; \
+  -f &#x27;security_and_analysis[secret_scanning_push_protection][status]=enabled&#x27;
+
+# Confirm
+gh api &quot;repos/$OWNER/$REPO&quot; --jq &#x27;.security_and_analysis&#x27;</code></pre>
+<p>A blocked push looks like <code>remote: error: GH013: Repository rule violations found</code> followed by &quot;Push cannot contain secrets&quot;. Anyone with write access can bypass it with a reason, and every bypass lands in the audit log and emails repository admins — review those weekly, and enable delegated bypass if you want only security staff to approve them.</p>
+<p>CI is the layer everyone passes through, because hooks can be skipped and push protection only knows provider token formats. A minimal workflow runs both scanners on every pull request, with every third-party action pinned to a full commit SHA:</p>
+<pre><code class="language-yaml"># .github/workflows/secret-scan.yml
+name: secret-scan
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  gitleaks:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Install gitleaks 8.30.1 (checksum verified)
+        run: |
+          V=8.30.1
+          curl -sSLO &quot;https://github.com/gitleaks/gitleaks/releases/download/v${V}/gitleaks_${V}_linux_x64.tar.gz&quot;
+          curl -sSLO &quot;https://github.com/gitleaks/gitleaks/releases/download/v${V}/gitleaks_${V}_checksums.txt&quot;
+          grep &quot;gitleaks_${V}_linux_x64.tar.gz&quot; &quot;gitleaks_${V}_checksums.txt&quot; | sha256sum -c -
+          tar -xzf &quot;gitleaks_${V}_linux_x64.tar.gz&quot; gitleaks
+      - name: Scan commits in this PR or push
+        run: |
+          if [ &quot;${{ github.event_name }}&quot; = &quot;pull_request&quot; ]; then
+            RANGE=&quot;${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}&quot;
+          else
+            RANGE=&quot;${{ github.event.before }}..${{ github.sha }}&quot;
+          fi
+          ./gitleaks git --redact -v --log-opts=&quot;$RANGE&quot; .
+  trufflehog:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: trufflesecurity/trufflehog@v3.99.3
+        with:
+          version: 3.99.3
+          extra_args: --results=verified,unknown</code></pre>
+<p>Make both jobs required status checks in your branch protection or ruleset — otherwise a red check is only a suggestion. One detail worth knowing: the official gitleaks GitHub Action needs a free <code>GITLEAKS_LICENSE</code> for organisation-owned repositories, which is why the workflow above runs the binary directly.</p>
+<h2 id="step-6-a-secret-leaked-rotate-first"><span class="hnum">07</span>Step 6: A secret leaked. Rotate first.</h2>
+<p>GitHub&#x27;s own guidance is blunt: revoke or rotate the credential before anything else, because once it cannot be used, you may not need to rewrite history at all. Assume a secret in a public repository was scraped within minutes — the five-minute Key Vault story above is the proof — and remember that the npm worms of the past year harvested credentials straight from developer machines and CI runners, not only from repositories.</p>
+<p>For an AWS IAM user access key, the sequence is create, deploy, deactivate, investigate, delete:</p>
+<pre><code class="language-bash">USER=ci-deployer
+OLD=AKIA...LEAKED   # the leaked access key ID
+# 1. Create the replacement (an IAM user can have at most two keys)
+aws iam create-access-key --user-name &quot;$USER&quot;
+# 2. Deploy the new key to your secret manager and consumers, then:
+aws iam update-access-key --user-name &quot;$USER&quot; --access-key-id &quot;$OLD&quot; --status Inactive
+# 3. See what the leaked key did (CloudTrail event history covers 90 days)
+aws cloudtrail lookup-events \
+  --lookup-attributes AttributeKey=AccessKeyId,AttributeValue=&quot;$OLD&quot; \
+  --max-results 50 --query &#x27;Events[].[EventTime,EventName,Username]&#x27; --output table
+# 4. Once nothing breaks, delete it
+aws iam delete-access-key --user-name &quot;$USER&quot; --access-key-id &quot;$OLD&quot;</code></pre>
+<p>The same pattern applies everywhere: GitHub tokens are revoked from Developer settings, Stripe and OpenAI keys are rolled from their dashboards, database passwords are changed and connection strings redeployed. Better still, remove the long-lived key entirely — workload identity federation lets CI authenticate to AWS, GCP, and Azure without a stored secret to leak.</p>
+<p>Only after rotation should you remove the secret from git history, with <code>git filter-repo</code>. Rewriting history changes every commit hash after the leak, breaks open pull requests, and invalidates signatures, so it is a deliberate, announced operation — never the first step, and never a substitute for rotation. A rotated secret in old history is a dead string. An unrotated secret with clean history is still a live credential.</p>
+<h2 id="the-thirty-minute-version"><span class="hnum">08</span>The thirty-minute version</h2>
+<p>If you do one thing today, do Step 2: scan the history of your most important repository. It takes minutes, and the result is either relief or the most valuable finding of your week. If you do two things, add the pre-commit hook — it costs one file and stops the next leak at the keyboard where it starts. The full stack — hook, push protection, CI, runbook — is the difference between Meta&#x27;s October and a quieter one: the secret still leaks, but it is dead before anyone can use it, and the next one never reaches the repository at all.</p>
+<p>Secrets do not leak because developers are careless. They leak because the convenient place to put a key and the safe place to put a key are never the same place, and every workflow quietly pushes toward the convenient one. Build the safe place first, make it the default, and let the scanners guard the gap. Your future self — the one who does not have to notify 1,500 people — will be grateful.</p>
+<p><em>Sources: GitGuardian State of Secrets Sprawl 2026; SecurityWeek, October 13, 2026 (Meta GitHub repository access); Ajay Kumar, &quot;How to Stop Secrets Leaking Into Git&quot; (tool versions verified October 20, 2026); GitHub documentation on secret scanning and push protection.</em></p><div class="author-box"><div class="kicker"><span class="dot"></span>written by</div><p><strong>kou</strong> documents what’s learned about threat intel, attack surface, and practical defense — from the dark side of the internet.</p></div><div class="pager"><a href="/artikel/sshole-openssh-alpine-auth-bypass/"><span class="dir">← previous</span><span class="t">sshole: The OpenSSH Bug That Logs You Into Accounts With No Password</span></a><span></span></div></div>
+                <aside class="toc"><h4>Contents</h4><ol><li style="margin-left:0px"><a href="#why-grep-is-not-an-audit">Why `grep` is not an audit</a></li><li style="margin-left:0px"><a href="#step-1-install-the-tools">Step 1: Install the tools</a></li><li style="margin-left:0px"><a href="#step-2-scan-the-history-you-already-have">Step 2: Scan the history you already have</a></li><li style="margin-left:0px"><a href="#step-3-block-the-next-leak-at-commit-time">Step 3: Block the next leak at commit time</a></li><li style="margin-left:0px"><a href="#step-4-handle-false-positives-without-disabling-the-scanner">Step 4: Handle false positives without disabling the scanner</a></li><li style="margin-left:0px"><a href="#step-5-push-protection-and-ci-the-layers-nobody-can-skip">Step 5: Push protection and CI — the layers nobody can skip</a></li><li style="margin-left:0px"><a href="#step-6-a-secret-leaked-rotate-first">Step 6: A secret leaked. Rotate first.</a></li><li style="margin-left:0px"><a href="#the-thirty-minute-version">The thirty-minute version</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>security notes from the dark side of the internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="search articles…" aria-label="search">
+    <div class="search-hint">type at least 2 characters · esc to close · ctrl+k anywhere</div>
+    <div class="search-results" data-empty="nothing found — try another keyword."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

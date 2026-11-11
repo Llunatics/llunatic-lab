@@ -4,7 +4,11 @@
 <title>llunatic-lab (id)</title><link>https://lab.llunaticsys.web.id/id/</link>
 <description>Catatan keamanan dari sisi gelap internet</description>
 <language>id</language>
-<item><title>sshole: Bug OpenSSH yang Membuatmu Login ke Akun Tanpa Password</title>
+<item><title>Audit Repo Sendiri dari Secret yang Bocor: Panduan Praktis Gitleaks dan TruffleHog</title>
+            <link>https://lab.llunaticsys.web.id/id/artikel/audit-your-repos-for-leaked-secrets/</link>
+            <description>GitGuardian menghitung 28,65 juta secret hardcoded baru di GitHub publik sepanjang 2025, dan penyerang kini hanya butuh lima menit dari kunci yang bocor sampai menguras cloud vault. Panduan ini memasang Gitleaks dan TruffleHog di repo sendiri — memindai history, memblokir kebocoran berikutnya saat commit, dan tahu persis apa yang harus di-rotate saat satu secret lolos.</description>
+            <pubDate>Wed, 11 Nov 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/audit-your-repos-for-leaked-secrets/</guid></item><item><title>sshole: Bug OpenSSH yang Membuatmu Login ke Akun Tanpa Password</title>
             <link>https://lab.llunaticsys.web.id/id/artikel/sshole-openssh-alpine-auth-bypass/</link>
             <description>Pada 5 November, OpenSSH merilis perbaikan darurat untuk CVE-2026-123158 — bug logika yang memungkinkan siapa pun login ke akun tanpa password di Alpine Linux dengan password yang tidak pernah diatur. Upaya eksploitasi pertama muncul kurang dari sembilan jam kemudian.</description>
             <pubDate>Mon, 09 Nov 2026 00:00:00 -0000</pubDate>
@@ -80,10 +84,6 @@
             <link>https://lab.llunaticsys.web.id/id/artikel/hunting-ahsaycbs-xmrig-campaign/</link>
             <description>Penyerang merangkai dua zero-day AhsayCBS, menanam miner XMRig yang menyamar sebagai Microsoft Edge, lalu menyebar script berbantuan AI yang langsung mematikan Task Manager begitu dibuka. Berikut cara memburu setiap tahap kampanye itu di jaringan Anda sendiri.</description>
             <pubDate>Sun, 11 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/id/artikel/hunting-ahsaycbs-xmrig-campaign/</guid></item><item><title>CVE-2026-21589: Satu Bug Atlassian di Delapan Produk, Dieksploitasi dalam Hitungan Jam</title>
-            <link>https://lab.llunaticsys.web.id/id/artikel/atlassian-cve-2026-21589-exploited-hours/</link>
-            <description>Satu shared library mengubah delapan produk Atlassian Data Center menjadi satu target raksasa — dan penyerang mulai menggedor honeypot di hari yang sama write-up teknisnya terbit.</description>
-            <pubDate>Fri, 09 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/id/artikel/atlassian-cve-2026-21589-exploited-hours/</guid></item>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/hunting-ahsaycbs-xmrig-campaign/</guid></item>
 </channel>
 </rss>

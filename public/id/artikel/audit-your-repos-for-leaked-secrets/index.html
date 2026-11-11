@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit Repo Sendiri dari Secret yang Bocor: Panduan Praktis Gitleaks dan TruffleHog — llunatic-lab</title>
+<meta name="description" content="GitGuardian menghitung 28,65 juta secret hardcoded baru di GitHub publik sepanjang 2025, dan penyerang kini hanya butuh lima menit dari kunci yang bocor sampai menguras cloud vault. Panduan ini memasang Gitleaks dan TruffleHog di repo sendiri — memindai history, memblokir kebocoran berikutnya saat commit, dan tahu persis apa yang harus di-rotate saat satu secret lolos.">
+<meta property="og:title" content="Audit Repo Sendiri dari Secret yang Bocor: Panduan Praktis Gitleaks dan TruffleHog">
+<meta property="og:description" content="GitGuardian menghitung 28,65 juta secret hardcoded baru di GitHub publik sepanjang 2025, dan penyerang kini hanya butuh lima menit dari kunci yang bocor sampai menguras cloud vault. Panduan ini memasang Gitleaks dan TruffleHog di repo sendiri — memindai history, memblokir kebocoran berikutnya saat commit, dan tahu persis apa yang harus di-rotate saat satu secret lolos.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/audit-your-repos-for-leaked-secrets.jpg"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/audit-your-repos-for-leaked-secrets/"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/audit-your-repos-for-leaked-secrets/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/id/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/id/arsip/">Arsip</a>
+      <a href="/id/tentang/">Tentang</a>
+      <a class="lang-toggle" href="/artikel/audit-your-repos-for-leaked-secrets/">EN</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>artikel</div>
+              <h1>Audit Repo Sendiri dari Secret yang Bocor: Panduan Praktis Gitleaks dan TruffleHog</h1>
+              <div class="meta"><span>11 November 2026</span><span>·</span>
+              <span>11 mnt baca</span><a class="tag" href="/id/tag/hands-on/">hands-on</a> <a class="tag" href="/id/tag/secrets/">secrets</a> <a class="tag" href="/id/tag/gitleaks/">gitleaks</a> <a class="tag" href="/id/tag/git-security/">git-security</a></div>
+              <img class="cover" src="/assets/covers/audit-your-repos-for-leaked-secrets.jpg" alt="Audit Repo Sendiri dari Secret yang Bocor: Panduan Praktis Gitleaks dan TruffleHog">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Kode kamu mungkin sedang membocorkan kredensial sekarang, dan kebocorannya bukan di file yang sedang kamu lihat. Ia ada di commit dua tahun lalu, di file <code>.env</code> yang sudah dihapus tapi tidak pernah dibersihkan dari history, di konfigurasi MCP yang ikut ter-commit bersama backup dotfile. Pada 13 Oktober 2026, Meta memberi tahu SecurityWeek bahwa mereka memberitahu sekitar 1.500 orang — sebagian besar karyawan mereka sendiri di Amerika Serikat — setelah penyusup memakai kredensial karyawan yang dicuri untuk mengakses repositori GitHub mereka. Repositori itu berisi secret di samping kode, dan Meta me-rotate semuanya. Perusahaan itu tidak dibobol lewat kerentanan produk. Kredensial seseorang membuka pintu depan, dan secret-nya memang sudah duduk di dalam.</p>
+<p>Itulah bentuk normal insiden secret. GitGuardian menghitung 28,65 juta <span class="gterm" data-term="hardcoded secret" data-def="Kredensial seperti API key, token, atau password yang ditulis langsung di kode sumber atau file konfigurasi, bukan dimuat dari secret manager atau environment variable.">hardcoded secret</span> baru di GitHub publik sepanjang 2025, naik 34% dari tahun sebelumnya, dan lebih dari 64% secret yang mereka konfirmasi valid pada 2022 ternyata masih valid saat diuji ulang pada Januari 2026. Secret yang bocor ke layanan AI naik 81% dari tahun ke tahun, menjadi 1.275.105. Dan jeda antara kebocoran dan penyalahgunaan sudah runtuh: Microsoft mengamati sebuah framework agentic yang hanya butuh lima menit dari pencarian secret di GitHub sampai mengekstfiltrasi Azure Key Vault. Lima menit tidak cukup untuk menyadari sebuah alert, apalagi mengadakan rapat tentangnya. Satu-satunya pertahanan yang bekerja pada kecepatan itu adalah pertahanan yang sudah terpasang sebelum kebocoran terjadi.</p>
+<p>Artikel ini membangun pertahanan itu di mesin kamu sendiri, secara praktis: memindai history yang sudah ada, memblokir kebocoran baru saat commit, menangkap sisanya di CI, dan menyiapkan runbook rotasi untuk hari ketika sesuatu lolos. Tool-nya gratis dan open source — <span class="gterm" data-term="Gitleaks" data-def="Secret scanner open-source (MIT) yang menemukan kredensial hardcoded di repositori git memakai aturan regex dan analisis entropi. Cepat dan offline, sehingga cocok untuk pre-commit hook.">Gitleaks</span> v8.30.1 dan <span class="gterm" data-term="TruffleHog" data-def="Secret scanner open-source (AGPL-3.0) yang mengklasifikasikan lebih dari 800 jenis secret dan bisa memverifikasi kandidat kredensial dengan memanggil API penyedianya, membuktikan apakah kredensial itu masih aktif.">TruffleHog</span> v3.99.3, versi yang diverifikasi pada 20 Oktober 2026 — dan seluruh setup memakan waktu sekitar satu jam.</p>
+<h2 id="mengapa-grep-bukan-audit"><span class="hnum">01</span>Mengapa <code>grep</code> bukan audit</h2>
+<p>Kesalahan pertama adalah meraih <code>grep -r &quot;API_KEY&quot; .</code>. Perintah itu hanya mencari file yang ada sekarang. Secret yang di-commit pada 2023 dan dihapus pada 2024 tidak terlihat olehnya — tapi ia masih duduk di git history, hanya sejauh <code>git log -p</code> dari siapa pun yang meng-clone repositori. Audit apa pun yang tidak menelusuri setiap commit adalah pertunjukan, bukan pemeriksaan.</p>
+<p>Dua scanner dalam panduan ini menyerang masalah dari arah berlawanan, dan karena itulah mereka bekerja baik bersama. Gitleaks berbasis regex dan <span class="gterm" data-term="entropy" data-def="Ukuran seberapa acak sebuah string terlihat. Secret scanner memakai entropi untuk menandai string berkeacakan tinggi (seperti API key) yang tidak cocok dengan format kredensial yang dikenal.">entropy</span>: ia mencocokkan format kredensial yang dikenal (kunci AWS, token GitHub, kunci Stripe, dan ratusan lainnya) serta menandai string ber-entropi tinggi yang terlihat cukup acak untuk menjadi secret. Ia cepat, bekerja offline, dan ideal untuk hook yang berjalan di setiap commit. TruffleHog mengklasifikasikan lebih dari 800 jenis secret dan, yang terpenting, bisa <em>memverifikasi</em> kandidat dengan memanggil API penyedianya — mengubah &quot;ini terlihat seperti kunci Stripe&quot; menjadi &quot;ini adalah kunci Stripe yang masih aktif&quot;. Verifikasi itulah yang membuatnya berguna di CI, tempat kamu menginginkan sedikit alert dan setiap alert benar-benar nyata.</p>
+<h2 id="langkah-1-instal-tool-nya"><span class="hnum">02</span>Langkah 1: Instal tool-nya</h2>
+<p>Di macOS atau Linux dengan Homebrew, satu perintah menginstal semuanya, termasuk dua tool yang nanti dibutuhkan untuk membersihkan history:</p>
+<pre><code class="language-bash">brew install gitleaks trufflehog pre-commit git-filter-repo
+
+gitleaks version        # expect: 8.30.1
+trufflehog --version    # expect: trufflehog 3.99.3
+pre-commit --version    # expect: pre-commit 4.7.0
+git filter-repo --version</code></pre>
+<p>Tool Python-nya juga tersedia lewat pipx (<code>pipx install pre-commit==4.7.0</code> dan <code>pipx install git-filter-repo==2.47.0</code>). Pin versinya di CI nanti; di laptop, formula Homebrew terbaru sudah cukup.</p>
+<h2 id="langkah-2-pindai-history-yang-sudah-ada"><span class="hnum">03</span>Langkah 2: Pindai history yang sudah ada</h2>
+<p>Sebelum menambahkan hook apa pun, cari tahu apa yang sudah ada di repositori. Kalau tidak, run CI pertama akan gagal karena kunci yang di-commit bertahun-tahun lalu dan seseorang akan menonaktifkan job-nya. Jalankan kedua scanner ke seluruh history:</p>
+<pre><code class="language-bash">cd your-repo
+
+# Gitleaks: pindai setiap commit yang terjangkau dari semua ref, redact secret di output
+gitleaks git --redact -v --log-opts=&quot;--all&quot; --report-path gitleaks-report.json .
+
+# TruffleHog: pindai seluruh history, tampilkan hanya kredensial yang terverifikasi masih aktif
+trufflehog git file://. --results=verified,unknown</code></pre>
+<p>Selalu sertakan <code>--redact</code> untuk Gitleaks: tanpanya, secret itu sendiri mendarat di scrollback terminal dan di file laporan. Jauhkan laporan dari git (<code>echo &quot;gitleaks-report.json&quot; &gt;&gt; .gitignore</code>) — ia bisa berisi secret sebagian.</p>
+<p>Sebuah temuan Gitleaks terlihat seperti ini, dipangkas dan di-redact:</p>
+<pre><code class="language-code">Finding:     aws_secret_access_key = REDACTED
+Secret:      REDACTED
+RuleID:      aws-access-token
+File:        deploy/old-config.env
+Line:        4
+Commit:      9f2c1e7...
+Fingerprint: 9f2c1e7...:deploy/old-config.env:aws-access-token:4</code></pre>
+<p>Perhatikan exit code-nya, karena CI akan bergantung padanya: Gitleaks keluar dengan kode <code>1</code> saat menemukan kebocoran; TruffleHog keluar dengan kode <code>183</code> saat ada hasil dan <code>--fail</code> dipakai. Opsi TruffleHog <code>--results=verified,unknown</code> adalah default yang tepat untuk triase — temuan yang terverifikasi adalah kredensial aktif, bisa dieksploitasi sekarang juga, dan mereka didahulukan.</p>
+<p>Untuk setiap temuan nyata, lompat ke runbook rotasi di Langkah 6 <em>sebelum</em> menyentuh history. Lalu putuskan apakah temuan lama harus memblokir pemindaian berikutnya: Gitleaks mendukung baseline, jadi kamu bisa merekam temuan lama dan hanya gagal pada temuan baru:</p>
+<pre><code class="language-bash">gitleaks git --baseline-path gitleaks-report.json --report-path findings.json .</code></pre>
+<h2 id="langkah-3-blokir-kebocoran-berikutnya-saat-commit"><span class="hnum">04</span>Langkah 3: Blokir kebocoran berikutnya saat commit</h2>
+<p>Hook yang berjalan sebelum commit terbentuk adalah lapisan termurah yang pernah kamu bangun. Buat <code>.pre-commit-config.yaml</code> di root repositori:</p>
+<pre><code class="language-yaml"># .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks          # runs: gitleaks git --pre-commit --redact --staged --verbose
+  - repo: https://github.com/trufflesecurity/trufflehog
+    rev: v3.99.3
+    hooks:
+      - id: trufflehog        # runs: trufflehog git file://. --since-commit HEAD --results=verified --fail</code></pre>
+<p>Lalu instal dan jalankan sekali ke semua file:</p>
+<pre><code class="language-bash">pre-commit install            # writes .git/hooks/pre-commit
+pre-commit run --all-files    # first run builds both Go hooks, so it is slow once</code></pre>
+<p>Uji dengan token palsu yang cocok dengan format asli (acak, bukan kredensial):</p>
+<pre><code class="language-bash">echo &#x27;token = &quot;ghp_A1b2C3d4E5f6G7h8I9j0K1l2M3n4O5p6Q7r8&quot;&#x27; &gt; leak-test.py
+git add leak-test.py
+git commit -m &quot;test&quot;</code></pre>
+<p>Commit itu harus ditolak dengan <code>Detect hardcoded secrets... Failed</code>, <code>RuleID: github-pat</code>, dan exit code 1. Bersihkan dengan <code>git rm --cached leak-test.py &amp;&amp; rm leak-test.py</code>. Hook TruffleHog akan diam terhadap token palsu ini, karena ia hanya melaporkan hasil terverifikasi dan token itu tidak aktif. Itu memang disengaja — Gitleaks-lah yang memblokir secara lokal.</p>
+<p>Jujurlah tentang apa itu hook: sabuk pengaman, bukan gembok. Siapa pun bisa melewatinya dengan <code>git commit --no-verify</code>, dan clone baru tidak punya hook sampai seseorang menjalankan <code>pre-commit install</code>. Karena itulah dua lapisan berikutnya ada.</p>
+<h2 id="langkah-4-tangani-false-positive-tanpa-mematikan-scanner"><span class="hnum">05</span>Langkah 4: Tangani false positive tanpa mematikan scanner</h2>
+<p>Cara tercepat membunuh sebuah security tool adalah membiarkannya berteriak palsu sampai seseorang mematikannya. Kamu punya tiga cara untuk false positive, dari yang paling sempit sampai paling luas. Komentar inline untuk nilai tes yang sudah diketahui, pada satu baris:</p>
+<pre><code class="language-python">STRIPE_TEST_KEY = &quot;sk_test_placeholder_not_real&quot;  # gitleaks:allow</code></pre>
+<p>Entri <code>.gitleaksignore</code> untuk satu temuan spesifik, disalin berdasarkan fingerprint dari laporan (<code>commit:file:rule:line</code> untuk pemindaian history):</p>
+<pre><code class="language-code">9f2c1e7d4b1a0c8e6f3d2b1a09f8e7d6c5b4a3f2:tests/fixtures/jwt.txt:jwt:12</code></pre>
+<p>Dan <code>.gitleaks.toml</code> untuk memperluas aturan default dengan allowlist path — perhatikan perubahan sintaks v8.25.0 menjadi <code><span class="gterm" data-term="allowlists" data-def="Daftar konfigurasi Gitleaks yang mengecualikan path file atau temuan tertentu dari pemindaian, agar fixture tes dan lockfile tidak memicu false positive.">allowlists</span></code>:</p>
+<pre><code class="language-toml"># .gitleaks.toml (picked up automatically from the repo root)
+title = &quot;repo gitleaks config&quot;
+
+[extend]
+useDefault = true                 # keep all built-in rules
+
+[[allowlists]]
+description = &quot;test fixtures and lockfiles&quot;
+paths = [
+  &#x27;&#x27;&#x27;tests/fixtures/.*&#x27;&#x27;&#x27;,
+  &#x27;&#x27;&#x27;(.*?)package-lock\.json$&#x27;&#x27;&#x27;,
+]</code></pre>
+<p>Pelitlah dengan allowlist path. Pengecualian <code>tests/</code> adalah tempat seseorang menempel kunci staging asli &quot;hanya untuk tes ini&quot;. Dan pindai juga konfigurasi tool AI kamu: GitGuardian menemukan 24.008 secret unik di file konfigurasi terkait MCP sepanjang 2025. Direktori seperti <code>.cursor/</code>, <code>.claude/</code>, dan file konfigurasi MCP seharusnya masuk ke dalam pemindaian, bukan keluar darinya.</p>
+<h2 id="langkah-5-push-protection-dan-ci-lapisan-yang-tak-bisa-dilewati-siapa-pun"><span class="hnum">06</span>Langkah 5: Push protection dan CI — lapisan yang tak bisa dilewati siapa pun</h2>
+<p><span class="gterm" data-term="Push protection" data-def="Pemeriksaan di sisi server GitHub yang menolak push berisi secret yang dikenali sebelum push itu mendarat di repositori. Aktif secara default untuk repositori publik.">Push protection</span> adalah pemeriksaan di sisi server GitHub: ia menolak push yang berisi secret yang dikenali sebelum push itu mendarat. Push protection tingkat pengguna aktif secara default untuk push ke repositori publik; perlindungan tingkat repositori pada repositori privat membutuhkan GitHub Secret Protection, seharga $19 per active committer per bulan. Aktifkan dengan GitHub CLI:</p>
+<pre><code class="language-bash">OWNER=your-org REPO=your-repo
+gh api -X PATCH &quot;repos/$OWNER/$REPO&quot; \
+  -f &#x27;security_and_analysis[secret_scanning][status]=enabled&#x27; \
+  -f &#x27;security_and_analysis[secret_scanning_push_protection][status]=enabled&#x27;
+
+# Confirm
+gh api &quot;repos/$OWNER/$REPO&quot; --jq &#x27;.security_and_analysis&#x27;</code></pre>
+<p>Push yang diblokir terlihat seperti <code>remote: error: GH013: Repository rule violations found</code> diikuti &quot;Push cannot contain secrets&quot;. Siapa pun dengan akses tulis bisa melewatinya dengan alasan, dan setiap bypass tercatat di audit log serta dikirim lewat email ke admin repositori — tinjau itu setiap minggu, dan aktifkan delegated bypass kalau kamu ingin hanya staf keamanan yang bisa menyetujuinya.</p>
+<p>CI adalah lapisan yang dilalui semua orang, karena hook bisa dilewati dan push protection hanya mengenal format token penyedia. Workflow minimal menjalankan kedua scanner di setiap pull request, dengan setiap third-party action di-pin ke commit SHA penuh:</p>
+<pre><code class="language-yaml"># .github/workflows/secret-scan.yml
+name: secret-scan
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  gitleaks:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Install gitleaks 8.30.1 (checksum verified)
+        run: |
+          V=8.30.1
+          curl -sSLO &quot;https://github.com/gitleaks/gitleaks/releases/download/v${V}/gitleaks_${V}_linux_x64.tar.gz&quot;
+          curl -sSLO &quot;https://github.com/gitleaks/gitleaks/releases/download/v${V}/gitleaks_${V}_checksums.txt&quot;
+          grep &quot;gitleaks_${V}_linux_x64.tar.gz&quot; &quot;gitleaks_${V}_checksums.txt&quot; | sha256sum -c -
+          tar -xzf &quot;gitleaks_${V}_linux_x64.tar.gz&quot; gitleaks
+      - name: Scan commits in this PR or push
+        run: |
+          if [ &quot;${{ github.event_name }}&quot; = &quot;pull_request&quot; ]; then
+            RANGE=&quot;${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}&quot;
+          else
+            RANGE=&quot;${{ github.event.before }}..${{ github.sha }}&quot;
+          fi
+          ./gitleaks git --redact -v --log-opts=&quot;$RANGE&quot; .
+  trufflehog:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: trufflesecurity/trufflehog@v3.99.3
+        with:
+          version: 3.99.3
+          extra_args: --results=verified,unknown</code></pre>
+<p>Jadikan kedua job itu required status checks di branch protection atau ruleset — kalau tidak, check merah hanya jadi saran. Satu detail yang layak diketahui: GitHub Action resmi gitleaks membutuhkan <code>GITLEAKS_LICENSE</code> gratis untuk repositori milik organisasi, dan karena itulah workflow di atas menjalankan binary secara langsung.</p>
+<h2 id="langkah-6-sebuah-secret-bocor-rotate-dulu"><span class="hnum">07</span>Langkah 6: Sebuah secret bocor. Rotate dulu.</h2>
+<p>Panduan GitHub sendiri tegas: cabut atau rotate kredensial sebelum hal lain, karena begitu kredensial itu tidak bisa dipakai, kamu mungkin tidak perlu menulis ulang history sama sekali. Anggap secret di repositori publik sudah di-scrape dalam hitungan menit — kisah Key Vault lima menit di atas adalah buktinya — dan ingat bahwa npm worm tahun lalu memanen kredensial langsung dari mesin developer dan runner CI, bukan hanya dari repositori.</p>
+<p>Untuk access key pengguna IAM AWS, urutannya adalah buat, deploy, nonaktifkan, selidiki, hapus:</p>
+<pre><code class="language-bash">USER=ci-deployer
+OLD=AKIA...LEAKED   # the leaked access key ID
+# 1. Create the replacement (an IAM user can have at most two keys)
+aws iam create-access-key --user-name &quot;$USER&quot;
+# 2. Deploy the new key to your secret manager and consumers, then:
+aws iam update-access-key --user-name &quot;$USER&quot; --access-key-id &quot;$OLD&quot; --status Inactive
+# 3. See what the leaked key did (CloudTrail event history covers 90 days)
+aws cloudtrail lookup-events \
+  --lookup-attributes AttributeKey=AccessKeyId,AttributeValue=&quot;$OLD&quot; \
+  --max-results 50 --query &#x27;Events[].[EventTime,EventName,Username]&#x27; --output table
+# 4. Once nothing breaks, delete it
+aws iam delete-access-key --user-name &quot;$USER&quot; --access-key-id &quot;$OLD&quot;</code></pre>
+<p>Pola yang sama berlaku di mana-mana: token GitHub dicabut dari Developer settings, kunci Stripe dan OpenAI di-roll dari dashboard mereka, password database diganti dan connection string di-deploy ulang. Lebih baik lagi, hilangkan kunci berumur panjang itu sepenuhnya — workload identity federation memungkinkan CI mengautentikasi ke AWS, GCP, dan Azure tanpa secret tersimpan yang bisa bocor.</p>
+<p>Baru setelah rotasi kamu boleh menghapus secret dari git history, dengan <code>git filter-repo</code>. Menulis ulang history mengubah setiap hash commit setelah kebocoran, merusak pull request yang terbuka, dan membatalkan signature, jadi itu adalah operasi yang disengaja dan diumumkan — bukan langkah pertama, dan bukan pengganti rotasi. Secret yang sudah di-rotate di history lama hanyalah string mati. Secret yang belum di-rotate dengan history yang bersih tetaplah kredensial aktif.</p>
+<h2 id="versi-tiga-puluh-menit"><span class="hnum">08</span>Versi tiga puluh menit</h2>
+<p>Kalau kamu hanya melakukan satu hal hari ini, lakukan Langkah 2: pindai history repositori terpentingmu. Butuh beberapa menit, dan hasilnya entah melegakan atau menjadi temuan paling berharga minggu ini. Kalau kamu melakukan dua hal, tambahkan pre-commit hook — biayanya satu file dan ia menghentikan kebocoran berikutnya di keyboard tempat ia bermula. Stack lengkap — hook, push protection, CI, runbook — adalah pembeda antara Oktober-nya Meta dan Oktober yang lebih tenang: secret tetap bocor, tapi ia sudah mati sebelum sempat dipakai siapa pun, dan kebocoran berikutnya tidak pernah sampai ke repositori.</p>
+<p>Secret tidak bocor karena developer ceroboh. Mereka bocor karena tempat yang nyaman untuk menaruh kunci dan tempat yang aman untuk menaruh kunci tidak pernah sama, dan setiap workflow diam-diam mendorong ke arah yang nyaman. Bangun tempat yang aman lebih dulu, jadikan ia default, dan biarkan scanner menjaga celahnya. Dirimu di masa depan — yang tidak perlu memberitahu 1.500 orang — akan berterima kasih.</p>
+<p><em>Sumber: GitGuardian State of Secrets Sprawl 2026; SecurityWeek, 13 Oktober 2026 (akses repositori GitHub Meta); Ajay Kumar, &quot;How to Stop Secrets Leaking Into Git&quot; (versi tool diverifikasi 20 Oktober 2026); dokumentasi GitHub tentang secret scanning dan push protection.</em></p><div class="author-box"><div class="kicker"><span class="dot"></span>ditulis oleh</div><p><strong>kou</strong> mendokumentasikan threat intel, attack surface, dan pertahanan praktis — dari sisi gelap internet.</p></div><div class="pager"><a href="/id/artikel/sshole-openssh-alpine-auth-bypass/"><span class="dir">← sebelumnya</span><span class="t">sshole: Bug OpenSSH yang Membuatmu Login ke Akun Tanpa Password</span></a><span></span></div></div>
+                <aside class="toc"><h4>Daftar isi</h4><ol><li style="margin-left:0px"><a href="#mengapa-grep-bukan-audit">Mengapa `grep` bukan audit</a></li><li style="margin-left:0px"><a href="#langkah-1-instal-tool-nya">Langkah 1: Instal tool-nya</a></li><li style="margin-left:0px"><a href="#langkah-2-pindai-history-yang-sudah-ada">Langkah 2: Pindai history yang sudah ada</a></li><li style="margin-left:0px"><a href="#langkah-3-blokir-kebocoran-berikutnya-saat-commit">Langkah 3: Blokir kebocoran berikutnya saat commit</a></li><li style="margin-left:0px"><a href="#langkah-4-tangani-false-positive-tanpa-mematikan-scanner">Langkah 4: Tangani false positive tanpa mematikan scanner</a></li><li style="margin-left:0px"><a href="#langkah-5-push-protection-dan-ci-lapisan-yang-tak-bisa-dilewati-siapa-pun">Langkah 5: Push protection dan CI — lapisan yang tak bisa dilewati siapa pun</a></li><li style="margin-left:0px"><a href="#langkah-6-sebuah-secret-bocor-rotate-dulu">Langkah 6: Sebuah secret bocor. Rotate dulu.</a></li><li style="margin-left:0px"><a href="#versi-tiga-puluh-menit">Versi tiga puluh menit</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>catatan keamanan dari sisi gelap internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="cari artikel…" aria-label="search">
+    <div class="search-hint">ketik minimal 2 huruf · esc untuk tutup · ctrl+k dari mana saja</div>
+    <div class="search-results" data-empty="nggak ketemu — coba kata kunci lain."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

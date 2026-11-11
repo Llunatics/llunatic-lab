@@ -349,5 +349,29 @@
  "EPSS": {
   "en": "Exploit Prediction Scoring System — a data-driven estimate of the probability that a vulnerability will be exploited in the next 30 days.",
   "id": "Exploit Prediction Scoring System — estimasi berbasis data tentang probabilitas sebuah kerentanan akan dieksploitasi dalam 30 hari ke depan."
+ },
+ "Gitleaks": {
+  "en": "Open-source secret scanner (MIT) that finds hardcoded credentials in git repositories using regex rules and entropy analysis. Fast and offline, so it fits pre-commit hooks.",
+  "id": "Secret scanner open-source (MIT) yang menemukan kredensial hardcoded di repositori git memakai aturan regex dan analisis entropi. Cepat dan offline, sehingga cocok untuk pre-commit hook."
+ },
+ "TruffleHog": {
+  "en": "Open-source secret scanner (AGPL-3.0) that classifies over 800 secret types and can verify a candidate credential by calling the provider's API, proving whether it is still live.",
+  "id": "Secret scanner open-source (AGPL-3.0) yang mengklasifikasikan lebih dari 800 jenis secret dan bisa memverifikasi kandidat kredensial dengan memanggil API penyedianya, membuktikan apakah kredensial itu masih aktif."
+ },
+ "allowlists": {
+  "en": "Gitleaks configuration lists that exempt specific file paths or findings from scanning, so known test fixtures and lockfiles do not trigger false positives.",
+  "id": "Daftar konfigurasi Gitleaks yang mengecualikan path file atau temuan tertentu dari pemindaian, agar fixture tes dan lockfile tidak memicu false positive."
+ },
+ "entropy": {
+  "en": "A measure of how random a string looks. Secret scanners use entropy to flag high-randomness strings (like API keys) that do not match any known credential format.",
+  "id": "Ukuran seberapa acak sebuah string terlihat. Secret scanner memakai entropi untuk menandai string berkeacakan tinggi (seperti API key) yang tidak cocok dengan format kredensial yang dikenal."
+ },
+ "hardcoded secret": {
+  "en": "A credential such as an API key, token, or password written directly into source code or configuration files instead of being loaded from a secret manager or environment variable.",
+  "id": "Kredensial seperti API key, token, atau password yang ditulis langsung di kode sumber atau file konfigurasi, bukan dimuat dari secret manager atau environment variable."
+ },
+ "Push protection": {
+  "en": "GitHub's server-side check that rejects a push containing a recognised secret before it lands in the repository. On by default for public repositories.",
+  "id": "Pemeriksaan di sisi server GitHub yang menolak push berisi secret yang dikenali sebelum push itu mendarat di repositori. Aktif secara default untuk repositori publik."
  }
 }

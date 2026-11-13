@@ -4,7 +4,11 @@
 <title>llunatic-lab (en)</title><link>https://lab.llunaticsys.web.id/</link>
 <description>Security notes from the dark side of the internet</description>
 <language>en</language>
-<item><title>Audit Your Own Repos for Leaked Secrets: A Hands-On Gitleaks and TruffleHog Walkthrough</title>
+<item><title>Able2Shell: How 33 Zero-Days Took N-central Offline — and the Patch That Didn&#x27;t Hold</title>
+            <link>https://lab.llunaticsys.web.id/artikel/able2shell-n-central-33-zero-days/</link>
+            <description>On a Sunday in November, one researcher published 33 zero-days in N-able&#x27;s N-central with working exploits. By Monday the platform was offline worldwide; by Thursday, cryptominers were running on patched servers. This is the anatomy of a disclosure that broke every rule — and the week that followed.</description>
+            <pubDate>Fri, 13 Nov 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/artikel/able2shell-n-central-33-zero-days/</guid></item><item><title>Audit Your Own Repos for Leaked Secrets: A Hands-On Gitleaks and TruffleHog Walkthrough</title>
             <link>https://lab.llunaticsys.web.id/artikel/audit-your-repos-for-leaked-secrets/</link>
             <description>GitGuardian counted 28.65 million new hardcoded secrets on public GitHub in 2025, and attackers now go from a leaked key to a drained cloud vault in five minutes. This walkthrough sets up Gitleaks and TruffleHog on your own repos — scan the history, block the next leak at commit time, and know exactly what to rotate when one slips through.</description>
             <pubDate>Wed, 11 Nov 2026 00:00:00 -0000</pubDate>
@@ -80,10 +84,6 @@
             <link>https://lab.llunaticsys.web.id/artikel/third-party-trust-denmark-breach/</link>
             <description>Denmark&#x27;s national identity database lost the records of 8.8 million people — not to a zero-day, but through a trusted vendor&#x27;s legitimate access. Here is why every third-party relationship is an attack path, and how to close the ones that matter.</description>
             <pubDate>Mon, 12 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/artikel/third-party-trust-denmark-breach/</guid></item><item><title>Hunting Stealth Cryptominers: A Hands-On Lab From the AhsayCBS XMRig Campaign</title>
-            <link>https://lab.llunaticsys.web.id/artikel/hunting-ahsaycbs-xmrig-campaign/</link>
-            <description>Attackers chained two AhsayCBS zero-days, dropped an XMRig miner disguised as Microsoft Edge, and deployed an AI-assisted script that kills Task Manager the moment it opens. Here is how to hunt every stage of that campaign on your own network.</description>
-            <pubDate>Sun, 11 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/artikel/hunting-ahsaycbs-xmrig-campaign/</guid></item>
+            <guid>https://lab.llunaticsys.web.id/artikel/third-party-trust-denmark-breach/</guid></item>
 </channel>
 </rss>

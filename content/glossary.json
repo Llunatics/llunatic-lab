@@ -373,5 +373,41 @@
  "Push protection": {
   "en": "GitHub's server-side check that rejects a push containing a recognised secret before it lands in the repository. On by default for public repositories.",
   "id": "Pemeriksaan di sisi server GitHub yang menolak push berisi secret yang dikenali sebelum push itu mendarat di repositori. Aktif secara default untuk repositori publik."
+ },
+ "RMM": {
+  "en": "Remote Monitoring and Management — software that lets IT providers watch, patch, and remotely control many client computers from one console.",
+  "id": "Remote Monitoring and Management — perangkat lunak yang memungkinkan penyedia IT mengawasi, menambal, dan mengendalikan banyak komputer klien dari satu konsol."
+ },
+ "MSP": {
+  "en": "Managed Service Provider — a company that manages other companies' IT systems, networks, and security for them, often through an RMM platform.",
+  "id": "Managed Service Provider — perusahaan yang mengelola sistem IT, jaringan, dan keamanan perusahaan lain, sering lewat platform RMM."
+ },
+ "XXE": {
+  "en": "XML External Entity injection — an attack that tricks an XML parser into reading local files or making server-side requests by defining malicious external entities.",
+  "id": "XML External Entity injection — serangan yang menipu parser XML agar membaca file lokal atau membuat request dari sisi server dengan mendefinisikan external entity yang berbahaya."
+ },
+ "RCE": {
+  "en": "Remote Code Execution — a vulnerability that lets an attacker run arbitrary commands on a target system over the network, usually the most severe class of flaw.",
+  "id": "Remote Code Execution — kerentanan yang memungkinkan penyerang menjalankan perintah apa pun di sistem target lewat jaringan, biasanya kelas celah paling parah."
+ },
+ "honeypot": {
+  "en": "A decoy system deliberately exposed to attract attackers, so defenders can observe their techniques without risking real assets.",
+  "id": "Sistem umpan yang sengaja diekspos untuk menarik penyerang, agar defender bisa mengamati teknik mereka tanpa mempertaruhkan aset asli."
+ },
+ "PoC": {
+  "en": "Proof of Concept — a demonstration that a vulnerability is real and exploitable, usually a small working exploit, not a finished weapon.",
+  "id": "Proof of Concept — demonstrasi bahwa sebuah kerentanan nyata dan bisa dieksploitasi, biasanya berupa exploit kecil yang berfungsi, bukan senjata jadi."
+ },
+ "XMRig": {
+  "en": "An open-source Monero miner. Legitimate on its own machines, but the standard payload attackers install on compromised servers to mine cryptocurrency silently.",
+  "id": "Miner Monero open-source. Sah di mesin sendiri, tetapi menjadi payload standar yang dipasang penyerang di server yang dikompromikan untuk menambang cryptocurrency secara diam-diam."
+ },
+ "remote monitoring and management": {
+  "en": "Software that lets IT providers watch, patch, and remotely control many client computers from one console — see RMM.",
+  "id": "Perangkat lunak yang memungkinkan penyedia IT mengawasi, menambal, dan mengendalikan banyak komputer klien dari satu konsol — lihat RMM."
+ },
+ "managed service provider": {
+  "en": "A company that manages other companies' IT systems, networks, and security for them — see MSP.",
+  "id": "Perusahaan yang mengelola sistem IT, jaringan, dan keamanan perusahaan lain — lihat MSP."
  }
 }

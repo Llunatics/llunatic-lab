@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Able2Shell: Bagaimana 33 Zero-Day Melumpuhkan N-central — dan Patch yang Tak Bertahan — llunatic-lab</title>
+<meta name="description" content="Di hari Minggu bulan November, seorang peneliti mempublikasikan 33 zero-day di N-able N-central beserta exploit yang bisa langsung dipakai. Senin platform itu offline di seluruh dunia; Kamis, cryptominer sudah berjalan di server yang sudah di-patch. Inilah anatomi disclosure yang melanggar semua aturan — dan minggu yang mengikutinya.">
+<meta property="og:title" content="Able2Shell: Bagaimana 33 Zero-Day Melumpuhkan N-central — dan Patch yang Tak Bertahan">
+<meta property="og:description" content="Di hari Minggu bulan November, seorang peneliti mempublikasikan 33 zero-day di N-able N-central beserta exploit yang bisa langsung dipakai. Senin platform itu offline di seluruh dunia; Kamis, cryptominer sudah berjalan di server yang sudah di-patch. Inilah anatomi disclosure yang melanggar semua aturan — dan minggu yang mengikutinya.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/able2shell-n-central-33-zero-days.jpg"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/able2shell-n-central-33-zero-days/"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/able2shell-n-central-33-zero-days/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/id/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/id/arsip/">Arsip</a>
+      <a href="/id/tentang/">Tentang</a>
+      <a class="lang-toggle" href="/artikel/able2shell-n-central-33-zero-days/">EN</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>artikel</div>
+              <h1>Able2Shell: Bagaimana 33 Zero-Day Melumpuhkan N-central — dan Patch yang Tak Bertahan</h1>
+              <div class="meta"><span>13 November 2026</span><span>·</span>
+              <span>8 mnt baca</span><a class="tag" href="/id/tag/threat-intel/">threat-intel</a> <a class="tag" href="/id/tag/rmm/">rmm</a> <a class="tag" href="/id/tag/zero-day/">zero-day</a> <a class="tag" href="/id/tag/n-central/">n-central</a></div>
+              <img class="cover" src="/assets/covers/able2shell-n-central-33-zero-days.jpg" alt="Able2Shell: Bagaimana 33 Zero-Day Melumpuhkan N-central — dan Patch yang Tak Bertahan">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Pada hari Minggu, 8 November 2026, seorang peneliti keamanan ofensif bernama Sean Bales melakukan sesuatu yang selama bertahun-tahun coba dicegah industri: ia mempublikasikan lebih dari 30 kerentanan <span class="gterm" data-term="zero-day" data-def="A security flaw unknown to the public and the vendor — no patch exists when it&#x27;s exploited.">zero-day</span> di platform N-able N-central, lengkap dengan <span class="gterm" data-term="proof of concept" data-def="Demonstrasi yang menunjukkan bahwa sebuah kerentanan benar-benar bisa dieksploitasi, biasanya dipublikasikan untuk menekan vendor dan memperingatkan defender.">proof of concept</span> exploit yang bisa langsung dijalankan, tanpa memberi peringatan lebih dulu kepada vendor. Celah-celah itu diunggah ke GitHub lewat akun &quot;Oracle-Security&quot; dengan nama kolektif <strong>Able2Shell</strong>. Senin siangnya, N-able mematikan lingkungan N-central hosted-nya di seluruh Amerika, Eropa, dan Asia-Pasifik, dan meminta pelanggan yang menjalankan server sendiri untuk mematikannya sampai ada pemberitahuan lebih lanjut. Kamisnya, patch sudah rilis — dan exploit tetap bekerja melawannya.</p>
+<p>Ini bukan cerita tentang satu bug yang buruk. Ini cerita tentang apa yang terjadi ketika perangkat lunak yang mengelola komputer orang lain menjadi target, dan tentang disclosure yang melewati semua aturan yang ada.</p>
+<h2 id="apa-itu-n-central-dan-kenapa-ia-target-yang-sempurna"><span class="hnum">01</span>Apa itu N-central, dan kenapa ia target yang sempurna</h2>
+<p>N-central adalah platform <span class="gterm" data-term="remote monitoring and management" data-def="Perangkat lunak yang memungkinkan penyedia IT mengawasi, menambal, dan mengendalikan banyak komputer klien dari satu konsol — lihat RMM.">remote monitoring and management</span> (RMM). <span class="gterm" data-term="managed service provider" data-def="Perusahaan yang mengelola sistem IT, jaringan, dan keamanan perusahaan lain — lihat MSP.">Managed service provider</span> (MSP) memakainya untuk mengawasi, menambal, dan mengendalikan ribuan mesin klien dari satu konsol. Itulah fungsi produknya — dan itulah masalahnya. Server RMM bisa menjalankan script, menyebarkan perangkat lunak, dan membuka sesi remote ke setiap endpoint yang dikelolanya, sering kali mencakup ribuan mesin milik banyak perusahaan berbeda. Seperti kata Gene Moody, field CTO di Action1, kepada Dark Reading: platform semacam ini memegang &quot;hak istimewa luar biasa&quot; karena memang dibutuhkan untuk bekerja — &quot;dan itu juga membuatnya menjadi target yang sangat menarik.&quot;</p>
+<p>Sekali server N-central dikompromikan, yang didapat bukan satu perusahaan. Penyerang mendapat pijakan ke setiap perusahaan yang dilayani MSP itu, lengkap dengan mekanisme penyebaran bawaan untuk apa pun yang datang berikutnya. Huntress, yang menyelidiki insiden N-central sebelumnya, memperingatkan bahwa penyerang pada kampanye terdahulu terlihat &quot;menyemprotkan&quot; script dan tool tak sah ke lingkungan downstream begitu platform jatuh.</p>
+<h2 id="linimasanya-lima-hari-tiga-babak"><span class="hnum">02</span>Linimasanya: lima hari, tiga babak</h2>
+<p><strong>Minggu, 8 November — dump-nya.</strong> Bales mempublikasikan 33 celah yang diduga ada beserta kode exploit, diuji terhadap N-central Appliance 2026.4.0.31, sebuah build pra-rilis, dan ia meyakini sebagian besar atau semuanya juga ada di versi sebelumnya. Ia kemudian mengonfirmasi penemuan itu dibantu AI. Daftarnya mencakup pencurian kredensial anonim, pembuatan akun administrator, dan <span class="gterm" data-term="remote code execution" data-def="Penyerang menjalankan kodenya sendiri di sistem korban, biasanya dampak paling berat dari sebuah kerentanan.">remote code execution</span> sebagai root. Firma keamanan watchTowr mengamati probing terhadap celah-celah itu dalam 12 jam setelah publikasi.</p>
+<p><strong>Senin, 9 November — shutdown.</strong> Pukul 15:15 UTC, N-able menyatakan insiden keamanan kritis dan mematikan lingkungan N-central hosted-nya di seluruh dunia &quot;sebagai langkah pencegahan.&quot; Pelanggan on-premises didesak mematikan server mereka. Saat itu N-able mengatakan belum melihat eksploitasi aktif — tapi kode exploit sudah publik, dan jam terus berjalan.</p>
+<p><strong>Selasa, 10 November — hotfix.</strong> N-able merilis N-central 2026.4 Hotfix 2 (build 2026.4.1.26), yang memperbaiki tujuh CVE dari disclosure tersebut: CVE-2026-125883 (beberapa kerentanan <span class="gterm" data-term="XXE" data-def="XML External Entity injection — serangan yang menipu parser XML agar membaca file lokal atau membuat request dari sisi server dengan mendefinisikan external entity yang berbahaya.">XXE</span>), CVE-2026-125878 (beberapa celah injeksi OGNL), CVE-2026-125879 (<span class="gterm" data-term="privilege escalation" data-def="Mendapatkan hak akses yang lebih tinggi dari yang semula diberikan — misalnya mengubah akun read-only menjadi administrator atau operator.">privilege escalation</span> lokal), CVE-2026-125880 (stored XSS lewat metadata patch MMS3), CVE-2026-125881 (celah validasi skema), CVE-2026-125882 (<span class="gterm" data-term="remote code execution" data-def="Penyerang menjalankan kodenya sendiri di sistem korban, biasanya dampak paling berat dari sebuah kerentanan.">remote code execution</span> lewat path traversal pada upload repositori file, ditemukan oleh Nate Fair dari Sprocket Security), dan CVE-2026-91000 (privilege escalation lokal lewat IPC channel yang tidak aman). Lingkungan hosted di-upgrade; pelanggan on-premises diminta menambal sebelum memulihkan akses.</p>
+<p>Tim riset Tenable, yang menganalisis rilis itu, menghitung ada empat rantai exploit di antara 33 celah tersebut. Yang paling signifikan adalah rantai XXE, yang Tenable gambarkan sebagai tanpa kredensial: celah XXE tanpa autentikasi pada fungsi service-import N-central yang mengubah satu request jaringan menjadi kompromi penuh atas sistem manajemen IT pusat. Catatan N-able sendiri untuk CVE-2026-125883 menyatakan tidak butuh hak istimewa maupun interaksi pengguna.</p>
+<p><strong>Kamis, 12 November — sekuelnya.</strong> Dua hari setelah hotfix, Bales mempublikasikan dua set exploit lagi, <strong>4EverAble2Shell</strong> dan <strong>Agent2Shell</strong>, keduanya diuji terhadap build Hotfix 2 itu sendiri. 4EverAble2Shell memberi penyerang tanpa autentikasi akses root di server N-central. Agent2Shell merangkai lebih dari sepuluh zero-day untuk menjalankan perintah sebagai NT AUTHORITY\SYSTEM — hak tertinggi di mesin Windows — pada agen Windows yang dikelola.</p>
+<p>Babak kedua ini bergerak cepat. Firma threat intelligence Previdian melihat probing terhadap <span class="gterm" data-term="honeypot" data-def="Sistem umpan yang sengaja diekspos untuk menarik penyerang, agar defender bisa mengamati teknik mereka tanpa mempertaruhkan aset asli.">honeypot</span> N-central-nya sekitar pukul 08:30 UTC, dan percobaan exploit lengkap dari alamat IP 157.20.241.16 mulai pukul 09:16 UTC. Pukul 12:50 UTC, peneliti di Huntback menghitung 21 miner <span class="gterm" data-term="XMRig" data-def="Miner Monero open-source. Sah di mesin sendiri, tetapi menjadi payload standar yang dipasang penyerang di server yang dikompromikan untuk menambang cryptocurrency secara diam-diam.">XMRig</span> aktif berjalan di server N-central produksi — 19 di antaranya memakai build Hotfix 2 — di tujuh negara: Amerika Serikat, Kanada, Afrika Selatan, Britania Raya, Jerman, Prancis, dan Swedia. Miner-miner itu dikonfigurasi memakai sekitar separuh core CPU yang tersedia, mungkin agar tidak ketahuan. Empat jam, dari proof-of-concept sampai payday.</p>
+<h2 id="rantainya-dan-satu-switch-yang-menentukan"><span class="hnum">03</span>Rantainya, dan satu switch yang menentukan</h2>
+<p>Rantai 4EverAble2Shell dimulai dari CVE-2026-90436, celah bernilai 9.8 di pustaka Apache Axis 1.x yang sudah end-of-life, yang patch-nya dirilis 6 November. Penyerang memakainya untuk eksekusi kode awal, lalu menaikkan hak akses ke root lewat celah N-central yang baru — yang dilacak Previdian sebagai VULN-2026-0009 — dan akhirnya mengunduh serta mengeksekusi shell script dari server penyerang dengan <code>curl</code>. Ini adalah percobaan eksploitasi pertama yang terdokumentasi terhadap CVE-2026-90436.</p>
+<p>Ada satu syarat, dan syarat ini penting: rantai di sisi server hanya bekerja ketika <strong>Legacy API</strong> N-central diaktifkan dan terekspos ke internet publik. Legacy API mati secara default, dan N-able mengatakan penggunaannya tidak disarankan. Setiap dari 21 server yang terkompromi mengaktifkannya — instalasi lama yang menyalakannya bertahun-tahun lalu untuk integrasi dan tak pernah mematikannya. Itulah seluruh pertahanan sampai N-able merilis perbaikan berikutnya: matikan Legacy API. Belum ada patch untuk 4EverAble2Shell maupun Agent2Shell.</p>
+<p>Advisory N-able pada 12 November menyatakan mereka membatasi sejumlah fitur dan integrasi N-central selagi mengerjakan perbaikan lanjutan, menonaktifkan integrasi Intune sebagai pencegahan, dan mengatakan belum melihat tanda kompromi lewat celah baru itu. Ke-21 miner itu, yang dihitung secara publik lengkap dengan timestamp, adalah bantahannya.</p>
+<h2 id="perdebatan-soal-disclosure"><span class="hnum">04</span>Perdebatan soal disclosure</h2>
+<p>Separuh lain cerita ini adalah bagaimana celah-celah itu keluar. Bales mengatakan ia mempublikasikan tanpa peringatan karena N-able mengabaikan laporan-laporan sebelumnya. N-able membantahnya, mengatakan celah-celah itu tidak pernah dilaporkan lewat kanal resmi mereka. Bales juga mengatakan N-able belum menambal dua celah remote code execution yang tidak terkait di produk N-able lain, yang ia laporkan ke perusahaan itu pada Juli.</p>
+<p>Coordinated disclosure ada karena satu alasan: memberi defender waktu menambal sebelum penyerang mendapat exploit-nya. Disclosure penuh tanpa pemberitahuan, lengkap dengan kode yang bisa dipakai, adalah opsi nuklir — dan persis itulah yang terjadi di sini, dua kali dalam seminggu. Entah kamu menganggap Bales beralasan atau ceroboh, dampak praktisnya sama: jeda antara &quot;exploit dipublikasikan&quot; dan &quot;exploit dipakai&quot; menyusut menjadi hitungan jam. Miner-miner itu tiba empat jam setelah disclosure kedua. Itu tidak cukup waktu untuk mengadakan rapat soal patching. Bahkan untuk membaca advisory pun nyaris tidak cukup.</p>
+<h2 id="ini-bukan-kali-pertama-n-central"><span class="hnum">05</span>Ini bukan kali pertama N-central</h2>
+<p>Pengulangannya adalah bagian dari cerita. Pada Agustus 2025, CISA menambahkan dua kerentanan N-central, CVE-2025-8875 dan CVE-2025-8876, ke katalog Known Exploited Vulnerabilities setelah keduanya dieksploitasi di lapangan. Pada Agustus 2026, penyerang mengeksploitasi celah authentication-bypass, CVE-2026-18556, lalu menemukan jalan memutar perbaikan awal N-able lewat kerentanan terkait, CVE-2026-18577, memperoleh akses administratif dan memakai fitur Take Control platform itu untuk menjangkau sistem yang dikelola.</p>
+<p>Tiga insiden besar dalam lima belas bulan, di platform yang sama, dengan pola yang sama: celah di lapisan manajemen, perbaikan, lalu bypass. Pertanyaan yang diajukan Moody — seberapa besar otoritas yang dikonsentrasikan platform manajemen endpoint di satu tempat — tidak punya jawaban yang nyaman. MFA dan role-based access, katanya, &quot;tidak bisa menahan setiap kompromi platform.&quot; Sarannya melampaui saran vendor: simpan secret kritis dan signing key di luar platform sepenuhnya, dan buat endpoint memverifikasi persetujuan yang ditandatangani secara kriptografis untuk operasi berdampak tinggi. &quot;Mencuri kredensial, atau bahkan mengendalikan konsol, seharusnya tidak otomatis memberi otoritas itu. Login saja tidak lagi cukup untuk mengesahkan operasi yang dilindungi.&quot;</p>
+<h2 id="apa-yang-harus-dilakukan-kalau-kamu-bersentuhan-dengan-n-central"><span class="hnum">06</span>Apa yang harus dilakukan kalau kamu bersentuhan dengan N-central</h2>
+<p>Kalau kamu MSP, admin IT, atau pelanggan yang provider-nya memakai N-central, lakukan ini secara berurutan:</p>
+<ol>
+<li><strong>Matikan Legacy API sekarang, kalau aktif.</strong> Ini satu-satunya tindakan paling efektif melawan 4EverAble2Shell. Fitur ini mati secara default — verifikasi, jangan berasumsi.</li>
+<li><strong>Terapkan Hotfix 2 (build 2026.4.1.26) kalau belum.</strong> Hotfix ini memperbaiki celah tanpa autentikasi dari batch pertama. N-able mengatakan setiap bug tanpa autentikasi dari disclosure pertama kini sudah diperbaiki. Biarkan server tetap offline atau terisolasi dari internet sampai ditambal.</li>
+<li><strong>Tinjau log autentikasi dan administrasi sejak 8 November</strong> — saran Huntress — dan jendela yang lebih lebar menurut Moody, sejak awal November. Cari akun admin yang tak dikenal, sesi remote access yang aneh, dan script baru yang disebar ke endpoint. Kalau menemukan salah satunya, perlakukan sebagai insiden dan libatkan incident response.</li>
+<li><strong>Periksa miner.</strong> Penggunaan CPU tinggi yang berkelanjutan sekitar 50% di server N-central, koneksi keluar yang tak wajar — terutama ke 157.20.241.16 — dan unduhan shell script lewat <code>curl</code> adalah indikatornya. Anggap server N-central yang terkompromi berarti setiap endpoint yang dikelola berada dalam cakupan sampai terbukti sebaliknya.</li>
+<li><strong>Jangan pulihkan akses normal sampai N-able mengeluarkan panduan pemulihan yang aman</strong>, dan simpan log sebelum melakukan perubahan. N-able mengatakan akan memposting update setiap empat jam selama insiden.</li>
+</ol>
+<p>Kalau kamu pelanggan dan bukan operatornya, tanyakan tiga hal ke provider-mu: apakah hotfix sudah diterapkan, apakah Legacy API mati, dan apa hasil tinjauan log-nya. Jawabannya harus spesifik, bukan sekadar menenangkan.</p>
+<h2 id="pelajarannya"><span class="hnum">07</span>Pelajarannya</h2>
+<p>Able2Shell adalah studi kasus soal risiko yang terkonsentrasi. Satu platform, satu konsol, ribuan endpoint, dan disclosure yang menyerahkan kunci ke semua orang sekaligus. Hotfix itu membeli waktu sekitar dua hari. Miner-miner itu membeli sisanya. Pertahanan yang berhasil bukanlah patch — melainkan switch konfigurasi, yang mati secara default, yang dihidupkan seseorang bertahun-tahun lalu lalu dilupakan. Audit platform manajemenmu seperti kamu mengaudit aset mahkotamu, karena memang itulah mereka: perangkat lunak yang bisa menyentuh segalanya adalah perangkat lunak yang paling diinginkan penyerang, dan disclosure berikutnya mungkin tidak memberimu dua hari.</p>
+<p><em>Sumber: Dark Reading, 11 November 2026 (N-able takes N-central offline); The Hacker News, 12 November 2026 (new N-central exploits work against patched servers); security update N-able via uptime.n-able.com; Tenable Research Special Operations; blog Huntress, November 2026; Previdian via The Hacker News; hitungan miner Huntback via Ongoing Ideas, 12 November 2026.</em></p><div class="author-box"><div class="kicker"><span class="dot"></span>ditulis oleh</div><p><strong>kou</strong> mendokumentasikan threat intel, attack surface, dan pertahanan praktis — dari sisi gelap internet.</p></div><div class="pager"><a href="/id/artikel/audit-your-repos-for-leaked-secrets/"><span class="dir">← sebelumnya</span><span class="t">Audit Repo Sendiri dari Secret yang Bocor: Panduan Praktis Gitleaks dan TruffleHog</span></a><span></span></div></div>
+                <aside class="toc"><h4>Daftar isi</h4><ol><li style="margin-left:0px"><a href="#apa-itu-n-central-dan-kenapa-ia-target-yang-sempurna">Apa itu N-central, dan kenapa ia target yang sempurna</a></li><li style="margin-left:0px"><a href="#linimasanya-lima-hari-tiga-babak">Linimasanya: lima hari, tiga babak</a></li><li style="margin-left:0px"><a href="#rantainya-dan-satu-switch-yang-menentukan">Rantainya, dan satu switch yang menentukan</a></li><li style="margin-left:0px"><a href="#perdebatan-soal-disclosure">Perdebatan soal disclosure</a></li><li style="margin-left:0px"><a href="#ini-bukan-kali-pertama-n-central">Ini bukan kali pertama N-central</a></li><li style="margin-left:0px"><a href="#apa-yang-harus-dilakukan-kalau-kamu-bersentuhan-dengan-n-central">Apa yang harus dilakukan kalau kamu bersentuhan dengan N-central</a></li><li style="margin-left:0px"><a href="#pelajarannya">Pelajarannya</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>catatan keamanan dari sisi gelap internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="cari artikel…" aria-label="search">
+    <div class="search-hint">ketik minimal 2 huruf · esc untuk tutup · ctrl+k dari mana saja</div>
+    <div class="search-results" data-empty="nggak ketemu — coba kata kunci lain."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

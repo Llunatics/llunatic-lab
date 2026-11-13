@@ -4,7 +4,11 @@
 <title>llunatic-lab (id)</title><link>https://lab.llunaticsys.web.id/id/</link>
 <description>Catatan keamanan dari sisi gelap internet</description>
 <language>id</language>
-<item><title>Audit Repo Sendiri dari Secret yang Bocor: Panduan Praktis Gitleaks dan TruffleHog</title>
+<item><title>Able2Shell: Bagaimana 33 Zero-Day Melumpuhkan N-central — dan Patch yang Tak Bertahan</title>
+            <link>https://lab.llunaticsys.web.id/id/artikel/able2shell-n-central-33-zero-days/</link>
+            <description>Di hari Minggu bulan November, seorang peneliti mempublikasikan 33 zero-day di N-able N-central beserta exploit yang bisa langsung dipakai. Senin platform itu offline di seluruh dunia; Kamis, cryptominer sudah berjalan di server yang sudah di-patch. Inilah anatomi disclosure yang melanggar semua aturan — dan minggu yang mengikutinya.</description>
+            <pubDate>Fri, 13 Nov 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/able2shell-n-central-33-zero-days/</guid></item><item><title>Audit Repo Sendiri dari Secret yang Bocor: Panduan Praktis Gitleaks dan TruffleHog</title>
             <link>https://lab.llunaticsys.web.id/id/artikel/audit-your-repos-for-leaked-secrets/</link>
             <description>GitGuardian menghitung 28,65 juta secret hardcoded baru di GitHub publik sepanjang 2025, dan penyerang kini hanya butuh lima menit dari kunci yang bocor sampai menguras cloud vault. Panduan ini memasang Gitleaks dan TruffleHog di repo sendiri — memindai history, memblokir kebocoran berikutnya saat commit, dan tahu persis apa yang harus di-rotate saat satu secret lolos.</description>
             <pubDate>Wed, 11 Nov 2026 00:00:00 -0000</pubDate>
@@ -80,10 +84,6 @@
             <link>https://lab.llunaticsys.web.id/id/artikel/third-party-trust-denmark-breach/</link>
             <description>Basis data identitas nasional Denmark kehilangan catatan 8,8 juta penduduk — bukan karena zero-day, melainkan lewat akses sah sebuah perusahaan vendor yang disalahgunakan. Inilah mengapa setiap relasi pihak ketiga adalah jalur serangan, dan cara menutup yang paling penting.</description>
             <pubDate>Mon, 12 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/id/artikel/third-party-trust-denmark-breach/</guid></item><item><title>Berburu Cryptominer Siluman: Lab Praktis dari Kampanye XMRig AhsayCBS</title>
-            <link>https://lab.llunaticsys.web.id/id/artikel/hunting-ahsaycbs-xmrig-campaign/</link>
-            <description>Penyerang merangkai dua zero-day AhsayCBS, menanam miner XMRig yang menyamar sebagai Microsoft Edge, lalu menyebar script berbantuan AI yang langsung mematikan Task Manager begitu dibuka. Berikut cara memburu setiap tahap kampanye itu di jaringan Anda sendiri.</description>
-            <pubDate>Sun, 11 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/id/artikel/hunting-ahsaycbs-xmrig-campaign/</guid></item>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/third-party-trust-denmark-breach/</guid></item>
 </channel>
 </rss>

@@ -409,5 +409,25 @@
  "managed service provider": {
   "en": "A company that manages other companies' IT systems, networks, and security for them — see MSP.",
   "id": "Perusahaan yang mengelola sistem IT, jaringan, dan keamanan perusahaan lain — lihat MSP."
+ },
+ "HTTP/2": {
+  "en": "The second major version of the HTTP protocol: multiplexes many requests over a single connection, cutting latency — but its implementation adds complex, memory-sensitive code to the server.",
+  "id": "Versi besar kedua dari protokol HTTP: menggabungkan banyak request dalam satu koneksi sehingga latensi turun — tapi implementasinya menambah kode kompleks yang sensitif terhadap memori di server."
+ },
+ "heap corruption": {
+  "en": "Damage to the heap, the region of memory where a program stores live data — a common stepping stone to remote code execution.",
+  "id": "Kerusakan pada heap, area memori tempat program menyimpan data yang sedang dipakai — batu loncatan umum menuju remote code execution."
+ },
+ "indicator of compromise": {
+  "en": "A forensic artifact — a hash, IP, log line, or file — that shows a system was attacked or breached.",
+  "id": "Bukti forensik — hash, IP, baris log, atau file — yang menunjukkan sebuah sistem pernah diserang atau dibobol."
+ },
+ "mod_http2": {
+  "en": "Apache HTTP Server's module that implements HTTP/2 support — the component affected by CVE-2026-119618.",
+  "id": "Modul Apache HTTP Server yang mengimplementasikan dukungan HTTP/2 — komponen yang terdampak CVE-2026-119618."
+ },
+ "race condition": {
+  "en": "A bug where two threads access the same shared memory without proper locking, so the result depends on timing — and an attacker who controls the timing can corrupt that memory.",
+  "id": "Bug ketika dua thread mengakses memori bersama yang sama tanpa penguncian yang benar, sehingga hasilnya bergantung pada timing — dan penyerang yang mengendalikan timing bisa merusak memori tersebut."
  }
 }

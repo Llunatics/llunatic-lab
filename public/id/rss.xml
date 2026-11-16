@@ -4,7 +4,11 @@
 <title>llunatic-lab (id)</title><link>https://lab.llunaticsys.web.id/id/</link>
 <description>Catatan keamanan dari sisi gelap internet</description>
 <language>id</language>
-<item><title>RCE mod_http2 Apache (CVE-2026-119618): Periksa Servermu, Matikan HTTP/2, Patch ke 2.4.71</title>
+<item><title>Passkey: Kredensial yang Tak Bisa Di-phishing — dan Kenapa November 2026 Jadi Titik Baliknya</title>
+            <link>https://lab.llunaticsys.web.id/id/artikel/passkeys-the-credential-that-cant-be-phished/</link>
+            <description>Password adalah rahasia bersama, jadi ia bisa di-phishing, ditebak, dan bocor. Passkey menggantinya dengan private key yang tak pernah meninggalkan perangkatmu — dan pada November 2026, Microsoft menjadikannya langkah pertama saat sign-in, bukan lagi opsi tambahan.</description>
+            <pubDate>Mon, 16 Nov 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/passkeys-the-credential-that-cant-be-phished/</guid></item><item><title>RCE mod_http2 Apache (CVE-2026-119618): Periksa Servermu, Matikan HTTP/2, Patch ke 2.4.71</title>
             <link>https://lab.llunaticsys.web.id/id/artikel/apache-mod-http2-cve-2026-119618/</link>
             <description>Apache 2.4.71 memperbaiki cacat heap corruption kritis di mod_http2 yang bisa berujung pada remote code execution tanpa autentikasi — dan Wiz menemukan 64% cloud environment terekspos. Panduan ini menunjukkan cara memeriksa apakah servermu terdampak, menonaktifkan HTTP/2 sebagai langkah darurat, dan melakukan patch dengan benar.</description>
             <pubDate>Sun, 15 Nov 2026 00:00:00 -0000</pubDate>
@@ -80,10 +84,6 @@
             <link>https://lab.llunaticsys.web.id/id/artikel/phishing-email-autopsy-lab/</link>
             <description>Undangan meeting palsu baru saja menjadi salah satu gelombang phishing terbesar tahun 2026 — lebih dari 740.000 email hanya dalam dua minggu pertama Oktober, menurut Check Point. Di lab hands-on ini kamu akan membedah undangan mencurigakan dengan Python stdlib: header, hasil verifikasi SPF/DKIM/DMARC, URL tersembunyi, dan lampiran .ics yang berbahaya.</description>
             <pubDate>Fri, 16 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/id/artikel/phishing-email-autopsy-lab/</guid></item><item><title>CVE-2026-104935: Zero-Day VPN yang Menyerang Sebelum Advisory Terbit</title>
-            <link>https://lab.llunaticsys.web.id/id/artikel/ivanti-cve-2026-104935-zero-day/</link>
-            <description>Penyerang merantai celah authentication bypass di Ivanti Connect Secure dengan privilege escalation yang belum ditambal, menjalankan perintah di memori sebelum vendor sempat menerbitkan advisory. Inilah alasan perangkat VPN di tepi jaringan terus menjadi pintu masuk — dan apa yang harus dilakukan saat integrity checker tidak bisa melihat penyusupnya.</description>
-            <pubDate>Wed, 14 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/id/artikel/ivanti-cve-2026-104935-zero-day/</guid></item>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/phishing-email-autopsy-lab/</guid></item>
 </channel>
 </rss>

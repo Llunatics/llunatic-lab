@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codex Security CLI: OpenAI&#x27;s Open-Source Scanner That Finds, Validates, and Fixes Bugs — llunatic-lab</title>
+<meta name="description" content="OpenAI&#x27;s codex-security CLI scans your repo, argues with its own findings until only the real ones survive, then drafts the patch and re-checks it. Version 0.10.0 just made it resumable, budget-capped, and CI-ready — here&#x27;s how to run it, and the two catches nobody should skip.">
+<meta property="og:title" content="Codex Security CLI: OpenAI&#x27;s Open-Source Scanner That Finds, Validates, and Fixes Bugs">
+<meta property="og:description" content="OpenAI&#x27;s codex-security CLI scans your repo, argues with its own findings until only the real ones survive, then drafts the patch and re-checks it. Version 0.10.0 just made it resumable, budget-capped, and CI-ready — here&#x27;s how to run it, and the two catches nobody should skip.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/codex-security-cli.jpg"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/codex-security-cli/"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/codex-security-cli/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/arsip/">Archive</a>
+      <a href="/tentang/">About</a>
+      <a class="lang-toggle" href="/id/artikel/codex-security-cli/">ID</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>article</div>
+              <h1>Codex Security CLI: OpenAI&#x27;s Open-Source Scanner That Finds, Validates, and Fixes Bugs</h1>
+              <div class="meta"><span>18 November 2026</span><span>·</span>
+              <span>7 min read</span><a class="tag" href="/tag/tools/">tools</a> <a class="tag" href="/tag/ai-security/">ai-security</a> <a class="tag" href="/tag/code-audit/">code-audit</a> <a class="tag" href="/tag/openai/">openai</a></div>
+              <img class="cover" src="/assets/covers/codex-security-cli.jpg" alt="Codex Security CLI: OpenAI&#x27;s Open-Source Scanner That Finds, Validates, and Fixes Bugs">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Most AI code reviewers have the same flaw: they never doubt themselves. Point one at a repository and it returns a confident list of vulnerabilities, half of which evaporate the moment a human reads the source. OpenAI&#x27;s answer to that problem is <code>codex-security</code> — a command-line scanner that treats its own findings as suspects, not verdicts. It finds candidate bugs, tries to disprove each one, generates a patch for the survivors, and then re-checks the fix. The tool has been public since late July 2026, but version 0.10.0, released on 12 November, is what pushed it onto GitHub&#x27;s trending page and past 13,000 stars in a matter of days.</p>
+<h2 id="what-it-actually-is"><span class="hnum">01</span>What it actually is</h2>
+<p>Codex Security is OpenAI&#x27;s CLI and TypeScript SDK for finding, validating, and fixing security vulnerabilities in your own code. It ships as the npm package <code>@openai/codex-security</code>, licensed Apache-2.0, with the source at <code>github.com/openai/codex-security</code>. You can use it three ways: as a plugin inside Codex, from the terminal with the <code>cs</code> command, or in automation through the SDK or a GitHub Action.</p>
+<p>The repository was created on 13 July 2026 and open-sourced in late July, with the first npm release, 0.1.0, landing on 31 July. For three months it grew quietly. Then the 0.10.0 release on 12 November coincided with OpenAI&#x27;s &quot;Cyber at the Frontier&quot; keynote — the same day the company announced Daybreak Red Team and Defense Factory, its managed offensive and defensive agent products. Codex Security is the open, self-hosted building block underneath that story: the part you can install and run yourself, rather than buy as a service.</p>
+<p>The star count tells the story of the surge: about 12,900 stars on 13 November, roughly 13,350 the next day, and close to 13,900 by 17 November — more than 2,000 new stars in a single week.</p>
+<h2 id="how-a-scan-works-find-validate-patch-re-check"><span class="hnum">02</span>How a scan works: find, validate, patch, re-check</h2>
+<p>The workflow has four stages, and the second one is the whole point:</p>
+<ol>
+<li><strong>Find.</strong> The scanner reads your repository — a full tree, a selected path, or just the changes in a git diff — and proposes candidate vulnerabilities.</li>
+<li><strong>Validate.</strong> Each candidate is checked against the source before it is reported. The design goal is explicit: a finding from the source is not necessarily a reproduced exploit, and an unconfirmed suspicion should not reach you dressed as a fact. This is the step most AI reviewers skip, and it is why the tool&#x27;s output is meant to be shorter and more trustworthy than a raw model dump.</li>
+<li><strong>Patch.</strong> For validated findings, it drafts a fix.</li>
+<li><strong>Re-check.</strong> It verifies the fix actually addresses the finding, rather than assuming the patch worked.</li>
+</ol>
+<p>Deep scans repeat Standard scans and return deduplicated findings, so a second pass is meant to catch what the first missed rather than repeat it. The scanner covers Python, JavaScript, TypeScript, Go, Java, C, C++, Rust, Ruby, and PHP.</p>
+<p>It also plays well with tools you already run. Findings from existing scanners can be imported — importers for AWS and CrowdStrike arrived in the week before 0.10.0, and 0.10.0 itself added ArmorCode <span class="gterm" data-term="SAST" data-def="Static Application Security Testing: automated analysis of source code for vulnerabilities without executing it — the category of tools that includes linters, taint analysis, and AI code scanners.">SAST</span> imports — and results export as <span class="gterm" data-term="SARIF" data-def="Static Analysis Results Interchange Format: a standard JSON format for reporting static-analysis findings, so scanners, CI systems, and code-hosting platforms can exchange results.">SARIF</span>, JSON, or CSV, with tracking into Linear, Jira, or GitHub. The obvious use is a security step in CI that a coding agent can act on, rather than a PDF nobody reads.</p>
+<h2 id="install-and-run-it"><span class="hnum">03</span>Install and run it</h2>
+<p>Requirements are Node.js 22.13.0 or later within the 22.x line, or 24.x or 26.x, plus Python 3.10 or later. Install globally and sign in:</p>
+<pre><code class="language-bash">npm install --global @openai/codex-security
+cs login</code></pre>
+<p>Then scan from inside the repository:</p>
+<pre><code class="language-bash">cs scan .</code></pre>
+<p><code>cs</code> and <code>codex-security</code> are the same command — use the long form if the short name conflicts with something else on your system, or <code>npx @openai/codex-security</code> to skip the global install entirely. Scope the scan with flags:</p>
+<pre><code class="language-bash"># Only one directory
+cs scan . --path src/auth/
+
+# Only what changed against main — the pull-request workflow
+cs scan . --diff origin/main
+
+# Cap the spend and fail CI on high-severity findings
+cs scan . --max-cost 5.00 --fail-on-severity high</code></pre>
+<p>In CI, skip the interactive login and set <code>OPENAI_API_KEY</code> or <code>CODEX_API_KEY</code> instead. The GitHub Action example caps each scan at an estimated $5 — a cap, not a price, but a useful default to copy. For bulk work across many repositories, the repo ships a Docker Compose configuration built on the <code>ghcr.io/openai/codex-security</code> image. And if you want it in code rather than on the command line, the SDK is one import away:</p>
+<pre><code class="language-typescript">import { CodexSecurity } from &quot;@openai/codex-security&quot;;</code></pre>
+<h2 id="what-s-new-in-0-10-0"><span class="hnum">04</span>What&#x27;s new in 0.10.0</h2>
+<p>Three changes matter in practice:</p>
+<ul>
+<li><strong>Resumable scans.</strong> An interrupted Standard scan can be picked up where it stopped with <code>cs scans resume SCAN_ID</code>, instead of starting over and paying twice.</li>
+<li><strong>A shared cost budget.</strong> <code>--max-total-cost</code> puts one budget across a batch of scans, which is what you actually want when a nightly job sweeps dozens of repositories.</li>
+<li><strong>Clearer blocked-patch explanations.</strong> When a fix cannot be applied, the tool now says why instead of failing silently — the difference between a dead end and a next step.</li>
+</ul>
+<p>None of this changes what the scanner finds. It changes whether you can run it as a repeatable pipeline instead of a one-off experiment — the same direction the whole category is moving. Cloudflare&#x27;s open-source security-audit skill, covered here two weeks ago, makes the same bet: the value is in validation and orchestration, not in the model&#x27;s first guess.</p>
+<h2 id="the-two-catches"><span class="hnum">05</span>The two catches</h2>
+<p>The first is cost and access. Codex Security is open source, but it is not a free standalone scanner. Scans that use OpenAI inference require Codex Security access or an API key, and your code is sent to OpenAI&#x27;s servers for analysis. Some cybersecurity requests additionally require OpenAI&#x27;s Trusted Access for Cyber programme, a gated access route — not every feature is available to every user by default. The README also notes alternative inference providers, including Amazon Bedrock, OpenRouter, and Fireworks. Budget for tokens the way you would budget for any <span class="gterm" data-term="LLM" data-def="Large Language Model: a machine-learning model trained on massive text corpora that can generate, summarize, and reason about text and code — the engine behind AI coding assistants and AI security scanners.">LLM</span>-powered tool, and check the data-handling terms before pointing it at proprietary code.</p>
+<p>The second is the one every scanner shares: a validated finding still needs a human to decide whether it matters. Version 0.10.0 is, by the project&#x27;s own numbering, not a finished product. Validation cuts <span class="gterm" data-term="false positive" data-def="A finding reported as a vulnerability that turns out not to be one — the main source of noise in security scanners, and the reason validation and human review matter.">false positive</span>s; it does not remove judgement. A real bug in a dead code path and a real bug on your login page are both &quot;confirmed&quot; — only one of them deserves your afternoon.</p>
+<h2 id="what-to-do-this-week"><span class="hnum">06</span>What to do this week</h2>
+<ol>
+<li><strong>Install it and scan a repo you own</strong> — start with <code>--diff origin/main</code> on a pull request, where the blast radius is small and the findings are fresh.</li>
+<li><strong>Set <code>--max-cost</code> before your first full-repo scan.</strong> Learn what a scan costs on your codebase before it runs unattended.</li>
+<li><strong>Read the validated findings, then read the source trace behind one of them.</strong> Trust is earned per finding, not per tool.</li>
+<li><strong>Wire the GitHub Action into one repository</strong> with the $5 example cap, exporting SARIF so findings land where your team already triages issues.</li>
+<li><strong>Do not auto-merge its patches.</strong> Let the fix sit in a pull request with its re-check result attached, and review it like any other diff.</li>
+</ol>
+<p>The pattern across this month&#x27;s open-source releases is hard to miss: the money has moved from generation to verification. Chrome is teaching coding agents the modern web before they write, a 10,000-star tool now puts a human between the agent and the merge, and OpenAI&#x27;s scanner argues with itself before it argues with you. The tools that survive this shift will not be the ones that find the most bugs. They will be the ones whose findings you can believe — and whose patches you can merge without holding your breath.</p>
+<hr>
+<p><em>Sources: <a href="https://siliconnoon.com/open-source-radar-november-14-openais-codex-security-cli/">Open Source Radar — November 14: OpenAI&#x27;s Codex Security CLI (siliconnoon.com, 14 November 2026)</a>; <a href="http://inoryva.blogspot.com/2026/11/openais-codex-security-hits-12500-stars.html">OpenAI&#x27;s Codex Security Hits 12,500 Stars (inoryva.blogspot.com, 13 November 2026)</a>; <a href="https://www.systemdesign.academy/explained/codex-security">Codex Security: OpenAI&#x27;s vulnerability scanner, explained (systemdesign.academy, November 2026)</a>; <a href="https://github.com/openai/codex-security">openai/codex-security (GitHub)</a>.</em></p><div class="author-box"><div class="kicker"><span class="dot"></span>written by</div><p><strong>kou</strong> documents what’s learned about threat intel, attack surface, and practical defense — from the dark side of the internet.</p></div><div class="pager"><a href="/artikel/passkeys-the-credential-that-cant-be-phished/"><span class="dir">← previous</span><span class="t">Passkeys: The Credential That Can&#x27;t Be Phished — and Why November 2026 Is the Tipping Point</span></a><span></span></div></div>
+                <aside class="toc"><h4>Contents</h4><ol><li style="margin-left:0px"><a href="#what-it-actually-is">What it actually is</a></li><li style="margin-left:0px"><a href="#how-a-scan-works-find-validate-patch-re-check">How a scan works: find, validate, patch, re-check</a></li><li style="margin-left:0px"><a href="#install-and-run-it">Install and run it</a></li><li style="margin-left:0px"><a href="#what-s-new-in-0-10-0">What&#x27;s new in 0.10.0</a></li><li style="margin-left:0px"><a href="#the-two-catches">The two catches</a></li><li style="margin-left:0px"><a href="#what-to-do-this-week">What to do this week</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>security notes from the dark side of the internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="search articles…" aria-label="search">
+    <div class="search-hint">type at least 2 characters · esc to close · ctrl+k anywhere</div>
+    <div class="search-results" data-empty="nothing found — try another keyword."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

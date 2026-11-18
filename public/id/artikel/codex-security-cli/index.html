@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codex Security CLI: Pemindai Open-Source OpenAI yang Menemukan, Memvalidasi, dan Memperbaiki Bug — llunatic-lab</title>
+<meta name="description" content="Codex Security CLI dari OpenAI memindai repo kamu, memperdebatkan temuannya sendiri sampai hanya yang asli yang tersisa, lalu menyusun patch dan memeriksanya ulang. Versi 0.10.0 baru saja membuatnya bisa dilanjutkan, dibatasi biayanya, dan siap CI — begini cara menjalankannya, plus dua hal yang tidak boleh dilewatkan.">
+<meta property="og:title" content="Codex Security CLI: Pemindai Open-Source OpenAI yang Menemukan, Memvalidasi, dan Memperbaiki Bug">
+<meta property="og:description" content="Codex Security CLI dari OpenAI memindai repo kamu, memperdebatkan temuannya sendiri sampai hanya yang asli yang tersisa, lalu menyusun patch dan memeriksanya ulang. Versi 0.10.0 baru saja membuatnya bisa dilanjutkan, dibatasi biayanya, dan siap CI — begini cara menjalankannya, plus dua hal yang tidak boleh dilewatkan.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/codex-security-cli.jpg"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/codex-security-cli/"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/codex-security-cli/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/id/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/id/arsip/">Arsip</a>
+      <a href="/id/tentang/">Tentang</a>
+      <a class="lang-toggle" href="/artikel/codex-security-cli/">EN</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>artikel</div>
+              <h1>Codex Security CLI: Pemindai Open-Source OpenAI yang Menemukan, Memvalidasi, dan Memperbaiki Bug</h1>
+              <div class="meta"><span>18 November 2026</span><span>·</span>
+              <span>7 mnt baca</span><a class="tag" href="/id/tag/tools/">tools</a> <a class="tag" href="/id/tag/ai-security/">ai-security</a> <a class="tag" href="/id/tag/code-audit/">code-audit</a> <a class="tag" href="/id/tag/openai/">openai</a></div>
+              <img class="cover" src="/assets/covers/codex-security-cli.jpg" alt="Codex Security CLI: Pemindai Open-Source OpenAI yang Menemukan, Memvalidasi, dan Memperbaiki Bug">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Sebagian besar AI code reviewer punya kelemahan yang sama: mereka tidak pernah meragukan diri sendiri. Arahkan satu ke sebuah repository dan ia akan mengembalikan daftar <span class="gterm" data-term="vulnerability" data-def="A weakness in a system or application that attackers can exploit.">vulnerability</span> yang meyakinkan, separuhnya langsung menguap begitu manusia membaca source-nya. Jawaban OpenAI atas masalah itu adalah <code>codex-security</code> — sebuah command-line scanner yang memperlakukan temuannya sendiri sebagai tersangka, bukan vonis. Ia menemukan kandidat bug, mencoba membantah masing-masing, menyusun patch untuk yang bertahan, lalu memeriksa ulang perbaikannya. Tool ini sudah publik sejak akhir Juli 2026, tapi versi 0.10.0 yang dirilis 12 November-lah yang mendorongnya ke halaman trending GitHub dan melewati 13.000 star dalam hitungan hari.</p>
+<h2 id="sebenarnya-ini-apa"><span class="hnum">01</span>Sebenarnya ini apa</h2>
+<p>Codex Security adalah CLI dan TypeScript SDK dari OpenAI untuk menemukan, memvalidasi, dan memperbaiki <span class="gterm" data-term="vulnerability" data-def="A weakness in a system or application that attackers can exploit.">vulnerability</span> keamanan di kode kamu sendiri. Ia dikirim sebagai paket npm <code>@openai/codex-security</code>, berlisensi Apache-2.0, dengan source di <code>github.com/openai/codex-security</code>. Kamu bisa memakainya dengan tiga cara: sebagai plugin di dalam Codex, dari terminal dengan perintah <code>cs</code>, atau dalam otomatisasi lewat SDK atau GitHub Action.</p>
+<p>Repository-nya dibuat pada 13 Juli 2026 dan di-open-source pada akhir Juli, dengan rilis npm pertama, 0.1.0, mendarat pada 31 Juli. Selama tiga bulan ia tumbuh dengan tenang. Lalu rilis 0.10.0 pada 12 November bertepatan dengan keynote OpenAI &quot;Cyber at the Frontier&quot; — hari yang sama perusahaan itu mengumumkan Daybreak Red Team dan Defense Factory, produk agen ofensif dan defensif terkelola mereka. Codex Security adalah blok bangunan yang terbuka dan bisa di-host sendiri di bawah cerita itu: bagian yang bisa kamu install dan jalankan sendiri, bukan dibeli sebagai layanan.</p>
+<p>Jumlah star menceritakan lonjakannya: sekitar 12.900 star pada 13 November, kira-kira 13.350 keesokan harinya, dan mendekati 13.900 pada 17 November — lebih dari 2.000 star baru dalam satu minggu.</p>
+<h2 id="cara-kerja-sebuah-scan-temukan-validasi-patch-periksa-ulang"><span class="hnum">02</span>Cara kerja sebuah scan: temukan, validasi, patch, periksa ulang</h2>
+<p>Alurnya punya empat tahap, dan tahap kedua adalah inti dari semuanya:</p>
+<ol>
+<li><strong>Find (temukan).</strong> Scanner membaca repository kamu — satu tree penuh, satu path tertentu, atau hanya perubahan dalam sebuah git diff — lalu mengusulkan kandidat <span class="gterm" data-term="vulnerability" data-def="A weakness in a system or application that attackers can exploit.">vulnerability</span>.</li>
+<li><strong>Validate (validasi).</strong> Setiap kandidat diperiksa terhadap source sebelum dilaporkan. Tujuan desainnya eksplisit: temuan dari source belum tentu sebuah exploit yang bisa direproduksi, dan kecurigaan yang belum terkonfirmasi tidak seharusnya sampai ke kamu dengan menyamar sebagai fakta. Ini langkah yang dilewati sebagian besar AI reviewer, dan inilah alasan output tool ini dimaksudkan lebih pendek dan lebih bisa dipercaya daripada muntahan mentah sebuah model.</li>
+<li><strong>Patch.</strong> Untuk temuan yang tervalidasi, ia menyusun draft perbaikan.</li>
+<li><strong>Re-check (periksa ulang).</strong> Ia memverifikasi bahwa perbaikan itu benar-benar menyelesaikan temuan tersebut, bukan sekadar mengasumsikan patch-nya berhasil.</li>
+</ol>
+<p>Deep scan mengulang Standard scan dan mengembalikan temuan yang sudah dideduplikasi, jadi pass kedua dimaksudkan untuk menangkap yang terlewat pass pertama, bukan mengulanginya. Scanner ini mencakup Python, JavaScript, TypeScript, Go, Java, C, C++, Rust, Ruby, dan PHP.</p>
+<p>Ia juga akur dengan tool yang sudah kamu jalankan. Temuan dari scanner lain bisa diimpor — importer untuk AWS dan CrowdStrike tiba pada minggu sebelum 0.10.0, dan 0.10.0 sendiri menambahkan impor <span class="gterm" data-term="SAST" data-def="Static Application Security Testing: analisis otomatis terhadap source code untuk mencari vulnerability tanpa mengeksekusinya — kategori tool yang mencakup linter, taint analysis, dan AI code scanner.">SAST</span> ArmorCode — dan hasilnya diekspor sebagai <span class="gterm" data-term="SARIF" data-def="Static Analysis Results Interchange Format: format JSON standar untuk melaporkan temuan static analysis, supaya scanner, sistem CI, dan platform code hosting bisa saling bertukar hasil.">SARIF</span>, JSON, atau CSV, dengan pelacakan ke Linear, Jira, atau GitHub. Penggunaan yang paling masuk akal adalah sebuah langkah keamanan di <span class="gterm" data-term="CI/CD" data-def="Continuous Integration / Continuous Delivery: pipeline otomatis yang membangun, menguji, dan men-deploy kode pada setiap perubahan — dan target bernilai tinggi, karena berjalan dengan akses repositori dan infrastruktur yang luas.">CI/CD</span> yang bisa ditindaklanjuti coding agent, bukan PDF yang tidak dibaca siapa pun.</p>
+<h2 id="install-dan-jalankan"><span class="hnum">03</span>Install dan jalankan</h2>
+<p>Syaratnya Node.js 22.13.0 atau lebih baru dalam lini 22.x, atau 24.x atau 26.x, plus Python 3.10 atau lebih baru. Install secara global lalu sign in:</p>
+<pre><code class="language-bash">npm install --global @openai/codex-security
+cs login</code></pre>
+<p>Lalu scan dari dalam repository:</p>
+<pre><code class="language-bash">cs scan .</code></pre>
+<p><code>cs</code> dan <code>codex-security</code> adalah perintah yang sama — pakai bentuk panjangnya kalau nama pendeknya bentrok dengan sesuatu di sistem kamu, atau <code>npx @openai/codex-security</code> untuk melewati install global sepenuhnya. Batasi cakupan scan dengan flag:</p>
+<pre><code class="language-bash"># Hanya satu direktori
+cs scan . --path src/auth/
+
+# Hanya yang berubah terhadap main — alur kerja pull request
+cs scan . --diff origin/main
+
+# Batasi biaya dan gagalkan CI pada temuan high-severity
+cs scan . --max-cost 5.00 --fail-on-severity high</code></pre>
+<p>Di CI, lewati login interaktif dan set <code>OPENAI_API_KEY</code> atau <code>CODEX_API_KEY</code> sebagai gantinya. Contoh GitHub Action-nya membatasi setiap scan pada estimasi $5 — sebuah batas, bukan harga, tapi default yang layak ditiru. Untuk pekerjaan massal di banyak repository, repo ini menyediakan konfigurasi Docker Compose yang dibangun di atas image <code>ghcr.io/openai/codex-security</code>. Dan kalau kamu menginginkannya di dalam kode, bukan di command line, SDK-nya tinggal satu import:</p>
+<pre><code class="language-typescript">import { CodexSecurity } from &quot;@openai/codex-security&quot;;</code></pre>
+<h2 id="apa-yang-baru-di-0-10-0"><span class="hnum">04</span>Apa yang baru di 0.10.0</h2>
+<p>Tiga perubahan yang penting dalam praktik:</p>
+<ul>
+<li><strong>Scan yang bisa dilanjutkan (resumable scan).</strong> Standard scan yang terputus bisa dilanjutkan dari titik berhentinya dengan <code>cs scans resume SCAN_ID</code>, bukan mulai dari nol dan membayar dua kali.</li>
+<li><strong>Budget biaya bersama.</strong> <code>--max-total-cost</code> memasang satu budget untuk satu batch scan, persis yang kamu butuhkan saat job malam menyapu puluhan repository.</li>
+<li><strong>Penjelasan pemblokiran patch yang lebih jelas.</strong> Saat sebuah perbaikan tidak bisa diterapkan, tool ini sekarang menjelaskan alasannya, bukan gagal diam-diam — perbedaan antara jalan buntu dan langkah berikutnya.</li>
+</ul>
+<p>Semua ini tidak mengubah apa yang ditemukan scanner. Yang berubah adalah apakah kamu bisa menjalankannya sebagai pipeline yang bisa diulang, bukan eksperimen sekali jalan — arah yang sama dengan seluruh kategori ini. Skill security-audit open-source Cloudflare, yang dibahas di sini dua minggu lalu, bertaruh pada hal yang sama: nilainya ada pada validasi dan orkestrasi, bukan pada tebakan pertama model.</p>
+<h2 id="dua-hal-yang-perlu-diwaspadai"><span class="hnum">05</span>Dua hal yang perlu diwaspadai</h2>
+<p>Pertama, biaya dan akses. Codex Security memang open source, tapi bukan scanner gratis yang berdiri sendiri. Scan yang memakai inferensi OpenAI membutuhkan akses Codex Security atau API key, dan kode kamu dikirim ke server OpenAI untuk dianalisis. Beberapa permintaan keamanan siber juga membutuhkan program Trusted Access for Cyber dari OpenAI, jalur akses yang dibatasi — tidak semua fitur tersedia untuk semua pengguna secara default. README juga mencatat penyedia inferensi alternatif, termasuk Amazon Bedrock, OpenRouter, dan Fireworks. Anggarkan token seperti kamu menganggarkan tool berbasis <span class="gterm" data-term="LLM" data-def="Large Language Model: model machine learning yang dilatih pada korpus teks raksasa dan mampu menghasilkan, meringkas, serta menalar teks dan kode — mesin di balik AI coding assistant dan AI security scanner.">LLM</span> lainnya, dan periksa ketentuan penanganan datanya sebelum mengarahkannya ke kode proprietary.</p>
+<p>Kedua, hal yang sama berlaku untuk semua scanner: temuan yang tervalidasi tetap membutuhkan manusia untuk memutuskan apakah ia penting. Versi 0.10.0, menurut penomorannya sendiri, belum produk jadi. Validasi memangkas <span class="gterm" data-term="false positive" data-def="Temuan yang dilaporkan sebagai vulnerability padahal ternyata bukan — sumber utama noise pada security scanner, dan alasan validasi serta review manusia penting.">false positive</span>; ia tidak menghilangkan penilaian. Bug asli di code path yang mati dan bug asli di halaman login kamu sama-sama &quot;terkonfirmasi&quot; — hanya satu yang pantas mendapatkan sore harimu.</p>
+<h2 id="yang-bisa-dilakukan-minggu-ini"><span class="hnum">06</span>Yang bisa dilakukan minggu ini</h2>
+<ol>
+<li><strong>Install dan scan repo yang kamu miliki</strong> — mulai dengan <code>--diff origin/main</code> pada sebuah pull request, di mana blast radius-nya kecil dan temuannya segar.</li>
+<li><strong>Set <code>--max-cost</code> sebelum scan repo penuh pertama.</strong> Pelajari berapa biaya sebuah scan di codebase kamu sebelum ia berjalan tanpa pengawasan.</li>
+<li><strong>Baca temuan yang tervalidasi, lalu baca source trace di balik salah satunya.</strong> Kepercayaan diperoleh per temuan, bukan per tool.</li>
+<li><strong>Pasang GitHub Action di satu repository</strong> dengan batas contoh $5, mengekspor SARIF supaya temuan mendarat di tempat tim kamu sudah men-triase issue.</li>
+<li><strong>Jangan auto-merge patch-nya.</strong> Biarkan perbaikan itu duduk di pull request bersama hasil re-check-nya, dan review seperti diff lainnya.</li>
+</ol>
+<p>Pola di seluruh rilis open-source bulan ini sulit dilewatkan: uangnya sudah berpindah dari generasi ke verifikasi. Chrome mengajari coding agent soal web modern sebelum mereka menulis, sebuah tool 10.000 star kini menempatkan manusia di antara agen dan merge, dan scanner OpenAI berdebat dengan dirinya sendiri sebelum berdebat dengan kamu. Tool yang bertahan dari pergeseran ini bukan yang menemukan bug terbanyak. Melainkan yang temuannya bisa kamu percaya — dan yang patch-nya bisa kamu merge tanpa menahan napas.</p>
+<hr>
+<p><em>Sumber: <a href="https://siliconnoon.com/open-source-radar-november-14-openais-codex-security-cli/">Open Source Radar — November 14: OpenAI&#x27;s Codex Security CLI (siliconnoon.com, 14 November 2026)</a>; <a href="http://inoryva.blogspot.com/2026/11/openais-codex-security-hits-12500-stars.html">OpenAI&#x27;s Codex Security Hits 12,500 Stars (inoryva.blogspot.com, 13 November 2026)</a>; <a href="https://www.systemdesign.academy/explained/codex-security">Codex Security: OpenAI&#x27;s vulnerability scanner, explained (systemdesign.academy, November 2026)</a>; <a href="https://github.com/openai/codex-security">openai/codex-security (GitHub)</a>.</em></p><div class="author-box"><div class="kicker"><span class="dot"></span>ditulis oleh</div><p><strong>kou</strong> mendokumentasikan threat intel, attack surface, dan pertahanan praktis — dari sisi gelap internet.</p></div><div class="pager"><a href="/id/artikel/passkeys-the-credential-that-cant-be-phished/"><span class="dir">← sebelumnya</span><span class="t">Passkey: Kredensial yang Tak Bisa Di-phishing — dan Kenapa November 2026 Jadi Titik Baliknya</span></a><span></span></div></div>
+                <aside class="toc"><h4>Daftar isi</h4><ol><li style="margin-left:0px"><a href="#sebenarnya-ini-apa">Sebenarnya ini apa</a></li><li style="margin-left:0px"><a href="#cara-kerja-sebuah-scan-temukan-validasi-patch-periksa-ulang">Cara kerja sebuah scan: temukan, validasi, patch, periksa ulang</a></li><li style="margin-left:0px"><a href="#install-dan-jalankan">Install dan jalankan</a></li><li style="margin-left:0px"><a href="#apa-yang-baru-di-0-10-0">Apa yang baru di 0.10.0</a></li><li style="margin-left:0px"><a href="#dua-hal-yang-perlu-diwaspadai">Dua hal yang perlu diwaspadai</a></li><li style="margin-left:0px"><a href="#yang-bisa-dilakukan-minggu-ini">Yang bisa dilakukan minggu ini</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>catatan keamanan dari sisi gelap internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="cari artikel…" aria-label="search">
+    <div class="search-hint">ketik minimal 2 huruf · esc untuk tutup · ctrl+k dari mana saja</div>
+    <div class="search-results" data-empty="nggak ketemu — coba kata kunci lain."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

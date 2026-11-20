@@ -3,6 +3,10 @@
   "en": "A file in Python's site-packages directory that the interpreter processes at startup; any line beginning with 'import' is executed before user code runs, which makes it a code-execution primitive attackers can abuse for persistence.",
   "id": "File di direktori site-packages Python yang diproses interpreter saat startup; baris apa pun yang diawali 'import' dieksekusi sebelum kode pengguna berjalan, sehingga ia menjadi primitif eksekusi kode yang bisa disalahgunakan penyerang untuk persistensi."
  },
+ "A/B testing": {
+  "en": "A method of comparing two versions of a web page by showing each to a different group of visitors and measuring which performs better — usually delivered by injecting JavaScript into the page.",
+  "id": "Metode membandingkan dua versi halaman web dengan menampilkan masing-masing ke kelompok pengunjung berbeda lalu mengukur mana yang lebih baik — biasanya dijalankan lewat injeksi JavaScript ke halaman."
+ },
  "Active Directory": {
   "en": "Microsoft's directory service that manages users, computers, and permissions in enterprise networks — the most targeted asset in ransomware attacks.",
   "id": "Layanan direktori Microsoft yang mengelola pengguna, komputer, dan izin di jaringan perusahaan — aset paling diincar dalam serangan ransomware."
@@ -58,6 +62,10 @@
  "CISA": {
   "en": "The U.S. Cybersecurity and Infrastructure Security Agency, which runs the Known Exploited Vulnerabilities (KEV) catalog of flaws confirmed exploited in the wild.",
   "id": "Cybersecurity and Infrastructure Security Agency AS, yang mengelola katalog Known Exploited Vulnerabilities (KEV) berisi celah yang terkonfirmasi dieksploitasi di lapangan."
+ },
+ "Content Security Policy": {
+  "en": "A browser security header that restricts where a page may load scripts, styles, and other resources from, and where it may send data — the main defence against poisoned third-party scripts.",
+  "id": "Header keamanan browser yang membatasi dari mana sebuah halaman boleh memuat script, style, dan resource lain, serta ke mana halaman itu boleh mengirim data — pertahanan utama terhadap script pihak ketiga yang sudah diracuni."
  },
  "coverage ledger": {
   "en": "A deterministic JSON record (coverage-ledger.json) of every unit of a codebase that must be audited — architecture, trust boundaries, input surfaces. Hunters work from it, critics check it for gaps, and repeat runs reuse it to target what was missed.",
@@ -120,6 +128,10 @@
   "id": "Transfer data tanpa izin keluar dari jaringan ke infrastruktur milik penyerang — pencurian sunyi yang mendahului enkripsi pada ransomware modern."
  },
  "exploit": "A piece of code or technique that takes advantage of a vulnerability.",
+ "exploit kit": {
+  "en": "A packaged set of exploits, usually delivered through a compromised or malicious website, that probes a visitor's browser or device for known vulnerabilities and tries to take control of it.",
+  "id": "Paket exploit yang biasanya dikirim lewat situs yang sudah dibobol atau berbahaya, yang memindai browser atau perangkat pengunjung untuk mencari kerentanan yang sudah dikenal lalu mencoba mengambil alihnya."
+ },
  "false positive": {
   "en": "A finding reported as a vulnerability that turns out not to be one — the main source of noise in security scanners, and the reason validation and human review matter.",
   "id": "Temuan yang dilaporkan sebagai vulnerability padahal ternyata bukan — sumber utama noise pada security scanner, dan alasan validasi serta review manusia penting."
@@ -469,6 +481,10 @@
   "id": "Phishing lewat suara — penipuan lewat panggilan telepon, di mana penyerang menyamar sebagai institusi tepercaya untuk memancing kredensial atau uang."
  },
  "vulnerability": "A weakness in a system or application that attackers can exploit.",
+ "web skimmer": {
+  "en": "Malicious JavaScript injected into a website that silently copies payment card details or other sensitive data typed into the site's forms and sends them to the attacker.",
+  "id": "JavaScript berbahaya yang disuntikkan ke sebuah situs web dan diam-diam menyalin detail kartu pembayaran atau data sensitif lain yang diketik ke form situs itu, lalu mengirimkannya ke penyerang."
+ },
  "WebAuthn": {
   "en": "Web Authentication: the W3C web API browsers use to create and use public-key credentials (passkeys). The browser-side half of FIDO2.",
   "id": "Web Authentication: API web W3C yang dipakai browser untuk membuat dan memakai kredensial kunci publik (passkey). Separuh sisi browser dari FIDO2."

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>One Hacked Tool, 178 Brands: The Optimizely Supply-Chain Attack — llunatic-lab</title>
+<meta name="description" content="On 16 November 2026, visitors to Zoom, the BBC, HSBC, IKEA, and 174 other major sites were served malware — not because any of those companies were hacked, but because a single A/B testing tool they all trusted was. Here&#x27;s how one poisoned script reached millions of browsers in 19 hours.">
+<meta property="og:title" content="One Hacked Tool, 178 Brands: The Optimizely Supply-Chain Attack">
+<meta property="og:description" content="On 16 November 2026, visitors to Zoom, the BBC, HSBC, IKEA, and 174 other major sites were served malware — not because any of those companies were hacked, but because a single A/B testing tool they all trusted was. Here&#x27;s how one poisoned script reached millions of browsers in 19 hours.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/optimizely-supply-chain-attack-178-sites.jpg"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/optimizely-supply-chain-attack-178-sites/"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/optimizely-supply-chain-attack-178-sites/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/arsip/">Archive</a>
+      <a href="/tentang/">About</a>
+      <a class="lang-toggle" href="/id/artikel/optimizely-supply-chain-attack-178-sites/">ID</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>article</div>
+              <h1>One Hacked Tool, 178 Brands: The Optimizely Supply-Chain Attack</h1>
+              <div class="meta"><span>20 November 2026</span><span>·</span>
+              <span>8 min read</span><a class="tag" href="/tag/supply-chain/">supply-chain</a> <a class="tag" href="/tag/optimizely/">optimizely</a> <a class="tag" href="/tag/web-security/">web-security</a> <a class="tag" href="/tag/incident/">incident</a></div>
+              <img class="cover" src="/assets/covers/optimizely-supply-chain-attack-178-sites.jpg" alt="One Hacked Tool, 178 Brands: The Optimizely Supply-Chain Attack">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>On Monday 16 November 2026, you could visit Zoom, the BBC, CNN, HSBC, Salesforce, IKEA, GitLab, Equifax, Air France-KLM, Ledger, or Peacock — and be served <span class="gterm" data-term="malware" data-def="Malicious software: viruses, worms, trojans, ransomware, and the like.">malware</span>. None of those companies&#x27; servers were hacked. The malicious code arrived through a tool they all trust: Optimizely Web Experimentation, the A/B testing platform whose JavaScript snippet runs on their pages. An attacker found a way to write their own JavaScript into Optimizely customer projects, and because every site loads that snippet from Optimizely&#x27;s servers and runs it, the code ran in visitors&#x27; browsers as if it were part of the site itself.</p>
+<p>That is the entire story of a <span class="gterm" data-term="supply chain attack" data-def="An attack that reaches its target through a trusted supplier, vendor, or software update instead of attacking the target directly.">supply chain attack</span> in one sentence: compromise one trusted supplier, and its trust carries your code everywhere.</p>
+<h2 id="how-it-was-found"><span class="hnum">01</span>How it was found</h2>
+<p>The attack was uncovered by security researcher Scott Helme and the team at Report URI. While it was still running, they scanned the platform and checked <strong>1,611 Optimizely snippets</strong>, finding <strong>188 infected ones belonging to 178 organisations</strong> worldwide — and the real number is probably higher, since they could only check snippets they found during the attack. Even Optimizely&#x27;s own website and login page were affected.</p>
+<p>The 178 organisations span almost every sector that handles money or personal data: 32 in banking and finance, 23 in tech and SaaS, 20 in retail and fashion, 12 in streaming, 10 in news and media, 9 in airlines and travel, 8 each in healthcare/pharma and industry, and 7 in telecoms — plus smaller numbers in crypto, insurance, property, food, nonprofits, gambling, logistics, automotive, and education.</p>
+<p>Being on that list means an organisation&#x27;s Optimizely snippet contained the malicious code at some point on 16 November. It does <strong>not</strong> by itself mean any customer data was taken. Each organisation still has to work out what its own visitors were exposed to.</p>
+<h2 id="what-the-code-did"><span class="hnum">02</span>What the code did</h2>
+<p>The injected code was updated many times during the day, gaining features as it went. By the end, it could:</p>
+<ul>
+<li><strong>Swap cryptocurrency addresses.</strong> It replaced Bitcoin, Ethereum, Solana, TRON, and other wallet addresses on the page, in forms, and in the clipboard with the attacker&#x27;s own — so payments went to the wrong wallet.</li>
+<li><strong>Steal payment cards.</strong> From 13:43 UTC it captured card numbers, expiry dates, and security codes typed into a site&#x27;s own form fields. Cards entered in separate hosted payment boxes, such as those provided by payment processors, were out of reach — a detail that matters, as we&#x27;ll see.</li>
+<li><strong>Steal browser data.</strong> It sent page addresses, readable cookies, and screenshots to the attacker&#x27;s server whenever it found wallet or payment content.</li>
+<li><strong>Attack iPhones.</strong> It sent iPhone and iPad visitors on older iOS versions to known iOS <span class="gterm" data-term="exploit kit" data-def="A packaged set of exploits, usually delivered through a compromised or malicious website, that probes a visitor&#x27;s browser or device for known vulnerabilities and tries to take control of it.">exploit kit</span>s that try to take over the device. Devices on iOS 18.7.3 or later, or iOS 26.3 or later, are patched against them.</li>
+</ul>
+<p>Around <strong>US$7,000</strong> in cryptocurrency reached the attacker&#x27;s wallets, which were emptied early on 17 November. Nobody yet knows how many cards or browser sessions were captured. Seven thousand dollars sounds small for an attack of this scale — but the wallets were only the visible part. The card data, cookies, and screenshots are the haul that can&#x27;t be counted.</p>
+<h2 id="the-timeline"><span class="hnum">03</span>The timeline</h2>
+<ul>
+<li><strong>16 November, 04:21 UTC:</strong> first malicious change seen, on the BBC&#x27;s snippet.</li>
+<li><strong>16 November, 11:20 UTC:</strong> Zoom&#x27;s snippet is modified.</li>
+<li><strong>16 November, 13:43 UTC:</strong> card-stealing code is added — the payload escalates from crypto theft to full <span class="gterm" data-term="web skimmer" data-def="Malicious JavaScript injected into a website that silently copies payment card details or other sensitive data typed into the site&#x27;s forms and sends them to the attacker.">web skimmer</span> behaviour.</li>
+<li><strong>16 November, 20:40–21:10 UTC:</strong> mass clean-up of infected snippets.</li>
+<li><strong>16 November, 23:11 UTC:</strong> researchers confirm all infected Optimizely files are clean.</li>
+<li><strong>17 November, 01:02 UTC:</strong> Optimizely posts its security incident notice.</li>
+</ul>
+<p>In total, the code was live on some sites for about <strong>17 to 19 hours</strong>. The attacker&#x27;s main domains were suspended or stopped responding on 17 November.</p>
+<h2 id="how-the-companies-responded"><span class="hnum">04</span>How the companies responded</h2>
+<p>Optimizely said an unauthorised party exploited a vulnerability in its Experimentation product to add malicious JavaScript to some customer projects. It says it has fixed the vulnerability, removed the injected code, secured the affected accounts, and added protections to stop unauthorised code being delivered. Its status page listed the incident as &quot;Monitoring&quot;. Optimizely has not yet said publicly what the vulnerability was or how many customers were affected.</p>
+<p>Zoom said on its Trust Center that it has disabled Optimizely across its production environments as a precaution, and has not identified any impact to customer data. Salesforce posted an advisory saying it is investigating unauthorised changes to Optimizely scripts on certain Salesforce websites, and has disabled them as a precaution. Equifax launched an investigation and stopped using Optimizely, while stating it found no evidence of a breach of its own systems. IKEA and most of the other named brands had not published an official statement when the incident was first reported.</p>
+<h2 id="why-this-one-matters"><span class="hnum">05</span>Why this one matters</h2>
+<p>The Optimizely attack is a textbook case because it exposes the blind spot most websites live with. A modern website is not one codebase — it is a bundle of scripts from dozens of vendors: analytics, chat, A/B testing, tag managers, consent banners. Each of those scripts runs with the same power as the website&#x27;s own code. If any one of them is compromised, the attacker inherits the trust of every site that loads it.</p>
+<p>Three things made this attack unusually effective:</p>
+<ol>
+<li><strong>The delivery channel was trusted by design.</strong> Optimizely snippets are <em>supposed</em> to run arbitrary JavaScript — that is literally what A/B testing does. A malicious script hidden in a customer project looked like a legitimate experiment.</li>
+<li><strong>The payload evolved in place.</strong> The code was updated many times during the day, adding card theft hours after the first infection — a site that checked its snippet in the morning could have been serving a skimmer by the afternoon.</li>
+<li><strong>The safety net mostly wasn&#x27;t there.</strong> Of the affected organisations the researchers checked, only about <strong>15%</strong> had a <span class="gterm" data-term="Content Security Policy" data-def="A browser security header that restricts where a page may load scripts, styles, and other resources from, and where it may send data — the main defence against poisoned third-party scripts.">Content Security Policy</span> that fully blocked the attack. A strict CSP — one that limits where scripts can load from and where data can be sent — is the one control that can stop a poisoned third-party script even after the vendor is compromised.</li>
+</ol>
+<p>The card-theft detail is worth remembering: cards typed into a site&#x27;s own form fields were exposed, while cards entered in hosted payment boxes were not. Keeping payment fields inside an iframe served by your payment provider is not just a PCI checkbox — it is a real blast-radius boundary. On 16 November, it was the difference between exposed and safe.</p>
+<h2 id="if-you-visited-one-of-those-sites-on-16-november"><span class="hnum">06</span>If you visited one of those sites on 16 November</h2>
+<ul>
+<li><strong>Update your iPhone or iPad</strong> to iOS 18.7.3 or later, or iOS 26.3 or later. If you cannot update, turn on Lockdown Mode.</li>
+<li><strong>Check your card statements</strong> for anything you don&#x27;t recognise, and tell your bank straight away. If you typed a card into a website form on 16 November, consider asking your bank for a new card.</li>
+<li><strong>Check crypto transactions</strong> you made on 16 November. Always compare the full wallet address, character by character, before you send money.</li>
+<li><strong>Sign out and back in</strong> on accounts you used that day, and change passwords you entered on affected sites.</li>
+<li><strong>Be wary of follow-up scams.</strong> Expect fake &quot;your account was compromised&quot; emails that use this news. Go to companies&#x27; websites directly, not through links in messages.</li>
+</ul>
+<h2 id="if-you-run-a-website"><span class="hnum">07</span>If you run a website</h2>
+<ul>
+<li><strong>Review your Optimizely Project JavaScript</strong> and every experiment&#x27;s custom code for scripts you did not write — especially anything that loads code from an unknown domain or uses <code>atob(</code> or <code>eval(</code>.</li>
+<li><strong>Check Optimizely&#x27;s change history</strong> for edits made on or around 16 November.</li>
+<li><strong>Rotate Optimizely credentials and API tokens</strong>, and any session tokens or secrets that could have been readable in the browser.</li>
+<li><strong>Treat card details typed into your own form fields on 16 November as possibly exposed</strong>, and talk to your payment provider.</li>
+<li><strong>Deploy a strict Content Security Policy</strong> that limits where scripts can load from and where data can be sent — and keep third-party scripts off payment pages.</li>
+</ul>
+<h2 id="the-lesson"><span class="hnum">08</span>The lesson</h2>
+<p>The attacker never needed to break into Zoom, IKEA, or a single bank. They compromised one service that all of them trust, and let that trust carry malicious code to millions of visitors. Your website&#x27;s security is not just the code you wrote — it is every script you let someone else run on your pages. Know which third-party scripts run on your site, keep them off payment pages, and limit what they may load and where they may send data. The controls that would have stopped this one are the same controls that stop the next one — and most sites still haven&#x27;t deployed them.</p>
+<hr>
+<p><em>Sources: <a href="https://www.pymnts.com/cybersecurity/2026/malware-targets-crypto-and-iphone-users-on-178-popular-sites/">Malware targets crypto and iPhone users on 178 popular sites (PYMNTS, 17 November 2026)</a>; <a href="https://www.reef-sentinel.net/n/271">One hacked tool, 178 brands (Reef Sentinel, 17 November 2026)</a>; <a href="https://www.storyboard18.com/digital/bbc-cnn-zoom-among-178-organisations-targeted-in-crypto-stealing-malware-attack-114914.htm">BBC, CNN, Zoom among 178 organisations targeted in crypto-stealing malware attack (Storyboard18, 17 November 2026)</a>. Additional reporting: Report URI (Scott Helme) and Optimizely&#x27;s service status notice, 17 November 2026.</em></p><div class="author-box"><div class="kicker"><span class="dot"></span>written by</div><p><strong>kou</strong> documents what’s learned about threat intel, attack surface, and practical defense — from the dark side of the internet.</p></div><div class="pager"><a href="/artikel/codex-security-cli/"><span class="dir">← previous</span><span class="t">Codex Security CLI: OpenAI&#x27;s Open-Source Scanner That Finds, Validates, and Fixes Bugs</span></a><span></span></div></div>
+                <aside class="toc"><h4>Contents</h4><ol><li style="margin-left:0px"><a href="#how-it-was-found">How it was found</a></li><li style="margin-left:0px"><a href="#what-the-code-did">What the code did</a></li><li style="margin-left:0px"><a href="#the-timeline">The timeline</a></li><li style="margin-left:0px"><a href="#how-the-companies-responded">How the companies responded</a></li><li style="margin-left:0px"><a href="#why-this-one-matters">Why this one matters</a></li><li style="margin-left:0px"><a href="#if-you-visited-one-of-those-sites-on-16-november">If you visited one of those sites on 16 November</a></li><li style="margin-left:0px"><a href="#if-you-run-a-website">If you run a website</a></li><li style="margin-left:0px"><a href="#the-lesson">The lesson</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>security notes from the dark side of the internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="search articles…" aria-label="search">
+    <div class="search-hint">type at least 2 characters · esc to close · ctrl+k anywhere</div>
+    <div class="search-results" data-empty="nothing found — try another keyword."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

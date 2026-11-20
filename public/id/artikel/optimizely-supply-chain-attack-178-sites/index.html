@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Satu Tool Diretas, 178 Brand Kena: Serangan Supply-Chain Optimizely — llunatic-lab</title>
+<meta name="description" content="Pada 16 November 2026, pengunjung Zoom, BBC, HSBC, IKEA, dan 174 situs besar lainnya disuguhi malware — bukan karena perusahaan-perusahaan itu diretas, melainkan karena satu tool A/B testing yang mereka semua percayai berhasil dibobol. Begini cara satu script beracun menjangkau jutaan browser dalam 19 jam.">
+<meta property="og:title" content="Satu Tool Diretas, 178 Brand Kena: Serangan Supply-Chain Optimizely">
+<meta property="og:description" content="Pada 16 November 2026, pengunjung Zoom, BBC, HSBC, IKEA, dan 174 situs besar lainnya disuguhi malware — bukan karena perusahaan-perusahaan itu diretas, melainkan karena satu tool A/B testing yang mereka semua percayai berhasil dibobol. Begini cara satu script beracun menjangkau jutaan browser dalam 19 jam.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/optimizely-supply-chain-attack-178-sites.jpg"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/optimizely-supply-chain-attack-178-sites/"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/optimizely-supply-chain-attack-178-sites/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/id/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/id/arsip/">Arsip</a>
+      <a href="/id/tentang/">Tentang</a>
+      <a class="lang-toggle" href="/artikel/optimizely-supply-chain-attack-178-sites/">EN</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>artikel</div>
+              <h1>Satu Tool Diretas, 178 Brand Kena: Serangan Supply-Chain Optimizely</h1>
+              <div class="meta"><span>20 November 2026</span><span>·</span>
+              <span>8 mnt baca</span><a class="tag" href="/id/tag/supply-chain/">supply-chain</a> <a class="tag" href="/id/tag/optimizely/">optimizely</a> <a class="tag" href="/id/tag/web-security/">web-security</a> <a class="tag" href="/id/tag/incident/">incident</a></div>
+              <img class="cover" src="/assets/covers/optimizely-supply-chain-attack-178-sites.jpg" alt="Satu Tool Diretas, 178 Brand Kena: Serangan Supply-Chain Optimizely">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Pada Senin, 16 November 2026, kamu bisa membuka Zoom, BBC, CNN, HSBC, Salesforce, IKEA, GitLab, Equifax, Air France-KLM, Ledger, atau Peacock — dan disuguhi <span class="gterm" data-term="malware" data-def="Malicious software: viruses, worms, trojans, ransomware, and the like.">malware</span>. Tidak ada satu pun server perusahaan itu yang diretas. Kode jahatnya datang lewat tool yang mereka semua percayai: Optimizely Web Experimentation, platform A/B testing yang snippet JavaScript-nya berjalan di halaman mereka. Seorang penyerang menemukan cara untuk menulis JavaScript-nya sendiri ke dalam project pelanggan Optimizely, dan karena setiap situs memuat snippet itu dari server Optimizely lalu menjalankannya tanpa bertanya, kode tersebut berjalan di browser pengunjung seolah-olah bagian dari situs itu sendiri.</p>
+<p>Itulah seluruh cerita <span class="gterm" data-term="supply chain attack" data-def="Serangan yang mencapai target lewat pemasok, vendor, atau update software tepercaya, alih-alih menyerang target secara langsung.">supply chain attack</span> dalam satu kalimat: bobol satu supplier tepercaya, dan kepercayaannya membawa kodemu ke mana-mana.</p>
+<h2 id="bagaimana-serangan-ini-ketahuan"><span class="hnum">01</span>Bagaimana serangan ini ketahuan</h2>
+<p>Serangan ini diungkap oleh peneliti keamanan Scott Helme dan tim Report URI. Saat serangan masih berjalan, para peneliti memindai platform tersebut dan memeriksa <strong>1.611 snippet Optimizely</strong>. Mereka menemukan <strong>188 snippet terinfeksi milik 178 organisasi</strong> di seluruh dunia — dan angka sebenarnya kemungkinan lebih besar, karena mereka hanya bisa memeriksa snippet yang mereka temukan selama serangan berlangsung. Bahkan situs dan halaman login Optimizely sendiri ikut terdampak.</p>
+<p>Ke-178 organisasi itu mencakup hampir semua sektor yang menangani uang atau data pribadi: 32 di perbankan dan keuangan, 23 di teknologi dan SaaS, 20 di retail dan fashion, 12 di streaming dan hiburan, 10 di berita dan media, 9 di maskapai dan travel, masing-masing 8 di kesehatan dan farmasi serta industri dan manufaktur, dan 7 di telekomunikasi — ditambah jumlah lebih kecil di kripto, asuransi, properti, makanan, nonprofit, perjudian, logistik, otomotif, dan pendidikan.</p>
+<p>Masuk daftar itu artinya snippet Optimizely sebuah organisasi mengandung kode jahat di satu titik pada 16 November. Itu <strong>tidak</strong> dengan sendirinya berarti data pelanggan dicuri. Setiap organisasi masih harus mencari tahu sendiri apa yang dialami pengunjungnya.</p>
+<h2 id="apa-yang-dilakukan-kode-jahat-itu"><span class="hnum">02</span>Apa yang dilakukan kode jahat itu</h2>
+<p>Kode yang disuntikkan diperbarui berkali-kali sepanjang hari, dan terus bertambah fiturnya. Pada akhirnya, kode itu bisa:</p>
+<ul>
+<li><strong>Menukar alamat kripto.</strong> Kode itu mengganti alamat wallet Bitcoin, Ethereum, Solana, TRON, dan lainnya di halaman, di form, dan di clipboard dengan alamat milik penyerang — sehingga pembayaran masuk ke wallet yang salah.</li>
+<li><strong>Mencuri kartu pembayaran.</strong> Mulai pukul 13:43 UTC, kode itu menangkap nomor kartu, tanggal kedaluwarsa, dan kode keamanan yang diketik ke form milik situs itu sendiri. Kartu yang dimasukkan lewat kotak pembayaran terpisah yang di-host oleh payment processor berada di luar jangkauan — detail yang penting, seperti akan kita lihat.</li>
+<li><strong>Mencuri data browser.</strong> Kode itu mengirim alamat halaman, cookie yang bisa dibaca, dan screenshot ke server penyerang setiap kali menemukan konten wallet atau pembayaran.</li>
+<li><strong>Menyerang iPhone.</strong> Kode itu mengarahkan pengunjung iPhone dan iPad dengan iOS versi lama ke <span class="gterm" data-term="exploit kit" data-def="Paket exploit yang biasanya dikirim lewat situs yang sudah dibobol atau berbahaya, yang memindai browser atau perangkat pengunjung untuk mencari kerentanan yang sudah dikenal lalu mencoba mengambil alihnya.">exploit kit</span> iOS yang mencoba mengambil alih perangkat. Perangkat dengan iOS 18.7.3 atau lebih baru, atau iOS 26.3 atau lebih baru, sudah ditambal terhadap serangan itu.</li>
+</ul>
+<p>Sekitar <strong>US$7.000</strong> dalam bentuk kripto sampai ke wallet penyerang, yang dikosongkan pada awal 17 November. Belum ada yang tahu berapa banyak kartu atau sesi browser yang berhasil ditangkap. Tujuh ribu dolar terdengar kecil untuk serangan sebesar ini — tapi wallet itu hanya bagian yang terlihat. Data kartu, cookie, dan screenshot adalah hasil rampasan yang tidak bisa dihitung dari blockchain explorer.</p>
+<h2 id="linimasanya"><span class="hnum">03</span>Linimasanya</h2>
+<ul>
+<li><strong>16 November, 04:21 UTC:</strong> perubahan jahat pertama terlihat, pada snippet BBC.</li>
+<li><strong>16 November, 11:20 UTC:</strong> snippet Zoom dimodifikasi.</li>
+<li><strong>16 November, 13:43 UTC:</strong> kode pencuri kartu ditambahkan — payload-nya naik kelas dari pencurian kripto menjadi perilaku <span class="gterm" data-term="web skimmer" data-def="JavaScript berbahaya yang disuntikkan ke sebuah situs web dan diam-diam menyalin detail kartu pembayaran atau data sensitif lain yang diketik ke form situs itu, lalu mengirimkannya ke penyerang.">web skimmer</span> penuh.</li>
+<li><strong>16 November, 20:40–21:10 UTC:</strong> pembersihan massal snippet yang terinfeksi.</li>
+<li><strong>16 November, 23:11 UTC:</strong> para peneliti mengonfirmasi semua file Optimizely yang terinfeksi sudah bersih.</li>
+<li><strong>17 November, 01:02 UTC:</strong> Optimizely mempublikasikan pemberitahuan insiden keamanannya.</li>
+</ul>
+<p>Secara total, kode itu aktif di sebagian situs selama sekitar <strong>17 sampai 19 jam</strong>. Domain utama penyerang ditangguhkan atau berhenti merespons pada 17 November.</p>
+<h2 id="bagaimana-perusahaan-perusahaan-itu-merespons"><span class="hnum">04</span>Bagaimana perusahaan-perusahaan itu merespons</h2>
+<p>Optimizely mengatakan pihak tak berwenang mengeksploitasi kerentanan di produk Experimentation-nya untuk menambahkan JavaScript berbahaya ke beberapa project pelanggan. Menurut mereka, kerentanan itu sudah diperbaiki, kode yang disuntikkan sudah dihapus, akun pengguna yang terdampak sudah diamankan, dan perlindungan tambahan sudah ditambahkan untuk mencegah pengiriman kode tak berwenang. Mereka juga sudah menghubungi pelanggan yang terdampak secara langsung. Halaman status mereka mencantumkan insiden itu sebagai &quot;Monitoring&quot;. Optimizely belum mengatakan secara publik apa kerentanannya atau berapa banyak pelanggan yang terdampak.</p>
+<p>Zoom mengatakan di Trust Center-nya bahwa mereka menyadari insiden ini dan telah menonaktifkan Optimizely di seluruh production environment mereka sebagai tindakan pencegahan, dan mereka belum menemukan dampak terhadap data pelanggan. Salesforce mempublikasikan advisory yang menyatakan mereka sedang menyelidiki perubahan tak berwenang pada script Optimizely yang dipakai di situs-situs Salesforce tertentu, dan telah menonaktifkan script tersebut sebagai pencegahan. Equifax meluncurkan investigasi dan berhenti memakai Optimizely, sambil menyatakan tidak menemukan bukti pelanggaran terhadap sistemnya sendiri. IKEA dan sebagian besar brand lain yang disebut belum mempublikasikan pernyataan resmi saat insiden itu pertama kali dilaporkan.</p>
+<h2 id="kenapa-serangan-ini-penting"><span class="hnum">05</span>Kenapa serangan ini penting</h2>
+<p>Serangan Optimizely adalah contoh textbook karena mengekspos titik buta kebanyakan situs web. Sebuah situs modern bukan satu codebase — melainkan kumpulan script dari puluhan vendor: analytics, chat widget, A/B testing, tag manager, banner consent, session replay. Setiap script itu berjalan dengan kekuatan yang sama seperti kode milik situs itu sendiri. Kalau salah satunya dibobol, penyerang mewarisi kepercayaan dari setiap situs yang memuatnya.</p>
+<p>Tiga hal membuat serangan ini luar biasa efektif:</p>
+<ol>
+<li><strong>Jalur pengirimannya memang dipercaya secara desain.</strong> Snippet Optimizely <em>memang seharusnya</em> menjalankan JavaScript sembarangan — itulah fungsi A/B testing. Script jahat yang tersembunyi di project pelanggan terlihat seperti eksperimen yang sah.</li>
+<li><strong>Payload-nya berevolusi di tempat.</strong> Kode itu diperbarui berkali-kali sepanjang hari, menambahkan pencurian kartu berjam-jam setelah infeksi pertama. Situs yang memeriksa snippet-nya di pagi hari dan tidak menemukan apa-apa bisa saja sudah menyajikan skimmer di sore hari.</li>
+<li><strong>Jaring pengamannya sebagian besar tidak ada.</strong> Dari organisasi terdampak yang diperiksa para peneliti, hanya sekitar <strong>15%</strong> yang memiliki <span class="gterm" data-term="Content Security Policy" data-def="Header keamanan browser yang membatasi dari mana sebuah halaman boleh memuat script, style, dan resource lain, serta ke mana halaman itu boleh mengirim data — pertahanan utama terhadap script pihak ketiga yang sudah diracuni.">Content Security Policy</span> yang sepenuhnya memblokir serangan itu. CSP yang ketat — yang membatasi dari mana script boleh dimuat dan ke mana data boleh dikirim — adalah satu kontrol yang bisa menghentikan script pihak ketiga yang sudah diracuni, bahkan setelah vendor-nya dibobol. Kebanyakan situs tidak memilikinya dengan cukup ketat.</li>
+</ol>
+<p>Detail soal pencurian kartu itu layak diingat: kartu yang diketik ke form milik situs itu sendiri terekspos, sementara kartu yang dimasukkan lewat kotak pembayaran yang di-host payment processor tidak. Menyimpan field pembayaran di dalam iframe payment provider bukan sekadar checkbox kepatuhan PCI — itu batas blast radius yang nyata. Pada 16 November, itulah perbedaan antara terekspos dan aman.</p>
+<h2 id="kalau-kamu-mengunjungi-salah-satu-situs-itu-pada-16-november"><span class="hnum">06</span>Kalau kamu mengunjungi salah satu situs itu pada 16 November</h2>
+<ul>
+<li><strong>Perbarui iPhone atau iPad kamu</strong> ke iOS 18.7.3 atau lebih baru, atau iOS 26.3 atau lebih baru. Kalau tidak bisa diperbarui, aktifkan Lockdown Mode.</li>
+<li><strong>Periksa mutasi kartu kamu</strong> untuk transaksi yang tidak kamu kenali, dan segera beri tahu bank kalau ada tagihan aneh. Kalau kamu mengetik kartu ke form sebuah situs pada 16 November, pertimbangkan untuk meminta kartu baru ke bank.</li>
+<li><strong>Periksa transaksi kripto</strong> yang kamu lakukan pada 16 November. Selalu bandingkan alamat wallet lengkap, karakter demi karakter, sebelum mengirim uang.</li>
+<li><strong>Keluar lalu masuk lagi</strong> ke akun yang kamu pakai hari itu, dan ganti password yang kamu masukkan di situs yang terdampak.</li>
+<li><strong>Waspada terhadap penipuan susulan.</strong> Akan ada email dan pesan palsu &quot;akun kamu dibobol&quot; yang memanfaatkan berita ini. Buka situs perusahaan langsung, bukan lewat tautan di pesan.</li>
+</ul>
+<h2 id="kalau-kamu-mengelola-sebuah-situs-web"><span class="hnum">07</span>Kalau kamu mengelola sebuah situs web</h2>
+<ul>
+<li><strong>Periksa Project JavaScript Optimizely kamu</strong> dan custom code setiap eksperimen untuk mencari script yang bukan kamu tulis — terutama yang memuat kode dari domain tak dikenal atau memakai <code>atob(</code> atau <code>eval(</code>.</li>
+<li><strong>Periksa change history Optimizely</strong> untuk edit yang dibuat pada atau sekitar 16 November.</li>
+<li><strong>Rotasi kredensial dan API token Optimizely</strong>, beserta token sesi atau secret apa pun yang mungkin bisa dibaca dari browser.</li>
+<li><strong>Anggap detail kartu yang diketik ke form milikmu sendiri pada 16 November mungkin sudah terekspos</strong>, dan bicarakan dengan payment provider kamu.</li>
+<li><strong>Terapkan Content Security Policy yang ketat</strong> yang membatasi dari mana script boleh dimuat dan ke mana data boleh dikirim — dan sebisa mungkin jauhkan script pihak ketiga dari halaman pembayaran.</li>
+</ul>
+<h2 id="pelajarannya"><span class="hnum">08</span>Pelajarannya</h2>
+<p>Penyerang tidak pernah perlu membobol Zoom, IKEA, atau satu bank pun. Mereka membobol satu layanan yang dipercayai semua pihak itu, lalu membiarkan kepercayaan itu membawa kode jahat ke jutaan pengunjung. Keamanan situs web kamu bukan hanya kode yang kamu tulis — melainkan setiap script yang kamu izinkan dijalankan orang lain di halamanmu. Ketahui script pihak ketiga apa saja yang berjalan di situs kamu, jauhkan dari halaman pembayaran, dan batasi apa yang boleh mereka muat serta ke mana mereka boleh mengirim data. Kontrol yang bisa menghentikan serangan ini adalah kontrol yang sama yang menghentikan serangan berikutnya — dan kebanyakan situs masih belum menerapkannya.</p>
+<hr>
+<p><em>Sumber: <a href="https://www.pymnts.com/cybersecurity/2026/malware-targets-crypto-and-iphone-users-on-178-popular-sites/">Malware targets crypto and iPhone users on 178 popular sites (PYMNTS, 17 November 2026)</a>; <a href="https://www.reef-sentinel.net/n/271">One hacked tool, 178 brands (Reef Sentinel, 17 November 2026)</a>; <a href="https://www.storyboard18.com/digital/bbc-cnn-zoom-among-178-organisations-targeted-in-crypto-stealing-malware-attack-114914.htm">BBC, CNN, Zoom among 178 organisations targeted in crypto-stealing malware attack (Storyboard18, 17 November 2026)</a>. Laporan tambahan: Report URI (Scott Helme) dan pemberitahuan status layanan Optimizely, 17 November 2026.</em></p><div class="author-box"><div class="kicker"><span class="dot"></span>ditulis oleh</div><p><strong>kou</strong> mendokumentasikan threat intel, attack surface, dan pertahanan praktis — dari sisi gelap internet.</p></div><div class="pager"><a href="/id/artikel/codex-security-cli/"><span class="dir">← sebelumnya</span><span class="t">Codex Security CLI: Pemindai Open-Source OpenAI yang Menemukan, Memvalidasi, dan Memperbaiki Bug</span></a><span></span></div></div>
+                <aside class="toc"><h4>Daftar isi</h4><ol><li style="margin-left:0px"><a href="#bagaimana-serangan-ini-ketahuan">Bagaimana serangan ini ketahuan</a></li><li style="margin-left:0px"><a href="#apa-yang-dilakukan-kode-jahat-itu">Apa yang dilakukan kode jahat itu</a></li><li style="margin-left:0px"><a href="#linimasanya">Linimasanya</a></li><li style="margin-left:0px"><a href="#bagaimana-perusahaan-perusahaan-itu-merespons">Bagaimana perusahaan-perusahaan itu merespons</a></li><li style="margin-left:0px"><a href="#kenapa-serangan-ini-penting">Kenapa serangan ini penting</a></li><li style="margin-left:0px"><a href="#kalau-kamu-mengunjungi-salah-satu-situs-itu-pada-16-november">Kalau kamu mengunjungi salah satu situs itu pada 16 November</a></li><li style="margin-left:0px"><a href="#kalau-kamu-mengelola-sebuah-situs-web">Kalau kamu mengelola sebuah situs web</a></li><li style="margin-left:0px"><a href="#pelajarannya">Pelajarannya</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>catatan keamanan dari sisi gelap internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="cari artikel…" aria-label="search">
+    <div class="search-hint">ketik minimal 2 huruf · esc untuk tutup · ctrl+k dari mana saja</div>
+    <div class="search-results" data-empty="nggak ketemu — coba kata kunci lain."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

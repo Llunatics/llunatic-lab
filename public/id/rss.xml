@@ -4,7 +4,11 @@
 <title>llunatic-lab (id)</title><link>https://lab.llunaticsys.web.id/id/</link>
 <description>Catatan keamanan dari sisi gelap internet</description>
 <language>id</language>
-<item><title>Codex Security CLI: Pemindai Open-Source OpenAI yang Menemukan, Memvalidasi, dan Memperbaiki Bug</title>
+<item><title>Satu Tool Diretas, 178 Brand Kena: Serangan Supply-Chain Optimizely</title>
+            <link>https://lab.llunaticsys.web.id/id/artikel/optimizely-supply-chain-attack-178-sites/</link>
+            <description>Pada 16 November 2026, pengunjung Zoom, BBC, HSBC, IKEA, dan 174 situs besar lainnya disuguhi malware — bukan karena perusahaan-perusahaan itu diretas, melainkan karena satu tool A/B testing yang mereka semua percayai berhasil dibobol. Begini cara satu script beracun menjangkau jutaan browser dalam 19 jam.</description>
+            <pubDate>Fri, 20 Nov 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/optimizely-supply-chain-attack-178-sites/</guid></item><item><title>Codex Security CLI: Pemindai Open-Source OpenAI yang Menemukan, Memvalidasi, dan Memperbaiki Bug</title>
             <link>https://lab.llunaticsys.web.id/id/artikel/codex-security-cli/</link>
             <description>Codex Security CLI dari OpenAI memindai repo kamu, memperdebatkan temuannya sendiri sampai hanya yang asli yang tersisa, lalu menyusun patch dan memeriksanya ulang. Versi 0.10.0 baru saja membuatnya bisa dilanjutkan, dibatasi biayanya, dan siap CI — begini cara menjalankannya, plus dua hal yang tidak boleh dilewatkan.</description>
             <pubDate>Wed, 18 Nov 2026 00:00:00 -0000</pubDate>
@@ -80,10 +84,6 @@
             <link>https://lab.llunaticsys.web.id/id/artikel/nuclei-poc-to-template/</link>
             <description>Saat CVE kritis muncul, PoC exploit beredar di GitHub dalam hitungan jam — dan pemindaian massal menyusul. Nuclei memungkinkanmu memindai infrastrukturmu sendiri secepat itu, dengan mengubah proof of concept menjadi template YAML yang bisa dibagikan. Ini cara kerja tool-nya, cara menulis template pertamamu, dan pagar pengaman agar tidak berbalik menyerangmu.</description>
             <pubDate>Mon, 19 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/id/artikel/nuclei-poc-to-template/</guid></item><item><title>Double Extortion: Cara Kerja Ransomware Modern yang Sebenarnya</title>
-            <link>https://lab.llunaticsys.web.id/id/artikel/double-extortion-ransomware-playbook/</link>
-            <description>Ransomware modern tidak peduli dengan backup kamu — penyerang mencuri data dulu, baru mengenkripsi, lalu menekanmu dari tiga arah sekaligus. Berikut playbook lengkapnya, dari akses awal sampai leak site, berdasarkan laporan Semperis Oktober 2026 dan kasus-kasus nyata bulan ini.</description>
-            <pubDate>Sun, 18 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/id/artikel/double-extortion-ransomware-playbook/</guid></item>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/nuclei-poc-to-template/</guid></item>
 </channel>
 </rss>

@@ -41,10 +41,22 @@
   "en": "The device or hardware that holds a passkey's private key and releases it only after a local biometric or PIN check — e.g. a phone, a laptop fingerprint reader, or a security key.",
   "id": "Perangkat atau hardware yang menyimpan private key passkey dan hanya melepasnya setelah verifikasi biometrik atau PIN lokal — mis. ponsel, pembaca sidik jari laptop, atau security key."
  },
+ "AVX-512 VBMI": {
+  "en": "An x86-64 instruction-set extension (AVX-512 Vector Byte Manipulation Instructions) that lets a CPU process 64 bytes at once; the HotSpot Base64 intrinsic uses it, which is why Java4Shell only affects CPUs with this feature.",
+  "id": "Ekstensi instruction-set x86-64 (AVX-512 Vector Byte Manipulation Instructions) yang memungkinkan CPU memproses 64 byte sekaligus; intrinsic Base64 HotSpot memakainya, sehingga Java4Shell hanya menyerang CPU dengan fitur ini."
+ },
+ "Base64": {
+  "en": "A text encoding that represents binary data with 64 printable ASCII characters (A-Z, a-z, 0-9, + and /), with = as padding; used everywhere from tokens and JWTs to file uploads.",
+  "id": "Encoding teks yang merepresentasikan data biner dengan 64 karakter ASCII yang bisa dicetak (A-Z, a-z, 0-9, + dan /), dengan = sebagai padding; dipakai di mana-mana, dari token dan JWT sampai unggahan file."
+ },
  "blue team": "The defenders — the side that protects, monitors, and responds to attacks on systems.",
  "Brotli": {
   "en": "A compression format by Google, used alongside gzip to shrink HTTP traffic; Node.js bundles a Brotli decoder in node:zlib.",
   "id": "Format kompresi buatan Google, dipakai bersama gzip untuk mengecilkan traffic HTTP; Node.js membundel decoder Brotli di node:zlib."
+ },
+ "C2 compiler": {
+  "en": "HotSpot's most aggressive just-in-time compiler tier; it turns hot bytecode into optimized native code and can substitute hand-written intrinsic stubs for some library methods.",
+  "id": "Tier compiler just-in-time paling agresif di HotSpot; ia mengubah bytecode yang sering berjalan menjadi kode native yang dioptimasi dan bisa mengganti beberapa metode library dengan stub intrinsic tulisan tangan."
  },
  "canary": {
   "en": "A decoy system or file deliberately exposed to attackers so that any interaction with it signals an intrusion attempt — used by researchers to catch exploitation in the wild.",
@@ -165,6 +177,10 @@
   "en": "A decoy system deliberately exposed to attract attackers, so defenders can observe their techniques without risking real assets.",
   "id": "Sistem umpan yang sengaja diekspos untuk menarik penyerang, agar defender bisa mengamati teknik mereka tanpa mempertaruhkan aset asli."
  },
+ "HotSpot": {
+  "en": "The Java Virtual Machine used by OpenJDK and Oracle Java SE; it interprets bytecode and compiles hot methods just-in-time, including the Base64 decoder intrinsic affected by Java4Shell.",
+  "id": "Java Virtual Machine yang dipakai OpenJDK dan Oracle Java SE; ia menginterpretasi bytecode dan mengompilasi metode yang sering berjalan secara just-in-time, termasuk intrinsic decoder Base64 yang terkena Java4Shell."
+ },
  "HTTP/2": {
   "en": "The second major version of the HTTP protocol: multiplexes many requests over a single connection, cutting latency — but its implementation adds complex, memory-sensitive code to the server.",
   "id": "Versi besar kedua dari protokol HTTP: menggabungkan banyak request dalam satu koneksi sehingga latensi turun — tapi implementasinya menambah kode kompleks yang sensitif terhadap memori di server."
@@ -193,6 +209,22 @@
   "en": "A bug where a calculation exceeds the maximum value its data type can hold, so the value wraps around to a much smaller (or negative) number — corrupting lengths, offsets, or memory layouts an attacker can abuse.",
   "id": "Bug ketika hasil perhitungan melampaui nilai maksimum yang bisa ditampung tipe datanya, sehingga nilainya melingkar menjadi angka yang jauh lebih kecil (atau negatif) — merusak panjang, offset, atau tata letak memori yang bisa disalahgunakan penyerang."
  },
+ "intrinsic": {
+  "en": "A hand-written machine-code stub that the JIT compiler substitutes for a library method instead of compiling its Java source — faster, but a bug in the stub bypasses all the safety of the Java code it replaces.",
+  "id": "Stub kode mesin tulisan tangan yang disubstitusi JIT compiler untuk sebuah metode library alih-alih mengompilasi sumber Javanya — lebih cepat, tetapi bug di stub itu melewati semua keamanan kode Java yang digantikannya."
+ },
+ "Java4Shell": {
+  "en": "Nickname for CVE-2026-114938, a heap out-of-bounds write in HotSpot's x86-64 Base64 decoder intrinsic; a malformed padded Base64 tail makes the JVM write 62 bytes past a heap buffer, enabling heap leaks (JavaBleed) and, in some applications, unauthenticated remote code execution.",
+  "id": "Julukan untuk CVE-2026-114938, out-of-bounds write di heap pada intrinsic decoder Base64 x86-64 milik HotSpot; ekor Base64 malformed ber-padding membuat JVM menulis 62 byte melewati buffer heap, memungkinkan kebocoran heap (JavaBleed) dan, pada beberapa aplikasi, remote code execution tanpa autentikasi."
+ },
+ "JavaBleed": {
+  "en": "The heap-memory disclosure stage of a Java4Shell exploit: corrupted buffer sizes make an application echo extra heap memory — private keys, tokens, PII — in its responses.",
+  "id": "Tahap disclosure memori heap dalam exploit Java4Shell: ukuran buffer yang rusak membuat aplikasi menggemakan memori heap tambahan — private key, token, PII — di dalam responsenya."
+ },
+ "JIT": {
+  "en": "Just-in-time compilation: the JVM compiles frequently-run bytecode into native machine code while the program runs, instead of interpreting it every time.",
+  "id": "Just-in-time compilation: JVM mengompilasi bytecode yang sering berjalan menjadi kode mesin native saat program berjalan, alih-alih menginterpretasinya setiap kali."
+ },
  "KEV": {
   "en": "CISA's Known Exploited Vulnerabilities catalog: a shortlist of flaws confirmed exploited in the wild. US federal agencies must remediate entries by a set deadline — practitioners treat every listing as 'patch now'.",
   "id": "Katalog Known Exploited Vulnerabilities milik CISA: daftar singkat celah yang terbukti dieksploitasi di lapangan. Instansi federal AS wajib memperbaikinya sebelum tenggat tertentu — praktisi memperlakukan setiap entri sebagai 'patch sekarang'."
@@ -200,6 +232,10 @@
  "knowledge-based authentication": {
   "en": "Identity verification by asking questions only the real person should know — date of birth, account numbers, past addresses — now weakened by how much of that data has leaked in breaches.",
   "id": "Verifikasi identitas dengan mengajukan pertanyaan yang seharusnya hanya diketahui orang aslinya — tanggal lahir, nomor rekening, alamat lama — yang kini melemah karena banyaknya data itu bocor dalam pembobolan."
+ },
+ "Known Exploited Vulnerabilities": {
+  "en": "CISA's KEV catalog: the official list of vulnerabilities confirmed exploited in the wild, with binding patch deadlines for US federal agencies.",
+  "id": "Katalog KEV milik CISA: daftar resmi celah yang terkonfirmasi dieksploitasi di lapangan, beserta tenggat patch yang mengikat bagi instansi federal AS."
  },
  "lateral movement": {
   "en": "An attacker's movement from one compromised machine to others inside the same network, hunting for higher-value targets like domain controllers.",
@@ -286,6 +322,10 @@
  "Onigmo": {
   "en": "The regular expression engine built into Ruby. GitLab hands CI/CD configuration patterns to Onigmo for compilation, so a bug in Onigmo can become a bug in GitLab.",
   "id": "Mesin regular expression yang tertanam di Ruby. GitLab menyerahkan pola dari konfigurasi CI/CD ke Onigmo untuk di-compile, sehingga bug di Onigmo bisa menjadi bug di GitLab."
+ },
+ "OpenJDK": {
+  "en": "The open-source reference implementation of the Java platform, maintained by Oracle and the community; most Java distributions (Corretto, Temurin, Zulu, and others) are built from it.",
+  "id": "Implementasi referensi open-source dari platform Java, dikelola Oracle dan komunitas; sebagian besar distribusi Java (Corretto, Temurin, Zulu, dan lain-lain) dibangun darinya."
  },
  "OpenSSH": {
   "en": "The open-source implementation of the SSH protocol, maintained by the OpenBSD project; its server component (sshd) is the standard way to administer Linux systems remotely.",

@@ -4,7 +4,11 @@
 <title>llunatic-lab (en)</title><link>https://lab.llunaticsys.web.id/</link>
 <description>Security notes from the dark side of the internet</description>
 <language>en</language>
-<item><title>One Hacked Tool, 178 Brands: The Optimizely Supply-Chain Attack</title>
+<item><title>Java4Shell: The Base64 Bug That Turns a Decoder Into a Remote Shell</title>
+            <link>https://lab.llunaticsys.web.id/artikel/java4shell-cve-2026-114938/</link>
+            <description>On 17 November 2026, a one-character input — 64 A&#x27;s and a single &#x27;=&#x27; — was shown to corrupt the memory of the world&#x27;s most widely used runtime. Java4Shell (CVE-2026-114938) hides in the JVM&#x27;s Base64 decoder, and it only needs a server that decodes attacker-controlled text.</description>
+            <pubDate>Sun, 22 Nov 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/artikel/java4shell-cve-2026-114938/</guid></item><item><title>One Hacked Tool, 178 Brands: The Optimizely Supply-Chain Attack</title>
             <link>https://lab.llunaticsys.web.id/artikel/optimizely-supply-chain-attack-178-sites/</link>
             <description>On 16 November 2026, visitors to Zoom, the BBC, HSBC, IKEA, and 174 other major sites were served malware — not because any of those companies were hacked, but because a single A/B testing tool they all trusted was. Here&#x27;s how one poisoned script reached millions of browsers in 19 hours.</description>
             <pubDate>Fri, 20 Nov 2026 00:00:00 -0000</pubDate>
@@ -80,10 +84,6 @@
             <link>https://lab.llunaticsys.web.id/artikel/mcp-server-audit-scan/</link>
             <description>AI agents now browse the web, run code, and query databases through MCP servers — and attackers have noticed. Here&#x27;s how tool poisoning works, why October 2026 turned MCP into a headline threat, and how to audit your own setup with Invariant Labs&#x27; mcp-scan before a plugin audits you.</description>
             <pubDate>Wed, 21 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/artikel/mcp-server-audit-scan/</guid></item><item><title>From PoC to Detection in Minutes: Your First Nuclei Template</title>
-            <link>https://lab.llunaticsys.web.id/artikel/nuclei-poc-to-template/</link>
-            <description>When a critical CVE drops, exploit PoCs hit GitHub within hours — and mass scanning follows. Nuclei lets you scan your own estate just as fast by turning a proof of concept into a shareable YAML template. Here&#x27;s how the tool works, how to write your first template, and the guardrails that keep it from burning you.</description>
-            <pubDate>Mon, 19 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/artikel/nuclei-poc-to-template/</guid></item>
+            <guid>https://lab.llunaticsys.web.id/artikel/mcp-server-audit-scan/</guid></item>
 </channel>
 </rss>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>phpAfterShell: Audit Your PHP Fleet Before a Session Becomes a Shell — llunatic-lab</title>
+<meta name="description" content="On 19 November 2026, PHP shipped fixes for seven critical flaws rated 9.2 — and two of them turn the language&#x27;s own session handling into remote code execution. If you patched for PHP2Shell in October, you are still exposed. Here is a hands-on audit you can run today.">
+<meta property="og:title" content="phpAfterShell: Audit Your PHP Fleet Before a Session Becomes a Shell">
+<meta property="og:description" content="On 19 November 2026, PHP shipped fixes for seven critical flaws rated 9.2 — and two of them turn the language&#x27;s own session handling into remote code execution. If you patched for PHP2Shell in October, you are still exposed. Here is a hands-on audit you can run today.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/phpaftershell-php-fleet-audit.jpg"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/phpaftershell-php-fleet-audit/"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/phpaftershell-php-fleet-audit/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/arsip/">Archive</a>
+      <a href="/tentang/">About</a>
+      <a class="lang-toggle" href="/id/artikel/phpaftershell-php-fleet-audit/">ID</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>article</div>
+              <h1>phpAfterShell: Audit Your PHP Fleet Before a Session Becomes a Shell</h1>
+              <div class="meta"><span>23 November 2026</span><span>·</span>
+              <span>9 min read</span><a class="tag" href="/tag/hands-on/">hands-on</a> <a class="tag" href="/tag/php/">php</a> <a class="tag" href="/tag/vulnerability/">vulnerability</a> <a class="tag" href="/tag/patching/">patching</a></div>
+              <img class="cover" src="/assets/covers/phpaftershell-php-fleet-audit.jpg" alt="phpAfterShell: Audit Your PHP Fleet Before a Session Becomes a Shell">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>PHP runs a staggering share of the web — WordPress, Laravel, Drupal, Magento, and millions of custom apps in between. On 19 November 2026, the PHP team released security updates for every supported branch — 8.2.36, 8.3.37, 8.4.28, and 8.5.13 — closing 17 advisories covering 18 <span class="gterm" data-term="CVE" data-def="Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.">CVE</span> identifiers. Seven of them are rated Critical, each scoring 9.2 under CVSS 4.0. The headline pair, nicknamed <span class="gterm" data-term="phpAfterShell" data-def="Nickname for the pair of critical PHP session vulnerabilities CVE-2026-115560 and CVE-2026-126714, fixed 19 November 2026; both can turn PHP&#x27;s own session handling into unauthenticated remote code execution.">phpAfterShell</span>, hides in the most boring part of the language: how it stores your login session.</p>
+<p>Here is the part that should make you stop scrolling. The October PHP2Shell fixes do <strong>not</strong> contain the phpAfterShell fixes. If your team patched in October, ticked the box, and moved on, your servers are still vulnerable to these two. And because the flaws live in PHP&#x27;s default session handling — not in some exotic extension — the blast radius is every PHP app that lets users log in and upload files. Which is to say, nearly all of them.</p>
+<p>This article is a hands-on audit. No theory for its own sake: every section below ends in a command you can run or a setting you can check.</p>
+<h2 id="what-phpaftershell-actually-is"><span class="hnum">01</span>What phpAfterShell actually is</h2>
+<p>The nickname covers two vulnerabilities in PHP&#x27;s <code>ext-session</code> extension, both rated CVSS 4.0 9.2 and both capable of unauthenticated <span class="gterm" data-term="remote code execution" data-def="An attacker running their own code on a victim system, usually the most severe outcome of a vulnerability.">remote code execution</span>:</p>
+<p><strong><span class="gterm" data-term="CVE" data-def="Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.">CVE</span>-2026-115560 — the session serializer mismatch.</strong> PHP&#x27;s session upload-progress feature records the progress of a file upload inside the user&#x27;s session, before any of your application code runs. It builds the session key by appending attacker-controlled values — such as the uploaded file&#x27;s name — to a fixed prefix. The problem is a format disagreement: upload progress stores that key with one serializer (<code>php_binary</code> or <code>php_serialize</code>), while another process may read the same session with the incompatible <code>php</code> serializer. The <code>php</code> serializer uses the pipe character (<code>|</code>) to separate a session key from its value, so a <code>|</code> smuggled inside the attacker-controlled key makes part of the key get read back as serialized object data. That is <span class="gterm" data-term="object injection" data-def="An attack where attacker-controlled data is interpreted as a serialized object during unserialization, letting the attacker instantiate arbitrary classes — often the first step toward remote code execution when a gadget chain exists.">object injection</span> by way of a filename — and with a suitable <span class="gterm" data-term="gadget chain" data-def="A sequence of existing classes and methods in an application that, when chained together through object injection, produces an unintended effect such as file deletion or code execution — the attacker supplies no code, only the trigger.">gadget chain</span> in the application, it becomes code execution. The upload-progress feature dates back to PHP 5.4.0.</p>
+<p><strong><span class="gterm" data-term="CVE" data-def="Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.">CVE</span>-2026-126714 — the partially overwritten session file.</strong> PHP&#x27;s default <code>files</code> session handler writes updated session data into the existing session file without truncating it first. If the write is interrupted, the file ends up holding a mix of new data and a trailing chunk of the old session. When PHP later reads and unserializes that mixture, bytes that were once harmless string content can be reinterpreted as serialized objects — again, <span class="gterm" data-term="object injection" data-def="An attack where attacker-controlled data is interpreted as a serialized object during unserialization, letting the attacker instantiate arbitrary classes — often the first step toward remote code execution when a gadget chain exists.">object injection</span>, again potentially <span class="gterm" data-term="remote code execution" data-def="An attacker running their own code on a victim system, usually the most severe outcome of a vulnerability.">remote code execution</span> if the application has a gadget chain. This code has been present since PHP 4.1.0.</p>
+<p>A third flaw in the same release deserves a line of its own: <strong><span class="gterm" data-term="CVE" data-def="Common Vulnerabilities and Exposures — the official numbering system for published security vulnerabilities.">CVE</span>-2026-129289</strong>, a <span class="gterm" data-term="PHP-FPM" data-def="PHP FastCGI Process Manager — the standard way PHP runs behind nginx or Apache, as a pool of persistent worker processes that handle web requests.">PHP-FPM</span> request-smuggling bug. When a front end reuses FastCGI connections and an application does not read the whole request body, leftover bytes from one request can be processed as the start of the next one — letting an unauthenticated attacker bypass front-end routing and run PHP code.</p>
+<p>As of 20 November, neither flaw had been seen exploited in the wild, and neither was listed in CISA&#x27;s <span class="gterm" data-term="Known Exploited Vulnerabilities" data-def="CISA&#x27;s KEV catalog: the official list of vulnerabilities confirmed exploited in the wild, with binding patch deadlines for US federal agencies.">Known Exploited Vulnerabilities</span> catalog. That is the good news. The bad news is that the same was true of Java4Shell for about a day.</p>
+<h2 id="step-1-find-every-php-you-run"><span class="hnum">02</span>Step 1: find every PHP you run</h2>
+<p>The CLI binary lies. <code>php -v</code> tells you about the command-line interpreter, not the workers serving your website. Inventory all of them:</p>
+<pre><code class="language-bash"># every PHP binary on the box, with versions
+for bin in /usr/bin/php* /usr/local/bin/php* /opt/*/bin/php; do
+  [ -x &quot;$bin&quot; ] &amp;&amp; echo &quot;$bin: $($bin -v 2&gt;/dev/null | head -1)&quot;
+done
+
+# every running PHP-FPM worker and its version
+ps aux | grep -E &#x27;php-fpm: (pool|master)&#x27; | grep -v grep
+php-fpm -v 2&gt;/dev/null; php-fpm8.4 -v 2&gt;/dev/null; php-fpm8.3 -v 2&gt;/dev/null</code></pre>
+<p>Then check the containers and the appliances. PHP hides inside Docker images, third-party products, and vendor appliances that bundle their own runtime — those do not appear in your package manager, and updating the system PHP does not fix them. Vendor appliances need the vendor&#x27;s patch.</p>
+<div class="tbl-wrap"><table><thead><tr><th>Branch</th><th>Vulnerable</th><th>Fixed in</th></tr></thead><tbody><tr><td>PHP 8.5</td><td>8.5.0 – 8.5.12</td><td><strong>8.5.13</strong></td></tr><tr><td>PHP 8.4</td><td>8.4.0 – 8.4.27</td><td><strong>8.4.28</strong></td></tr><tr><td>PHP 8.3</td><td>8.3.0 – 8.3.36</td><td><strong>8.3.37</strong></td></tr><tr><td>PHP 8.2</td><td>8.2.0 – 8.2.35</td><td><strong>8.2.36</strong></td></tr></tbody></table></div>
+<p>PHP 8.6.0, released the same day, also includes the fixes. PHP 8.1 and older receive no patches at all — they are end of life, and PHP 8.2 itself reaches end of life on 31 December 2026, so this is likely one of its last security releases. If you are still on 8.1, the fix is a migration, not a patch.</p>
+<h2 id="step-2-check-the-three-session-settings-that-matter"><span class="hnum">03</span>Step 2: check the three session settings that matter</h2>
+<p>Run these against the configuration that actually serves web requests — the FPM pool or <code>phpinfo()</code> on a throwaway page you delete afterwards, not the CLI <code>php.ini</code>, which often differs:</p>
+<pre><code class="language-bash">php -i | grep -iE &#x27;session\.(upload_progress\.enabled|serialize_handler|save_handler)&#x27;</code></pre>
+<p>What you are looking for:</p>
+<ul>
+<li><strong><code>session.upload_progress.enabled</code></strong> — the switch for CVE-2026-115560. If your app does not show upload progress bars, it should be <code>0</code>. Note the trap: the fixed releases now ship with upload progress <strong>disabled by default</strong>, but a <code>php.ini</code>, distribution package, or hosting panel that turns it on keeps it on. Verify the effective value; do not assume the upgrade flipped it.</li>
+<li><strong><code>session.serialize_handler</code></strong> — the mismatch only happens when different processes read the same session data with different serializers. Every FPM pool, virtual host, application, and CLI job that touches shared session storage must agree on one value. The default <code>php</code> is fine, as long as it is the <em>same</em> everywhere.</li>
+<li><strong><code>session.save_handler</code></strong> — <code>files</code> is the affected handler for CVE-2026-126714, and it is also the default. Switching to Redis or Memcached for sessions is a legitimate hardening step, but it is a migration, not an emergency patch: patch first.</li>
+</ul>
+<h2 id="step-3-check-php-fpm-connection-reuse"><span class="hnum">04</span>Step 3: check PHP-FPM connection reuse</h2>
+<p>CVE-2026-129289 needs a front end that reuses FastCGI connections. Check yours:</p>
+<pre><code class="language-bash"># nginx: connection reuse to PHP-FPM
+grep -rn &#x27;fastcgi_keep_conn&#x27; /etc/nginx/ 2&gt;/dev/null
+
+# Apache: connection reuse to PHP-FPM
+grep -rn &#x27;enablereuse&#x27; /etc/apache2/ /etc/httpd/ 2&gt;/dev/null</code></pre>
+<p>If either is enabled, that configuration is part of the exposure. Disabling reuse is a valid stopgap while you patch; it is not a substitute for the patch.</p>
+<h2 id="step-4-patch-restart-and-verify-the-workers-not-the-binary"><span class="hnum">05</span>Step 4: patch, restart, and verify the workers — not the binary</h2>
+<p>Upgrade to the fixed release for your branch, then restart or reload the PHP services. Then verify that the <strong>web-facing workers</strong> are running the new version, because the CLI binary and the FPM workers can disagree after an upgrade:</p>
+<pre><code class="language-bash">sudo systemctl restart php8.4-fpm   # adjust for your branch
+php -v                                # the CLI — necessary, not sufficient
+
+# the workers: check the version your web server actually serves
+curl -s -D - https://your-site.example.com/ -o /dev/null | grep -i &#x27;x-powered-by&#x27;</code></pre>
+<p>A <code>phpinfo()</code> page on a staging host shows the running version directly — create it, read it, delete it. If the header still shows the old version, the old workers are still alive, and the patch has not taken effect where it counts.</p>
+<h2 id="step-5-the-stopgap-if-you-cannot-patch-today"><span class="hnum">06</span>Step 5: the stopgap, if you cannot patch today</h2>
+<p>If patching has to wait, reduce the exposed surface now — and treat every measure below as temporary, not as a fix:</p>
+<pre><code class="language-ini">; php.ini — or the FPM pool config, where it cannot be overridden
+session.upload_progress.enabled = 0</code></pre>
+<pre><code class="language-ini">; PHP-FPM pool config
+php_admin_flag[session.upload_progress.enabled] = off</code></pre>
+<p>Set it in <code>php.ini</code> or the pool configuration, before any request input is processed — an application-level <code>ini_set()</code> call is too late, because upload progress runs during request parsing, before your code executes. Then restart the workers. This closes the easy path for CVE-2026-115560, but it does nothing for CVE-2026-126714: the files-handler flaw does not depend on upload progress at all. If your application genuinely needs upload progress, keep it enabled only where it is used, and make sure every process sharing that session storage uses the same serializer.</p>
+<p>After changing serialization formats, consider expiring or migrating existing session data — records written under the old format can still be read back under the new one.</p>
+<h2 id="step-6-look-for-signs-someone-already-tried"><span class="hnum">07</span>Step 6: look for signs someone already tried</h2>
+<p>Patching proves nothing about the past. The NetSPI guidance is blunt on this point: if an unpatched PHP installation was reachable from the internet, treat it as potentially compromised pending investigation. Check for:</p>
+<ul>
+<li>Unusual PHP worker crashes, fatal errors, or unexpected child processes in your FPM and web server logs.</li>
+<li>Session-related errors, or bursts of failed unserialization warnings, around file-upload endpoints.</li>
+<li>Unexplained application behaviour — new files, changed files, or outbound connections from the PHP worker that do not match normal traffic.</li>
+</ul>
+<p>A failed exploitation attempt can crash a worker; a successful one rarely announces itself. If anything looks off, investigate before you call the incident closed.</p>
+<h2 id="the-lesson-that-outlives-the-patch"><span class="hnum">08</span>The lesson that outlives the patch</h2>
+<p>phpAfterShell is not a story about a weird edge case. It is a story about a feature most developers have never consciously enabled — upload progress — sitting on top of a default — file-based sessions — in a language that powers a huge fraction of the web. The attacker&#x27;s entry point is a filename in a multipart upload. The victim&#x27;s defence is a version number.</p>
+<p>That is why the audit above is ordered the way it is: inventory first, because you cannot patch a PHP you do not know exists; settings second, because the defaults are the exposure; patch third; and only then the forensics. The October PHP2Shell round taught the same lesson, and the teams that internalised it already had their inventories ready when November&#x27;s release landed. The ones that did not are now doing the same work under a 9.2.</p>
+<p>Run the six steps today. It takes less than an hour — and unlike the session files at the centre of this bug, what you find will not be overwritten by whatever comes next.</p><div class="author-box"><div class="kicker"><span class="dot"></span>written by</div><p><strong>kou</strong> documents what’s learned about threat intel, attack surface, and practical defense — from the dark side of the internet.</p></div><div class="pager"><a href="/artikel/java4shell-cve-2026-114938/"><span class="dir">← previous</span><span class="t">Java4Shell: The Base64 Bug That Turns a Decoder Into a Remote Shell</span></a><span></span></div></div>
+                <aside class="toc"><h4>Contents</h4><ol><li style="margin-left:0px"><a href="#what-phpaftershell-actually-is">What phpAfterShell actually is</a></li><li style="margin-left:0px"><a href="#step-1-find-every-php-you-run">Step 1: find every PHP you run</a></li><li style="margin-left:0px"><a href="#step-2-check-the-three-session-settings-that-matter">Step 2: check the three session settings that matter</a></li><li style="margin-left:0px"><a href="#step-3-check-php-fpm-connection-reuse">Step 3: check PHP-FPM connection reuse</a></li><li style="margin-left:0px"><a href="#step-4-patch-restart-and-verify-the-workers-not-the-binary">Step 4: patch, restart, and verify the workers — not the binary</a></li><li style="margin-left:0px"><a href="#step-5-the-stopgap-if-you-cannot-patch-today">Step 5: the stopgap, if you cannot patch today</a></li><li style="margin-left:0px"><a href="#step-6-look-for-signs-someone-already-tried">Step 6: look for signs someone already tried</a></li><li style="margin-left:0px"><a href="#the-lesson-that-outlives-the-patch">The lesson that outlives the patch</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>security notes from the dark side of the internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="search articles…" aria-label="search">
+    <div class="search-hint">type at least 2 characters · esc to close · ctrl+k anywhere</div>
+    <div class="search-results" data-empty="nothing found — try another keyword."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

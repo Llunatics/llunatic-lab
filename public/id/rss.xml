@@ -4,7 +4,11 @@
 <title>llunatic-lab (id)</title><link>https://lab.llunaticsys.web.id/id/</link>
 <description>Catatan keamanan dari sisi gelap internet</description>
 <language>id</language>
-<item><title>Java4Shell: Bug Base64 yang Mengubah Decoder Menjadi Remote Shell</title>
+<item><title>phpAfterShell: Audit Armada PHP-mu Sebelum Session Berubah Jadi Shell</title>
+            <link>https://lab.llunaticsys.web.id/id/artikel/phpaftershell-php-fleet-audit/</link>
+            <description>Pada 19 November 2026, PHP merilis perbaikan untuk tujuh celah kritis bernilai 9.2 — dan dua di antaranya mengubah penanganan session PHP sendiri menjadi remote code execution. Kalau kamu sudah menambal PHP2Shell di bulan Oktober, kamu masih rentan. Ini audit hands-on yang bisa kamu jalankan hari ini.</description>
+            <pubDate>Mon, 23 Nov 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/phpaftershell-php-fleet-audit/</guid></item><item><title>Java4Shell: Bug Base64 yang Mengubah Decoder Menjadi Remote Shell</title>
             <link>https://lab.llunaticsys.web.id/id/artikel/java4shell-cve-2026-114938/</link>
             <description>Pada 17 November 2026, sebuah input satu karakter — 64 huruf A dan satu &#x27;=&#x27; — terbukti mampu merusak memori runtime yang paling banyak dipakai di dunia. Java4Shell (CVE-2026-114938) bersembunyi di decoder Base64 milik JVM, dan yang ia butuhkan hanyalah sebuah server yang mendekode teks dari penyerang.</description>
             <pubDate>Sun, 22 Nov 2026 00:00:00 -0000</pubDate>
@@ -80,10 +84,6 @@
             <link>https://lab.llunaticsys.web.id/id/artikel/zeabur-plaintext-secrets-breach/</link>
             <description>Bukan zero-day. Bukan nation-state. Hanya token admin tanpa masa kedaluwarsa yang disimpan plaintext di config repo — dan itu merenggut 3,2 juta secret, root di 101 server pelanggan, dan akhirnya perusahaan itu sendiri.</description>
             <pubDate>Fri, 23 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/id/artikel/zeabur-plaintext-secrets-breach/</guid></item><item><title>Plugin Agen AI-mu Adalah Attack Surface Baru: Mengaudit MCP Server dengan mcp-scan</title>
-            <link>https://lab.llunaticsys.web.id/id/artikel/mcp-server-audit-scan/</link>
-            <description>Agen AI kini menjelajah web, menjalankan kode, dan mengquery database lewat MCP server — dan penyerang sudah menyadarinya. Begini cara kerja tool poisoning, kenapa Oktober 2026 menjadikan MCP headline threat, dan cara mengaudit setup-mu sendiri dengan mcp-scan dari Invariant Labs sebelum sebuah plugin mengauditmu.</description>
-            <pubDate>Wed, 21 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/id/artikel/mcp-server-audit-scan/</guid></item>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/zeabur-plaintext-secrets-breach/</guid></item>
 </channel>
 </rss>

@@ -37,16 +37,27 @@
           <div class="kicker"><span class="dot"></span>security notes — from the dark side of the internet</div>
           <h1>Security <em>notes</em> for those who refuse to be the <em>next victim.</em></h1>
           <p class="lede">Threat intel, tutorials, and cybersecurity case breakdowns. Technical terms come with explanations: just <strong>hover</strong> over dotted-underlined words.</p>
-          <div class="hero-meta"><span><b>29</b> articles</span>
+          <div class="hero-meta"><span><b>30</b> articles</span>
           <span><b>65</b> topics</span><span>published 3–4× a week</span></div>
         </div>
-        <div class="ticker"><div class="ticker-track"><span>Java4Shell: The Base64 Bug That Turns a Decoder Into a Remote Shell</span><span>One Hacked Tool, 178 Brands: The Optimizely Supply-Chain Attack</span><span>Codex Security CLI: OpenAI&#x27;s Open-Source Scanner That Finds, Validates, and Fixes Bugs</span><span>Passkeys: The Credential That Can&#x27;t Be Phished — and Why November 2026 Is the Tipping Point</span><span>Apache mod_http2 RCE (CVE-2026-119618): Check Your Server, Kill HTTP/2, Patch to 2.4.71</span><span>Able2Shell: How 33 Zero-Days Took N-central Offline — and the Patch That Didn&#x27;t Hold</span><span>Audit Your Own Repos for Leaked Secrets: A Hands-On Gitleaks and TruffleHog Walkthrough</span><span>sshole: The OpenSSH Bug That Logs You Into Accounts With No Password</span></div></div>
+        <div class="ticker"><div class="ticker-track"><span>phpAfterShell: Audit Your PHP Fleet Before a Session Becomes a Shell</span><span>Java4Shell: The Base64 Bug That Turns a Decoder Into a Remote Shell</span><span>One Hacked Tool, 178 Brands: The Optimizely Supply-Chain Attack</span><span>Codex Security CLI: OpenAI&#x27;s Open-Source Scanner That Finds, Validates, and Fixes Bugs</span><span>Passkeys: The Credential That Can&#x27;t Be Phished — and Why November 2026 Is the Tipping Point</span><span>Apache mod_http2 RCE (CVE-2026-119618): Check Your Server, Kill HTTP/2, Patch to 2.4.71</span><span>Able2Shell: How 33 Zero-Days Took N-central Offline — and the Patch That Didn&#x27;t Hold</span><span>Audit Your Own Repos for Leaked Secrets: A Hands-On Gitleaks and TruffleHog Walkthrough</span></div></div>
         </section>
         <section><div class="wrap">
           <div class="sec-head"><h2><span class="idx">01</span>Latest writings</h2>
           <a class="more" href="/arsip/">full archive →</a></div>
           <ol class="index-list"><li class="index-row rv">
       <span class="num">/01</span>
+      <div>
+        <h3><a href="/artikel/phpaftershell-php-fleet-audit/">phpAfterShell: Audit Your PHP Fleet Before a Session Becomes a Shell</a></h3>
+        <p class="excerpt">On 19 November 2026, PHP shipped fixes for seven critical flaws rated 9.2 — and two of them turn the language&#x27;s own session handling into remote code execution. If you patched for PHP2Shell in October, you are still exposed. Here is a hands-on audit you can run today.</p>
+        <div class="meta"><span>23 November 2026</span><span>·</span>
+        <span>9 min read</span><a class="tag" href="/tag/hands-on/">hands-on</a> <a class="tag" href="/tag/php/">php</a> <a class="tag" href="/tag/vulnerability/">vulnerability</a> <a class="tag" href="/tag/patching/">patching</a></div>
+      </div>
+      <img class="thumb" src="/assets/covers/phpaftershell-php-fleet-audit.jpg" alt="" loading="lazy">
+      <span class="arrow">→</span>
+    </li>
+<li class="index-row rv">
+      <span class="num">/02</span>
       <div>
         <h3><a href="/artikel/java4shell-cve-2026-114938/">Java4Shell: The Base64 Bug That Turns a Decoder Into a Remote Shell</a></h3>
         <p class="excerpt">On 17 November 2026, a one-character input — 64 A&#x27;s and a single &#x27;=&#x27; — was shown to corrupt the memory of the world&#x27;s most widely used runtime. Java4Shell (CVE-2026-114938) hides in the JVM&#x27;s Base64 decoder, and it only needs a server that decodes attacker-controlled text.</p>
@@ -57,7 +68,7 @@
       <span class="arrow">→</span>
     </li>
 <li class="index-row rv">
-      <span class="num">/02</span>
+      <span class="num">/03</span>
       <div>
         <h3><a href="/artikel/optimizely-supply-chain-attack-178-sites/">One Hacked Tool, 178 Brands: The Optimizely Supply-Chain Attack</a></h3>
         <p class="excerpt">On 16 November 2026, visitors to Zoom, the BBC, HSBC, IKEA, and 174 other major sites were served malware — not because any of those companies were hacked, but because a single A/B testing tool they all trusted was. Here&#x27;s how one poisoned script reached millions of browsers in 19 hours.</p>
@@ -68,7 +79,7 @@
       <span class="arrow">→</span>
     </li>
 <li class="index-row rv">
-      <span class="num">/03</span>
+      <span class="num">/04</span>
       <div>
         <h3><a href="/artikel/codex-security-cli/">Codex Security CLI: OpenAI&#x27;s Open-Source Scanner That Finds, Validates, and Fixes Bugs</a></h3>
         <p class="excerpt">OpenAI&#x27;s codex-security CLI scans your repo, argues with its own findings until only the real ones survive, then drafts the patch and re-checks it. Version 0.10.0 just made it resumable, budget-capped, and CI-ready — here&#x27;s how to run it, and the two catches nobody should skip.</p>
@@ -79,7 +90,7 @@
       <span class="arrow">→</span>
     </li>
 <li class="index-row rv">
-      <span class="num">/04</span>
+      <span class="num">/05</span>
       <div>
         <h3><a href="/artikel/passkeys-the-credential-that-cant-be-phished/">Passkeys: The Credential That Can&#x27;t Be Phished — and Why November 2026 Is the Tipping Point</a></h3>
         <p class="excerpt">Passwords are a shared secret, so they can be phished, guessed, and leaked. Passkeys replace them with a private key that never leaves your device — and in November 2026, Microsoft made them the first step of sign-in, not an optional extra.</p>
@@ -90,7 +101,7 @@
       <span class="arrow">→</span>
     </li>
 <li class="index-row rv">
-      <span class="num">/05</span>
+      <span class="num">/06</span>
       <div>
         <h3><a href="/artikel/apache-mod-http2-cve-2026-119618/">Apache mod_http2 RCE (CVE-2026-119618): Check Your Server, Kill HTTP/2, Patch to 2.4.71</a></h3>
         <p class="excerpt">Apache 2.4.71 fixes a critical heap-corruption flaw in mod_http2 that can lead to unauthenticated remote code execution — and Wiz found 64% of cloud environments exposed. This walkthrough shows you how to check whether your server is affected, disable HTTP/2 as a stopgap, and patch properly.</p>
@@ -98,17 +109,6 @@
         <span>9 min read</span><a class="tag" href="/tag/hands-on/">hands-on</a> <a class="tag" href="/tag/apache/">apache</a> <a class="tag" href="/tag/vulnerability/">vulnerability</a> <a class="tag" href="/tag/patching/">patching</a></div>
       </div>
       <img class="thumb" src="/assets/covers/apache-mod-http2-cve-2026-119618.jpg" alt="" loading="lazy">
-      <span class="arrow">→</span>
-    </li>
-<li class="index-row rv">
-      <span class="num">/06</span>
-      <div>
-        <h3><a href="/artikel/able2shell-n-central-33-zero-days/">Able2Shell: How 33 Zero-Days Took N-central Offline — and the Patch That Didn&#x27;t Hold</a></h3>
-        <p class="excerpt">On a Sunday in November, one researcher published 33 zero-days in N-able&#x27;s N-central with working exploits. By Monday the platform was offline worldwide; by Thursday, cryptominers were running on patched servers. This is the anatomy of a disclosure that broke every rule — and the week that followed.</p>
-        <div class="meta"><span>13 November 2026</span><span>·</span>
-        <span>9 min read</span><a class="tag" href="/tag/threat-intel/">threat-intel</a> <a class="tag" href="/tag/rmm/">rmm</a> <a class="tag" href="/tag/zero-day/">zero-day</a> <a class="tag" href="/tag/n-central/">n-central</a></div>
-      </div>
-      <img class="thumb" src="/assets/covers/able2shell-n-central-33-zero-days.jpg" alt="" loading="lazy">
       <span class="arrow">→</span>
     </li></ol>
           <div class="sec-head"><h2><span class="idx">02</span>Browse topics</h2></div>

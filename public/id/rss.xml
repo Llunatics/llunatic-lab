@@ -4,7 +4,11 @@
 <title>llunatic-lab (id)</title><link>https://lab.llunaticsys.web.id/id/</link>
 <description>Catatan keamanan dari sisi gelap internet</description>
 <language>id</language>
-<item><title>phpAfterShell: Audit Armada PHP-mu Sebelum Session Berubah Jadi Shell</title>
+<item><title>Certificate Transparency: Buku Besar Publik yang Menangkap Sertifikat Nakal</title>
+            <link>https://lab.llunaticsys.web.id/id/artikel/certificate-transparency/</link>
+            <description>Setiap sertifikat TLS yang dipercaya browser-mu wajib ditulis ke dalam log publik yang hanya bisa ditambah, sebelum sertifikat itu diterbitkan. Certificate Transparency mengubah penerbitan sertifikat dari jabat tangan privat menjadi catatan publik — dan pada 2026, aturannya menjadi lebih ketat dari sebelumnya.</description>
+            <pubDate>Wed, 25 Nov 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/certificate-transparency/</guid></item><item><title>phpAfterShell: Audit Armada PHP-mu Sebelum Session Berubah Jadi Shell</title>
             <link>https://lab.llunaticsys.web.id/id/artikel/phpaftershell-php-fleet-audit/</link>
             <description>Pada 19 November 2026, PHP merilis perbaikan untuk tujuh celah kritis bernilai 9.2 — dan dua di antaranya mengubah penanganan session PHP sendiri menjadi remote code execution. Kalau kamu sudah menambal PHP2Shell di bulan Oktober, kamu masih rentan. Ini audit hands-on yang bisa kamu jalankan hari ini.</description>
             <pubDate>Mon, 23 Nov 2026 00:00:00 -0000</pubDate>
@@ -80,10 +84,6 @@
             <link>https://lab.llunaticsys.web.id/id/artikel/php2shell-runtime-rce/</link>
             <description>Bukan plugin yang jebol. Bukan password yang ketebak. Dua celah di PHP sendiri memungkinkan penyerang tanpa akun menjalankan kode di server web — dan percobaan eksploitasi pertamanya datang empat hari sebelum patch tersedia.</description>
             <pubDate>Sat, 24 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/id/artikel/php2shell-runtime-rce/</guid></item><item><title>Zeabur: Ketika Secret Plaintext Membunuh Sebuah Hosting Platform — Bedah Kasus</title>
-            <link>https://lab.llunaticsys.web.id/id/artikel/zeabur-plaintext-secrets-breach/</link>
-            <description>Bukan zero-day. Bukan nation-state. Hanya token admin tanpa masa kedaluwarsa yang disimpan plaintext di config repo — dan itu merenggut 3,2 juta secret, root di 101 server pelanggan, dan akhirnya perusahaan itu sendiri.</description>
-            <pubDate>Fri, 23 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/id/artikel/zeabur-plaintext-secrets-breach/</guid></item>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/php2shell-runtime-rce/</guid></item>
 </channel>
 </rss>

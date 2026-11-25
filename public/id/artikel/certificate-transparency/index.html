@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Certificate Transparency: Buku Besar Publik yang Menangkap Sertifikat Nakal — llunatic-lab</title>
+<meta name="description" content="Setiap sertifikat TLS yang dipercaya browser-mu wajib ditulis ke dalam log publik yang hanya bisa ditambah, sebelum sertifikat itu diterbitkan. Certificate Transparency mengubah penerbitan sertifikat dari jabat tangan privat menjadi catatan publik — dan pada 2026, aturannya menjadi lebih ketat dari sebelumnya.">
+<meta property="og:title" content="Certificate Transparency: Buku Besar Publik yang Menangkap Sertifikat Nakal">
+<meta property="og:description" content="Setiap sertifikat TLS yang dipercaya browser-mu wajib ditulis ke dalam log publik yang hanya bisa ditambah, sebelum sertifikat itu diterbitkan. Certificate Transparency mengubah penerbitan sertifikat dari jabat tangan privat menjadi catatan publik — dan pada 2026, aturannya menjadi lebih ketat dari sebelumnya.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/certificate-transparency.jpg"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/certificate-transparency/"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/certificate-transparency/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/id/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/id/arsip/">Arsip</a>
+      <a href="/id/tentang/">Tentang</a>
+      <a class="lang-toggle" href="/artikel/certificate-transparency/">EN</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>artikel</div>
+              <h1>Certificate Transparency: Buku Besar Publik yang Menangkap Sertifikat Nakal</h1>
+              <div class="meta"><span>25 November 2026</span><span>·</span>
+              <span>7 mnt baca</span><a class="tag" href="/id/tag/concept/">concept</a> <a class="tag" href="/id/tag/certificate-transparency/">certificate-transparency</a> <a class="tag" href="/id/tag/pki/">pki</a> <a class="tag" href="/id/tag/tls/">tls</a></div>
+              <img class="cover" src="/assets/covers/certificate-transparency.jpg" alt="Certificate Transparency: Buku Besar Publik yang Menangkap Sertifikat Nakal">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Bayangkan orang asing masuk ke bank, menunjukkan KTP dengan namamu, lalu keluar membawa uangmu. Sekarang bayangkan bank itu tidak pernah memberitahumu — karena bank itu memang tidak pernah memeriksa apakah KTP tersebut asli. Begitulah kondisi <span class="gterm" data-term="public-key cryptography" data-def="Kriptografi dengan sepasang kunci: public key yang bisa dilihat siapa saja dan private key yang dirahasiakan. Data yang ditandatangani private key bisa diverifikasi dengan public key, tanpa rahasia itu melintasi jaringan.">public-key cryptography</span> web selama bertahun-tahun: <span class="gterm" data-term="certificate authority" data-def="Organisasi yang dipercaya browser untuk menerbitkan sertifikat TLS setelah memverifikasi bahwa pemohon mengendalikan sebuah domain; CA yang dibobol atau ceroboh bisa menerbitkan sertifikat yang disalahgunakan penyerang.">certificate authority</span> mana pun bisa menerbitkan sertifikat untuk domain mana pun, dan pemilik domain baru tahu setelah kerusakannya sudah terjadi.</p>
+<p><span class="gterm" data-term="Certificate Transparency" data-def="Sistem pencatatan publik yang hanya bisa ditambah untuk sertifikat TLS: setiap sertifikat yang dipercaya publik wajib dicatat di log CT sebelum browser menerimanya, sehingga sertifikat yang salah terbit bisa dilihat siapa pun yang mengawasi.">Certificate Transparency</span> (CT) adalah solusinya, dan idenya indah dalam kesederhanaannya: jadikan penerbitan itu publik. Setiap sertifikat TLS yang dipercaya publik wajib ditulis ke dalam log publik yang hanya bisa ditambah, sebelum browser mau menerimanya. Sertifikat nakal tetap bisa diterbitkan — tapi tidak bisa lagi diterbitkan <em>secara diam-diam</em>. Kredensial palsu penyerang disiarkan ke seluruh dunia dalam hitungan detik, secara permanen, tanpa cara untuk menariknya kembali. Dan pada 2026, sistem ini mengalami guncangan terbesar sejak diciptakan.</p>
+<h2 id="insiden-yang-memaksa-web-membuka-bukunya"><span class="hnum">01</span>Insiden yang memaksa web membuka bukunya</h2>
+<p>CT ada karena web belajar dengan cara yang pahit bahwa mempercayai certificate authority secara diam-diam tidak berhasil. Pada 2011, CA asal Belanda DigiNotar dibobol, dan penyerang menerbitkan sertifikat palsu untuk Google dan domain besar lainnya — sertifikat yang dipercaya browser, yang bisa memungkinkan penyadapan lalu lintas pengguna dalam skala besar. Pemilik domain adalah pihak terakhir yang mengetahuinya.</p>
+<p>Jawabannya, yang diusulkan Ben Laurie dari Google dan rekan-rekannya lalu distandarkan sebagai RFC 6962 pada 2013, adalah membalik modelnya: alih-alih meminta pemilik domain memercayai CA secara buta, paksa CA untuk mempublikasikan semua yang mereka terbitkan. Kalau setiap sertifikat bersifat publik, siapa pun bisa mengawasi log untuk domain mereka sendiri dan menangkap sertifikat yang tidak pernah mereka minta. Standar penerusnya, RFC 9162 (CT versi 2.0), menyusul pada Desember 2021.</p>
+<p>Skalanya hari ini sungguh luar biasa. Log CT publik menyimpan miliaran sertifikat — satu indeks independen menghitung hampir 8 miliar sertifikat yang masih berlaku sekarang atau sudah kedaluwarsa sejak Desember 2025 saja. Log Argon 2026h2 milik Google saja mencapai ukuran tree akhir sekitar 3,5 miliar entri sebelum berhenti menerima tulisan baru. CT bukan lagi eksperimen. Ia adalah tulang punggung PKI web.</p>
+<h2 id="bagaimana-sertifikat-mendapatkan-tanda-terimanya"><span class="hnum">02</span>Bagaimana sertifikat mendapatkan tanda terimanya</h2>
+<p>Mekanismenya adalah rantai janji yang singkat, dan setiap mata rantainya penting:</p>
+<ol>
+<li><strong>CA membangun sebuah <span class="gterm" data-term="precertificate" data-def="Salinan sertifikat dengan ekstensi khusus &#x27;poison&#x27; yang menandainya sebagai belum valid, dikirim ke log CT agar log mengembalikan SCT sebelum sertifikat asli diterbitkan.">precertificate</span>.</strong> Sebelum menerbitkan sertifikat asli, CA membuat salinannya dengan ekstensi khusus &quot;poison&quot; yang menandainya sebagai belum valid. Objek inilah yang dicatat ke log.</li>
+<li><strong>Log mengembalikan sebuah <span class="gterm" data-term="Signed Certificate Timestamp" data-def="Janji log yang ditandatangani untuk memasukkan sebuah precertificate ke dalam log yang hanya bisa ditambah, dalam batas Maximum Merge Delay; disematkan ke sertifikat final agar browser bisa memverifikasi bahwa sertifikat itu sudah dicatat.">Signed Certificate Timestamp</span> (SCT).</strong> CA mengirimkan precertificate ke satu atau beberapa log CT. Setiap log langsung membalas dengan SCT — janji yang ditandatangani untuk menambahkan entri itu ke log dalam <span class="gterm" data-term="Maximum Merge Delay" data-def="Waktu maksimum yang boleh diambil sebuah log CT untuk benar-benar menambahkan sertifikat yang dikirim ke Merkle tree-nya setelah menerbitkan SCT, biasanya 24 jam.">Maximum Merge Delay</span>, biasanya 24 jam.</li>
+<li><strong>SCT disematkan ke dalam sertifikat final.</strong> CA menerbitkan sertifikat asli dengan SCT yang sudah tertanam di dalamnya. Browser memverifikasi SCT tersebut sebelum memercayai koneksi. Sertifikat tanpa SCT yang valid langsung ditolak.</li>
+</ol>
+<p>Log itu sendiri adalah <span class="gterm" data-term="Merkle tree" data-def="Struktur data hash-tree di mana setiap daun di-hash dan pasangan hash digabung ke atas hingga satu hash root yang ditandatangani; struktur ini memungkinkan siapa pun memverifikasi bahwa sebuah entri log ada dan log tidak dimanipulasi, hanya dengan beberapa hash.">Merkle tree</span> — struktur yang hanya bisa ditambah, di mana setiap batch sertifikat baru menghasilkan hash root baru yang ditandatangani, dipublikasikan sebagai signed tree head. Entri bisa ditambah tapi tidak pernah bisa diubah atau dihapus, dan siapa pun bisa memverifikasi secara kriptografis bahwa sebuah log tidak pernah dimanipulasi, atau menghasilkan bukti ringkas bahwa suatu sertifikat memang ada di dalamnya. Kamu tidak perlu memercayai operator log. Kamu bisa memeriksa matematikanya.</p>
+<p>Browser menegakkan semua ini. Chrome mewajibkan CT sejak 2018: dua SCT dari log yang berbeda untuk sertifikat yang berlaku 180 hari atau kurang, tiga untuk yang lebih lama. Apple menerapkan pembagian yang sama. Firefox adalah yang terakhir dari ketiganya yang mengaktifkan penegakan, di desktop sejak versi 135 pada Februari 2025 dan di Android sejak versi 145. Sertifikat yang gagal memenuhi kebijakan CT diblokir tanpa opsi pengecualian dari pengguna.</p>
+<h2 id="2026-tahun-ketika-aturannya-diperketat-dua-kali"><span class="hnum">03</span>2026: tahun ketika aturannya diperketat — dua kali</h2>
+<p>CT sudah wajib secara diam-diam selama bertahun-tahun, tapi 2026 membawa dua perubahan yang membuatnya lebih ketat dan membentuk ulang infrastruktur di bawahnya.</p>
+<p><strong>Pertama, mandat pra-penerbitan.</strong> Berdasarkan Chrome Root Program Policy versi 1.8, yang berlaku 15 Juni 2026, CA wajib mencatat setiap precertificate TLS ke setidaknya satu log CT yang diakui Chrome sebagai Usable atau Qualified <em>sebelum</em> menerbitkan sertifikat yang bersangkutan. Sebelum tanggal itu, pencatatan hanya &quot;SHOULD&quot; dengan jendela 24 jam. Sekarang ia adalah &quot;MUST&quot; yang keras, dan harus terjadi sebelum penerbitan. Sertifikat final tetap hanya membawa SHOULD dalam 24 jam — mandatnya menargetkan precertificate secara spesifik, karena di situlah catatan publik dibuat.</p>
+<p><strong>Kedua, Google memensiunkan log klasiknya.</strong> Pada 12 November 2026, empat log RFC 6962 produksi milik Google — Argon 2026h2, Argon 2027h1, Xenon 2026h2, dan Xenon 2027h1 — berhenti menerima tulisan baru. Keempatnya bersama-sama menyimpan sekitar 8,4 miliar entri. Google menyebut makin besarnya upaya manual yang dibutuhkan untuk menjaga log protokol lama tetap berjalan, dan penerbitan pun bergeser ke log static-ct-api milik Google yang lebih baru serta log operator lain. Kebijakan CT Apple sudah menerima log static-ct-api sejak 5 November 2026. Log lama tetap bisa dibaca selama proses pengarsipan — catatannya tidak hilang hanya karena pintu masuknya pindah.</p>
+<p>Dan pengetatan terus berlanjut. Pada 17 November 2026, tim CT Chrome mengumumkan bahwa log hanya boleh menerima root RSA dan ECDSA, dan mulai 15 Desember 2026 harus menolak submission apa pun yang rantainya memakai kunci atau algoritma tanda tangan lain — termasuk kunci pasca-kuantum seperti ML-DSA. Alasan yang diberikan adalah beban: sertifikat yang tidak diandalkan Chrome menambah penyimpanan, bandwidth, dan pekerjaan verifikasi tanpa manfaat keamanan bagi pengguna Chrome. Era pasca-kuantum akan membutuhkan pengaturan CT-nya sendiri; log yang ada sekarang bukan tempatnya.</p>
+<p>Perubahan-perubahan ini berada di dalam tekanan yang lebih luas terhadap masa berlaku sertifikat. Masa berlaku maksimum sertifikat TLS yang dipercaya publik turun menjadi 200 hari pada 15 Maret 2026, dan jatuh menjadi 100 hari pada 15 Maret 2027 — tanggal yang sama ketika Chrome mewajibkan sertifikat subscriber baru hanya menyatakan server authentication, dan menghapus extended key usage clientAuth. Sertifikat yang lebih pendek umurnya berarti lebih banyak penerbitan, lebih banyak pencatatan, dan makin banyak alasan untuk mengawasi log secara otomatis, bukan manual.</p>
+<h2 id="apa-yang-bisa-dan-tidak-bisa-dilakukan-ct-untukmu"><span class="hnum">04</span>Apa yang bisa — dan tidak bisa — dilakukan CT untukmu</h2>
+<p>Kesalahpahaman paling umum tentang CT adalah bahwa ia mencegah sertifikat buruk. Tidak. CT adalah kamera, bukan gembok. Sertifikat yang salah terbit tetap berfungsi di browser sampai seseorang mencabutnya. Yang dijamin CT adalah bahwa kesalahan penerbitan itu tidak bisa tetap tersembunyi.</p>
+<p>Jaminan itu hanya berguna kalau ada yang mengawasi. CT memberikan tiga kemampuan praktis bagi setiap pemilik domain:</p>
+<ul>
+<li><strong>Mendeteksi sertifikat yang tidak pernah kamu minta.</strong> Sertifikat untuk domainmu yang muncul di log padahal kamu tidak pernah memintanya adalah tanda khas kesalahan CA, akun DNS atau registrar yang dibajak, atau serangan yang ditargetkan. Ini adalah peringatan paling dini yang akan didapat kebanyakan organisasi.</li>
+<li><strong>Memetakan <span class="gterm" data-term="attack surface" data-def="The sum of all points (servers, apps, APIs, subdomains) that can be attacked from the outside.">attack surface</span>-mu sendiri.</strong> CT menunjukkan setiap subdomain yang pernah mendapatkan sertifikat — termasuk server staging yang dibuat developer lalu dilupakan, dan layanan lawas yang tidak ada lagi pemiliknya. Ini salah satu inventaris eksternal gratis terbaik untuk jejak digitalmu sendiri.</li>
+<li><strong>Melengkapi gambaran <span class="gterm" data-term="CAA" data-def="Certification Authority Authorization — record DNS yang menyatakan certificate authority mana saja yang boleh menerbitkan sertifikat untuk sebuah domain; CA wajib memeriksanya sebelum menerbitkan.">CAA</span>.</strong> Record DNS CAA memberi tahu CA mana saja yang boleh menerbitkan untuk domainmu. Itu pencegahan. CT adalah deteksi — ia menunjukkan apa yang tetap lolos.</li>
+</ul>
+<p>Tooling-nya gratis dan butuh beberapa menit untuk disiapkan. Cari domain apa pun di <strong>crt.sh</strong> untuk melihat setiap sertifikat yang pernah dicatat untuknya. Jalankan <strong>certspotter</strong> sebagai daemon yang memberi peringatan saat sertifikat baru muncul. Atau sambungkan ke firehose <strong>certstream</strong> untuk melihat penerbitan secara real-time saat terjadi. False positive memang ada — CDN dan penyedia hosting secara sah memperoleh sertifikat untuk domainmu — tapi menyaringnya adalah pekerjaan satu kali, dan alternatifnya adalah tidak tahu sama sekali.</p>
+<h2 id="awasi-buku-besarnya"><span class="hnum">05</span>Awasi buku besarnya</h2>
+<p>Certificate Transparency adalah salah satu kontrol keamanan langka yang tidak membutuhkan biaya, tidak membutuhkan agen, dan bekerja untuk domain segala ukuran — tapi hanya kalau ada yang melihatnya. Log-nya publik. Tanda terimanya kriptografis. Perubahan aturan 2026 berarti lebih banyak sertifikat dicatat lebih awal dan lebih andal dari sebelumnya, dan log itu sendiri kini berada di tengah pergantian generasi dari infrastruktur RFC 6962 lama ke static CT.</p>
+<p>Siapkan pemantauan untuk domainmu hari ini: pencarian di crt.sh, peringatan certspotter, atau sekilas mingguan pada entri terbaru. Lain kali sebuah certificate authority membuat kesalahan — atau penyerang yang membuatnya untuk mereka — kamulah yang pertama tahu, bukan yang terakhir. Buku besarnya terbuka. Gunakanlah.</p><div class="author-box"><div class="kicker"><span class="dot"></span>ditulis oleh</div><p><strong>kou</strong> mendokumentasikan threat intel, attack surface, dan pertahanan praktis — dari sisi gelap internet.</p></div><div class="pager"><a href="/id/artikel/phpaftershell-php-fleet-audit/"><span class="dir">← sebelumnya</span><span class="t">phpAfterShell: Audit Armada PHP-mu Sebelum Session Berubah Jadi Shell</span></a><span></span></div></div>
+                <aside class="toc"><h4>Daftar isi</h4><ol><li style="margin-left:0px"><a href="#insiden-yang-memaksa-web-membuka-bukunya">Insiden yang memaksa web membuka bukunya</a></li><li style="margin-left:0px"><a href="#bagaimana-sertifikat-mendapatkan-tanda-terimanya">Bagaimana sertifikat mendapatkan tanda terimanya</a></li><li style="margin-left:0px"><a href="#2026-tahun-ketika-aturannya-diperketat-dua-kali">2026: tahun ketika aturannya diperketat — dua kali</a></li><li style="margin-left:0px"><a href="#apa-yang-bisa-dan-tidak-bisa-dilakukan-ct-untukmu">Apa yang bisa — dan tidak bisa — dilakukan CT untukmu</a></li><li style="margin-left:0px"><a href="#awasi-buku-besarnya">Awasi buku besarnya</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>catatan keamanan dari sisi gelap internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="cari artikel…" aria-label="search">
+    <div class="search-hint">ketik minimal 2 huruf · esc untuk tutup · ctrl+k dari mana saja</div>
+    <div class="search-results" data-empty="nggak ketemu — coba kata kunci lain."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

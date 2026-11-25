@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Certificate Transparency: The Public Ledger That Catches Rogue Certificates — llunatic-lab</title>
+<meta name="description" content="Every TLS certificate your browser trusts is written into a public, append-only log before it is issued. Certificate Transparency turns certificate issuance from a private handshake into a public record — and in 2026, the rules around it got stricter than ever.">
+<meta property="og:title" content="Certificate Transparency: The Public Ledger That Catches Rogue Certificates">
+<meta property="og:description" content="Every TLS certificate your browser trusts is written into a public, append-only log before it is issued. Certificate Transparency turns certificate issuance from a private handshake into a public record — and in 2026, the rules around it got stricter than ever.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/certificate-transparency.jpg"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/certificate-transparency/"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/certificate-transparency/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/arsip/">Archive</a>
+      <a href="/tentang/">About</a>
+      <a class="lang-toggle" href="/id/artikel/certificate-transparency/">ID</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>article</div>
+              <h1>Certificate Transparency: The Public Ledger That Catches Rogue Certificates</h1>
+              <div class="meta"><span>25 November 2026</span><span>·</span>
+              <span>7 min read</span><a class="tag" href="/tag/concept/">concept</a> <a class="tag" href="/tag/certificate-transparency/">certificate-transparency</a> <a class="tag" href="/tag/pki/">pki</a> <a class="tag" href="/tag/tls/">tls</a></div>
+              <img class="cover" src="/assets/covers/certificate-transparency.jpg" alt="Certificate Transparency: The Public Ledger That Catches Rogue Certificates">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Imagine a stranger walks into a bank, shows an ID card with your name on it, and walks out with your money. Now imagine the bank never tells you it happened — because it never checks whether the ID was real in the first place. That was the state of the web&#x27;s <span class="gterm" data-term="public-key cryptography" data-def="Cryptography using a key pair: a public key anyone can see and a private key kept secret. Data signed with the private key can be verified with the public key, without the secret ever crossing the network.">public-key cryptography</span> for years: any <span class="gterm" data-term="certificate authority" data-def="An organization trusted by browsers to issue TLS certificates after verifying that the requester controls a domain; a compromised or careless CA can issue certificates attackers abuse.">certificate authority</span> could issue a certificate for any domain, and the domain owner would only find out when the damage was already done.</p>
+<p><span class="gterm" data-term="Certificate Transparency" data-def="A public, append-only logging system for TLS certificates: every publicly trusted certificate must be recorded in CT logs before browsers accept it, so misissued certificates become visible to anyone watching.">Certificate Transparency</span> (CT) is the fix, and it is beautifully simple: make issuance public. Every publicly trusted TLS certificate must be written into an append-only public log before browsers will accept it. A rogue certificate can still be issued — but it can no longer be issued <em>quietly</em>. The attacker&#x27;s fake credential is broadcast to the world within seconds, permanently, with no way to take it back. And in 2026, the system went through its biggest shake-up since it was created.</p>
+<h2 id="the-incident-that-forced-the-web-to-open-its-books"><span class="hnum">01</span>The incident that forced the web to open its books</h2>
+<p>CT exists because the web learned the hard way that trusting certificate authorities in secret does not work. In 2011, the Dutch CA DigiNotar was breached, and attackers issued fraudulent certificates for Google and other major domains — certificates that browsers trusted, that could have enabled large-scale interception of users&#x27; traffic. The owner of the domain was the last to find out.</p>
+<p>The answer, proposed by Google&#x27;s Ben Laurie and colleagues and standardized as RFC 6962 in 2013, was to flip the model: instead of asking domain owners to trust CAs blindly, force CAs to publish everything they issue. If every certificate is public, anyone can watch the logs for their own domains and catch a certificate they never requested. The successor standard, RFC 9162 (CT version 2.0), followed in December 2021.</p>
+<p>Today the scale is staggering. Public CT logs hold billions of certificates — one independent index counts nearly 8 billion certificates that are valid now or expired since December 2025 alone. Google&#x27;s Argon 2026h2 log alone reached a final tree size of about 3.5 billion entries before it stopped accepting writes. CT is no longer an experiment. It is the backbone of the web PKI.</p>
+<h2 id="how-a-certificate-gets-its-receipt"><span class="hnum">02</span>How a certificate gets its receipt</h2>
+<p>The mechanics are a short chain of promises, and each link matters:</p>
+<ol>
+<li><strong>The CA builds a <span class="gterm" data-term="precertificate" data-def="A copy of a certificate with a special &#x27;poison&#x27; extension marking it as not yet valid, submitted to CT logs so the log can return SCTs before the real certificate is issued.">precertificate</span>.</strong> Before issuing the real certificate, the CA constructs a copy with a special &quot;poison&quot; extension that marks it as not-yet-valid. This is the object that gets logged.</li>
+<li><strong>The log returns a <span class="gterm" data-term="Signed Certificate Timestamp" data-def="A log&#x27;s signed promise to include a precertificate in its append-only log within the Maximum Merge Delay; embedded in the final certificate so browsers can verify it was logged.">Signed Certificate Timestamp</span> (SCT).</strong> The CA submits the precertificate to one or more CT logs. Each log replies immediately with an SCT — a signed promise to add the entry to the log within the <span class="gterm" data-term="Maximum Merge Delay" data-def="The maximum time a CT log may take to actually add a submitted certificate to its Merkle tree after issuing an SCT, usually 24 hours.">Maximum Merge Delay</span>, usually 24 hours.</li>
+<li><strong>The SCTs are embedded in the final certificate.</strong> The CA issues the real certificate with the SCTs baked in. Browsers verify those SCTs before trusting the connection. A certificate with no valid SCTs is rejected outright.</li>
+</ol>
+<p>The logs themselves are <span class="gterm" data-term="Merkle tree" data-def="A hash-tree data structure where each leaf is hashed and pairs are hashed upward to a single signed root hash; it lets anyone verify that a log entry exists and that the log has not been tampered with, using only a few hashes.">Merkle tree</span>s — append-only structures where every new batch of certificates produces a new signed root hash, published as a signed tree head. Entries can be added but never edited or deleted, and anyone can cryptographically verify that a log has not been tampered with, or produce a compact proof that a given certificate is included. You do not have to trust the log operator. You can check the math.</p>
+<p>Browsers enforce all of this. Chrome has required CT since 2018: two SCTs from distinct logs for certificates valid 180 days or less, three for longer ones. Apple applies the same split. Firefox was the last of the three to switch on enforcement, on desktop from version 135 in February 2025 and on Android from version 145. A certificate that fails CT policy is blocked with no user override.</p>
+<h2 id="2026-the-year-the-rules-tightened-twice"><span class="hnum">03</span>2026: the year the rules tightened — twice</h2>
+<p>CT has been quietly mandatory for years, but 2026 brought two changes that made it stricter and reshaped the infrastructure underneath it.</p>
+<p><strong>First, the pre-issuance mandate.</strong> Under Chrome Root Program Policy version 1.8, effective 15 June 2026, CAs must log every TLS precertificate to at least one CT log Chrome recognizes as Usable or Qualified <em>before</em> issuing the corresponding certificate. Before that date, logging was a &quot;SHOULD&quot; with a 24-hour window. It is now a hard &quot;MUST&quot;, and it must happen pre-issuance. Final certificates still only carry a SHOULD within 24 hours — the mandate targets precertificates specifically, because that is the point where the public record is created.</p>
+<p><strong>Second, Google retired its classic logs.</strong> On 12 November 2026, Google&#x27;s four production RFC 6962 logs — Argon 2026h2, Argon 2027h1, Xenon 2026h2, and Xenon 2027h1 — stopped accepting writes. Together they held about 8.4 billion entries. Google cited the growing manual effort needed to keep the old protocol&#x27;s logs running, and issuance shifted to its newer static-ct-api logs and other operators&#x27; logs. Apple&#x27;s CT policy has accepted static-ct-api logs since 5 November 2026. The old logs remain readable while they are archived — the record does not disappear just because the intake moved.</p>
+<p>And the tightening continues. On 17 November 2026, Chrome&#x27;s CT team announced that logs must accept only RSA and ECDSA roots, and from 15 December 2026 must reject any submission whose chain uses another key or signature algorithm — including post-quantum keys such as ML-DSA. The reason given is load: certificates Chrome does not rely on add storage, bandwidth, and verification work with no security benefit to Chrome users. The post-quantum era will need its own CT arrangements; the current logs are not where they will live.</p>
+<p>These changes sit inside a broader squeeze on certificate lifetimes. The maximum validity of a publicly trusted TLS certificate dropped to 200 days on 15 March 2026, and falls to 100 days on 15 March 2027 — the same date Chrome requires new subscriber certificates to assert only server authentication, dropping the clientAuth extended key usage. Shorter-lived certificates mean more issuance, more logging, and more reason to watch the logs automatically rather than by hand.</p>
+<h2 id="what-ct-can-and-cannot-do-for-you"><span class="hnum">04</span>What CT can — and cannot — do for you</h2>
+<p>The most common misunderstanding about CT is that it prevents bad certificates. It does not. CT is a camera, not a lock. A misissued certificate still works in a browser until someone revokes it. What CT guarantees is that the misissuance cannot stay hidden.</p>
+<p>That guarantee is only useful if someone is watching. CT hands every domain owner three practical capabilities:</p>
+<ul>
+<li><strong>Detect certificates you never asked for.</strong> A certificate for your domain appearing in the logs that you did not request is the signature of a CA error, a hijacked DNS or registrar account, or a targeted attack. This is the earliest warning most organizations will ever get.</li>
+<li><strong>Map your own <span class="gterm" data-term="attack surface" data-def="The sum of all points (servers, apps, APIs, subdomains) that can be attacked from the outside.">attack surface</span>.</strong> CT shows every subdomain anyone has ever obtained a certificate for — including the staging server a developer spun up and forgot, and the legacy service nobody owns anymore. It is one of the best free external inventories of your own footprint.</li>
+<li><strong>Complete the <span class="gterm" data-term="CAA" data-def="Certification Authority Authorization — a DNS record that declares which certificate authorities are allowed to issue certificates for a domain; CAs are required to check it before issuing.">CAA</span> picture.</strong> A CAA DNS record tells CAs which of them may issue for your domain. That is prevention. CT is detection — it shows you what slipped through anyway.</li>
+</ul>
+<p>The tooling is free and takes minutes to set up. Search any domain on <strong>crt.sh</strong> to see every certificate ever logged for it. Run <strong>certspotter</strong> as a daemon that alerts you when a new certificate appears. Or tap the <strong>certstream</strong> firehose for real-time issuance as it happens. The false positives are real — CDNs and hosting providers legitimately obtain certificates for your domains — but filtering those out is a one-time exercise, and the alternative is not knowing at all.</p>
+<h2 id="watch-the-ledger"><span class="hnum">05</span>Watch the ledger</h2>
+<p>Certificate Transparency is one of the rare security controls that costs nothing, requires no agent, and works for domains of every size — but only if someone looks at it. The logs are public. The receipts are cryptographic. The 2026 rule changes mean more certificates are logged earlier and more reliably than ever before, and the logs themselves are now in the middle of a generational handover from the old RFC 6962 infrastructure to static CT.</p>
+<p>Set up monitoring for your domains today: a crt.sh search, a certspotter alert, a weekly glance at the newest entries. The next time a certificate authority makes a mistake — or an attacker makes one for them — you want to be the first to know, not the last. The ledger is open. Use it.</p><div class="author-box"><div class="kicker"><span class="dot"></span>written by</div><p><strong>kou</strong> documents what’s learned about threat intel, attack surface, and practical defense — from the dark side of the internet.</p></div><div class="pager"><a href="/artikel/phpaftershell-php-fleet-audit/"><span class="dir">← previous</span><span class="t">phpAfterShell: Audit Your PHP Fleet Before a Session Becomes a Shell</span></a><span></span></div></div>
+                <aside class="toc"><h4>Contents</h4><ol><li style="margin-left:0px"><a href="#the-incident-that-forced-the-web-to-open-its-books">The incident that forced the web to open its books</a></li><li style="margin-left:0px"><a href="#how-a-certificate-gets-its-receipt">How a certificate gets its receipt</a></li><li style="margin-left:0px"><a href="#2026-the-year-the-rules-tightened-twice">2026: the year the rules tightened — twice</a></li><li style="margin-left:0px"><a href="#what-ct-can-and-cannot-do-for-you">What CT can — and cannot — do for you</a></li><li style="margin-left:0px"><a href="#watch-the-ledger">Watch the ledger</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>security notes from the dark side of the internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="search articles…" aria-label="search">
+    <div class="search-hint">type at least 2 characters · esc to close · ctrl+k anywhere</div>
+    <div class="search-results" data-empty="nothing found — try another keyword."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

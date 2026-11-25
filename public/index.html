@@ -37,16 +37,27 @@
           <div class="kicker"><span class="dot"></span>security notes — from the dark side of the internet</div>
           <h1>Security <em>notes</em> for those who refuse to be the <em>next victim.</em></h1>
           <p class="lede">Threat intel, tutorials, and cybersecurity case breakdowns. Technical terms come with explanations: just <strong>hover</strong> over dotted-underlined words.</p>
-          <div class="hero-meta"><span><b>30</b> articles</span>
-          <span><b>65</b> topics</span><span>published 3–4× a week</span></div>
+          <div class="hero-meta"><span><b>31</b> articles</span>
+          <span><b>68</b> topics</span><span>published 3–4× a week</span></div>
         </div>
-        <div class="ticker"><div class="ticker-track"><span>phpAfterShell: Audit Your PHP Fleet Before a Session Becomes a Shell</span><span>Java4Shell: The Base64 Bug That Turns a Decoder Into a Remote Shell</span><span>One Hacked Tool, 178 Brands: The Optimizely Supply-Chain Attack</span><span>Codex Security CLI: OpenAI&#x27;s Open-Source Scanner That Finds, Validates, and Fixes Bugs</span><span>Passkeys: The Credential That Can&#x27;t Be Phished — and Why November 2026 Is the Tipping Point</span><span>Apache mod_http2 RCE (CVE-2026-119618): Check Your Server, Kill HTTP/2, Patch to 2.4.71</span><span>Able2Shell: How 33 Zero-Days Took N-central Offline — and the Patch That Didn&#x27;t Hold</span><span>Audit Your Own Repos for Leaked Secrets: A Hands-On Gitleaks and TruffleHog Walkthrough</span></div></div>
+        <div class="ticker"><div class="ticker-track"><span>Certificate Transparency: The Public Ledger That Catches Rogue Certificates</span><span>phpAfterShell: Audit Your PHP Fleet Before a Session Becomes a Shell</span><span>Java4Shell: The Base64 Bug That Turns a Decoder Into a Remote Shell</span><span>One Hacked Tool, 178 Brands: The Optimizely Supply-Chain Attack</span><span>Codex Security CLI: OpenAI&#x27;s Open-Source Scanner That Finds, Validates, and Fixes Bugs</span><span>Passkeys: The Credential That Can&#x27;t Be Phished — and Why November 2026 Is the Tipping Point</span><span>Apache mod_http2 RCE (CVE-2026-119618): Check Your Server, Kill HTTP/2, Patch to 2.4.71</span><span>Able2Shell: How 33 Zero-Days Took N-central Offline — and the Patch That Didn&#x27;t Hold</span></div></div>
         </section>
         <section><div class="wrap">
           <div class="sec-head"><h2><span class="idx">01</span>Latest writings</h2>
           <a class="more" href="/arsip/">full archive →</a></div>
           <ol class="index-list"><li class="index-row rv">
       <span class="num">/01</span>
+      <div>
+        <h3><a href="/artikel/certificate-transparency/">Certificate Transparency: The Public Ledger That Catches Rogue Certificates</a></h3>
+        <p class="excerpt">Every TLS certificate your browser trusts is written into a public, append-only log before it is issued. Certificate Transparency turns certificate issuance from a private handshake into a public record — and in 2026, the rules around it got stricter than ever.</p>
+        <div class="meta"><span>25 November 2026</span><span>·</span>
+        <span>7 min read</span><a class="tag" href="/tag/concept/">concept</a> <a class="tag" href="/tag/certificate-transparency/">certificate-transparency</a> <a class="tag" href="/tag/pki/">pki</a> <a class="tag" href="/tag/tls/">tls</a></div>
+      </div>
+      <img class="thumb" src="/assets/covers/certificate-transparency.jpg" alt="" loading="lazy">
+      <span class="arrow">→</span>
+    </li>
+<li class="index-row rv">
+      <span class="num">/02</span>
       <div>
         <h3><a href="/artikel/phpaftershell-php-fleet-audit/">phpAfterShell: Audit Your PHP Fleet Before a Session Becomes a Shell</a></h3>
         <p class="excerpt">On 19 November 2026, PHP shipped fixes for seven critical flaws rated 9.2 — and two of them turn the language&#x27;s own session handling into remote code execution. If you patched for PHP2Shell in October, you are still exposed. Here is a hands-on audit you can run today.</p>
@@ -57,7 +68,7 @@
       <span class="arrow">→</span>
     </li>
 <li class="index-row rv">
-      <span class="num">/02</span>
+      <span class="num">/03</span>
       <div>
         <h3><a href="/artikel/java4shell-cve-2026-114938/">Java4Shell: The Base64 Bug That Turns a Decoder Into a Remote Shell</a></h3>
         <p class="excerpt">On 17 November 2026, a one-character input — 64 A&#x27;s and a single &#x27;=&#x27; — was shown to corrupt the memory of the world&#x27;s most widely used runtime. Java4Shell (CVE-2026-114938) hides in the JVM&#x27;s Base64 decoder, and it only needs a server that decodes attacker-controlled text.</p>
@@ -68,7 +79,7 @@
       <span class="arrow">→</span>
     </li>
 <li class="index-row rv">
-      <span class="num">/03</span>
+      <span class="num">/04</span>
       <div>
         <h3><a href="/artikel/optimizely-supply-chain-attack-178-sites/">One Hacked Tool, 178 Brands: The Optimizely Supply-Chain Attack</a></h3>
         <p class="excerpt">On 16 November 2026, visitors to Zoom, the BBC, HSBC, IKEA, and 174 other major sites were served malware — not because any of those companies were hacked, but because a single A/B testing tool they all trusted was. Here&#x27;s how one poisoned script reached millions of browsers in 19 hours.</p>
@@ -79,7 +90,7 @@
       <span class="arrow">→</span>
     </li>
 <li class="index-row rv">
-      <span class="num">/04</span>
+      <span class="num">/05</span>
       <div>
         <h3><a href="/artikel/codex-security-cli/">Codex Security CLI: OpenAI&#x27;s Open-Source Scanner That Finds, Validates, and Fixes Bugs</a></h3>
         <p class="excerpt">OpenAI&#x27;s codex-security CLI scans your repo, argues with its own findings until only the real ones survive, then drafts the patch and re-checks it. Version 0.10.0 just made it resumable, budget-capped, and CI-ready — here&#x27;s how to run it, and the two catches nobody should skip.</p>
@@ -90,7 +101,7 @@
       <span class="arrow">→</span>
     </li>
 <li class="index-row rv">
-      <span class="num">/05</span>
+      <span class="num">/06</span>
       <div>
         <h3><a href="/artikel/passkeys-the-credential-that-cant-be-phished/">Passkeys: The Credential That Can&#x27;t Be Phished — and Why November 2026 Is the Tipping Point</a></h3>
         <p class="excerpt">Passwords are a shared secret, so they can be phished, guessed, and leaked. Passkeys replace them with a private key that never leaves your device — and in November 2026, Microsoft made them the first step of sign-in, not an optional extra.</p>
@@ -99,20 +110,9 @@
       </div>
       <img class="thumb" src="/assets/covers/passkeys-the-credential-that-cant-be-phished.jpg" alt="" loading="lazy">
       <span class="arrow">→</span>
-    </li>
-<li class="index-row rv">
-      <span class="num">/06</span>
-      <div>
-        <h3><a href="/artikel/apache-mod-http2-cve-2026-119618/">Apache mod_http2 RCE (CVE-2026-119618): Check Your Server, Kill HTTP/2, Patch to 2.4.71</a></h3>
-        <p class="excerpt">Apache 2.4.71 fixes a critical heap-corruption flaw in mod_http2 that can lead to unauthenticated remote code execution — and Wiz found 64% of cloud environments exposed. This walkthrough shows you how to check whether your server is affected, disable HTTP/2 as a stopgap, and patch properly.</p>
-        <div class="meta"><span>15 November 2026</span><span>·</span>
-        <span>9 min read</span><a class="tag" href="/tag/hands-on/">hands-on</a> <a class="tag" href="/tag/apache/">apache</a> <a class="tag" href="/tag/vulnerability/">vulnerability</a> <a class="tag" href="/tag/patching/">patching</a></div>
-      </div>
-      <img class="thumb" src="/assets/covers/apache-mod-http2-cve-2026-119618.jpg" alt="" loading="lazy">
-      <span class="arrow">→</span>
     </li></ol>
           <div class="sec-head"><h2><span class="idx">02</span>Browse topics</h2></div>
-          <div class="chips"><a class="chip" href="/tag/ai/">ai</a><a class="chip" href="/tag/ai-security/">ai-security</a><a class="chip" href="/tag/alpine/">alpine</a><a class="chip" href="/tag/apache/">apache</a><a class="chip" href="/tag/atlassian/">atlassian</a><a class="chip" href="/tag/attack-surface/">attack-surface</a><a class="chip" href="/tag/authentication/">authentication</a><a class="chip" href="/tag/blue-team/">blue-team</a><a class="chip" href="/tag/case-breakdown/">case-breakdown</a><a class="chip" href="/tag/cloud-security/">cloud-security</a><a class="chip" href="/tag/cloudflare/">cloudflare</a><a class="chip" href="/tag/code-audit/">code-audit</a><a class="chip" href="/tag/concept/">concept</a><a class="chip" href="/tag/cryptojacking/">cryptojacking</a><a class="chip" href="/tag/cve/">cve</a><a class="chip" href="/tag/data-breach/">data-breach</a><a class="chip" href="/tag/easm/">easm</a><a class="chip" href="/tag/edge-security/">edge-security</a><a class="chip" href="/tag/email-security/">email-security</a><a class="chip" href="/tag/extortion/">extortion</a><a class="chip" href="/tag/git-security/">git-security</a><a class="chip" href="/tag/gitlab/">gitlab</a><a class="chip" href="/tag/gitleaks/">gitleaks</a><a class="chip" href="/tag/hands-on/">hands-on</a><a class="chip" href="/tag/incident/">incident</a><a class="chip" href="/tag/incident-response/">incident-response</a><a class="chip" href="/tag/japan/">japan</a><a class="chip" href="/tag/java/">java</a><a class="chip" href="/tag/kev/">kev</a><a class="chip" href="/tag/mark-of-the-web/">mark-of-the-web</a><a class="chip" href="/tag/mcp/">mcp</a><a class="chip" href="/tag/n-central/">n-central</a><a class="chip" href="/tag/node-red/">node-red</a><a class="chip" href="/tag/nodejs/">nodejs</a><a class="chip" href="/tag/nuclei/">nuclei</a><a class="chip" href="/tag/openai/">openai</a><a class="chip" href="/tag/openssh/">openssh</a><a class="chip" href="/tag/optimizely/">optimizely</a><a class="chip" href="/tag/ot-security/">ot-security</a><a class="chip" href="/tag/passkeys/">passkeys</a><a class="chip" href="/tag/patch-management/">patch-management</a><a class="chip" href="/tag/patching/">patching</a><a class="chip" href="/tag/phishing/">phishing</a><a class="chip" href="/tag/php/">php</a><a class="chip" href="/tag/privilege-escalation/">privilege-escalation</a><a class="chip" href="/tag/prompt-injection/">prompt-injection</a><a class="chip" href="/tag/python-security/">python-security</a><a class="chip" href="/tag/ransomware/">ransomware</a><a class="chip" href="/tag/remote-code-execution/">remote-code-execution</a><a class="chip" href="/tag/rmm/">rmm</a><a class="chip" href="/tag/sd-wan/">sd-wan</a><a class="chip" href="/tag/secrets/">secrets</a><a class="chip" href="/tag/secrets-management/">secrets-management</a><a class="chip" href="/tag/supply-chain/">supply-chain</a><a class="chip" href="/tag/third-party-risk/">third-party-risk</a><a class="chip" href="/tag/threat-hunting/">threat-hunting</a><a class="chip" href="/tag/threat-intel/">threat-intel</a><a class="chip" href="/tag/tools/">tools</a><a class="chip" href="/tag/vulnerability/">vulnerability</a><a class="chip" href="/tag/vulnerability-management/">vulnerability-management</a><a class="chip" href="/tag/vulnerability-research/">vulnerability-research</a><a class="chip" href="/tag/vulnerability-scanning/">vulnerability-scanning</a><a class="chip" href="/tag/web-security/">web-security</a><a class="chip" href="/tag/windows-security/">windows-security</a><a class="chip" href="/tag/zero-day/">zero-day</a></div>
+          <div class="chips"><a class="chip" href="/tag/ai/">ai</a><a class="chip" href="/tag/ai-security/">ai-security</a><a class="chip" href="/tag/alpine/">alpine</a><a class="chip" href="/tag/apache/">apache</a><a class="chip" href="/tag/atlassian/">atlassian</a><a class="chip" href="/tag/attack-surface/">attack-surface</a><a class="chip" href="/tag/authentication/">authentication</a><a class="chip" href="/tag/blue-team/">blue-team</a><a class="chip" href="/tag/case-breakdown/">case-breakdown</a><a class="chip" href="/tag/certificate-transparency/">certificate-transparency</a><a class="chip" href="/tag/cloud-security/">cloud-security</a><a class="chip" href="/tag/cloudflare/">cloudflare</a><a class="chip" href="/tag/code-audit/">code-audit</a><a class="chip" href="/tag/concept/">concept</a><a class="chip" href="/tag/cryptojacking/">cryptojacking</a><a class="chip" href="/tag/cve/">cve</a><a class="chip" href="/tag/data-breach/">data-breach</a><a class="chip" href="/tag/easm/">easm</a><a class="chip" href="/tag/edge-security/">edge-security</a><a class="chip" href="/tag/email-security/">email-security</a><a class="chip" href="/tag/extortion/">extortion</a><a class="chip" href="/tag/git-security/">git-security</a><a class="chip" href="/tag/gitlab/">gitlab</a><a class="chip" href="/tag/gitleaks/">gitleaks</a><a class="chip" href="/tag/hands-on/">hands-on</a><a class="chip" href="/tag/incident/">incident</a><a class="chip" href="/tag/incident-response/">incident-response</a><a class="chip" href="/tag/japan/">japan</a><a class="chip" href="/tag/java/">java</a><a class="chip" href="/tag/kev/">kev</a><a class="chip" href="/tag/mark-of-the-web/">mark-of-the-web</a><a class="chip" href="/tag/mcp/">mcp</a><a class="chip" href="/tag/n-central/">n-central</a><a class="chip" href="/tag/node-red/">node-red</a><a class="chip" href="/tag/nodejs/">nodejs</a><a class="chip" href="/tag/nuclei/">nuclei</a><a class="chip" href="/tag/openai/">openai</a><a class="chip" href="/tag/openssh/">openssh</a><a class="chip" href="/tag/optimizely/">optimizely</a><a class="chip" href="/tag/ot-security/">ot-security</a><a class="chip" href="/tag/passkeys/">passkeys</a><a class="chip" href="/tag/patch-management/">patch-management</a><a class="chip" href="/tag/patching/">patching</a><a class="chip" href="/tag/phishing/">phishing</a><a class="chip" href="/tag/php/">php</a><a class="chip" href="/tag/pki/">pki</a><a class="chip" href="/tag/privilege-escalation/">privilege-escalation</a><a class="chip" href="/tag/prompt-injection/">prompt-injection</a><a class="chip" href="/tag/python-security/">python-security</a><a class="chip" href="/tag/ransomware/">ransomware</a><a class="chip" href="/tag/remote-code-execution/">remote-code-execution</a><a class="chip" href="/tag/rmm/">rmm</a><a class="chip" href="/tag/sd-wan/">sd-wan</a><a class="chip" href="/tag/secrets/">secrets</a><a class="chip" href="/tag/secrets-management/">secrets-management</a><a class="chip" href="/tag/supply-chain/">supply-chain</a><a class="chip" href="/tag/third-party-risk/">third-party-risk</a><a class="chip" href="/tag/threat-hunting/">threat-hunting</a><a class="chip" href="/tag/threat-intel/">threat-intel</a><a class="chip" href="/tag/tls/">tls</a><a class="chip" href="/tag/tools/">tools</a><a class="chip" href="/tag/vulnerability/">vulnerability</a><a class="chip" href="/tag/vulnerability-management/">vulnerability-management</a><a class="chip" href="/tag/vulnerability-research/">vulnerability-research</a><a class="chip" href="/tag/vulnerability-scanning/">vulnerability-scanning</a><a class="chip" href="/tag/web-security/">web-security</a><a class="chip" href="/tag/windows-security/">windows-security</a><a class="chip" href="/tag/zero-day/">zero-day</a></div>
         </div></section>
 </main>
 

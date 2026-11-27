@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shirudo: Perisai eBPF dari OpenAI dan Cisco untuk Menutup Celah Patch — llunatic-lab</title>
+<meta name="description" content="Kerentanan kritis bocor di hari Jumat. Patch-nya baru datang berminggu-minggu kemudian. Pada 23 November 2026, OpenAI dan Cisco merilis Shirudo sebagai open-source — runtime eBPF yang membiarkan AI agent menulis perisai sementara untuk celah itu dan memasangnya ke sistem Linux yang sedang berjalan, tanpa reboot.">
+<meta property="og:title" content="Shirudo: Perisai eBPF dari OpenAI dan Cisco untuk Menutup Celah Patch">
+<meta property="og:description" content="Kerentanan kritis bocor di hari Jumat. Patch-nya baru datang berminggu-minggu kemudian. Pada 23 November 2026, OpenAI dan Cisco merilis Shirudo sebagai open-source — runtime eBPF yang membiarkan AI agent menulis perisai sementara untuk celah itu dan memasangnya ke sistem Linux yang sedang berjalan, tanpa reboot.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/shirudo-openai-cisco-ebpf-shields.jpg"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/shirudo-openai-cisco-ebpf-shields/"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/shirudo-openai-cisco-ebpf-shields/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/id/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/id/arsip/">Arsip</a>
+      <a href="/id/tentang/">Tentang</a>
+      <a class="lang-toggle" href="/artikel/shirudo-openai-cisco-ebpf-shields/">EN</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>artikel</div>
+              <h1>Shirudo: Perisai eBPF dari OpenAI dan Cisco untuk Menutup Celah Patch</h1>
+              <div class="meta"><span>27 November 2026</span><span>·</span>
+              <span>6 mnt baca</span><a class="tag" href="/id/tag/tools/">tools</a> <a class="tag" href="/id/tag/ebpf/">ebpf</a> <a class="tag" href="/id/tag/shirudo/">shirudo</a> <a class="tag" href="/id/tag/openai/">openai</a></div>
+              <img class="cover" src="/assets/covers/shirudo-openai-cisco-ebpf-shields.jpg" alt="Shirudo: Perisai eBPF dari OpenAI dan Cisco untuk Menutup Celah Patch">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Setiap defender kenal betul celah ini. Sebuah <span class="gterm" data-term="vulnerability" data-def="A weakness in a system or application that attackers can exploit.">vulnerability</span> kritis diumumkan di hari Jumat, kode <span class="gterm" data-term="exploit" data-def="A piece of code or technique that takes advantage of a vulnerability.">exploit</span>-nya sudah beredar hari Senin, sementara patch vendor — setelah pengujian, persetujuan change, dan jendela maintenance — baru mendarat bulan depan. Jendela antara disclosure dan patch inilah tempat breach terjadi. Ini real estate paling berbahaya di dunia keamanan, dan selama bertahun-tahun satu-satunya jawaban adalah buru-buru dan berharap.</p>
+<p>Pada 23 November 2026, Cisco dan OpenAI mengumumkan jawaban yang berbeda: <span class="gterm" data-term="Shirudo" data-def="Proyek keamanan runtime open-source berbasis eBPF yang diluncurkan Cisco dan OpenAI pada November 2026; bahasa Jepang untuk &#x27;perisai&#x27;. Shirudo memasang shield yang ditandatangani secara kriptografis dan dibuat AI ke sistem Linux yang sedang berjalan untuk memblokir sementara eksploitasi kerentanan yang sudah diketahui sampai patch permanen tersedia.">Shirudo</span>, bahasa Jepang untuk &quot;perisai&quot;. Ini runtime open-source berbasis <span class="gterm" data-term="eBPF" data-def="Extended Berkeley Packet Filter — teknologi kernel Linux yang menjalankan program kecil terverifikasi di hook dalam kernel, memungkinkan operator mengamati dan mengendalikan perilaku sistem tanpa mengubah source kernel atau me-reboot.">eBPF</span> yang memasang perlindungan sementara yang tertarget langsung ke sistem Linux yang sedang berjalan — tanpa reboot, tanpa restart layanan — selagi tim menyiapkan patch permanen. Ini rilis pertama dari Secure Infrastructure Project, proyek gabungan kedua perusahaan, dan sasarannya tepat di patch gap.</p>
+<h2 id="sebenarnya-shield-itu-apa"><span class="hnum">01</span>Sebenarnya shield itu apa?</h2>
+<p>Shield Shirudo adalah program kecil yang fokus, yang menempel pada operasi persis yang dibutuhkan sebuah <span class="gterm" data-term="exploit" data-def="A piece of code or technique that takes advantage of a vulnerability.">exploit</span> — dan tidak pada yang lain. Pilihan desain kuncinya adalah presisi. Mematikan satu fungsi berisiko secara keseluruhan bisa merusak traffic yang sah, karena penyerang dan pengguna normal sering memanggil kode yang sama. Shield justru mencegat satu perilaku spesifik: input yang malformed, code path yang berbahaya, satu panggilan yang menjadi tumpuan exploit. Request yang sah tetap mengalir; serangan tidak.</p>
+<p>Presisi itu dimungkinkan oleh <span class="gterm" data-term="eBPF" data-def="Extended Berkeley Packet Filter — teknologi kernel Linux yang menjalankan program kecil terverifikasi di hook dalam kernel, memungkinkan operator mengamati dan mengendalikan perilaku sistem tanpa mengubah source kernel atau me-reboot.">eBPF</span>, teknologi kernel Linux yang memungkinkan program kecil yang terverifikasi berjalan di hook dalam kernel tanpa mengubah source kernel. Isovalent, perusahaan milik Cisco di balik Shirudo, suka membandingkan eBPF dengan apa yang dilakukan JavaScript untuk browser: eBPF membuat kernel yang sedang berjalan bisa diprogram dengan aman secara on the fly. Shirudo adalah penulisan ulang <span class="gterm" data-term="Tetragon" data-def="Platform keamanan runtime open-source berbasis eBPF yang dirilis Isovalent pada 2022, kemudian dimiliki Cisco; mengamati event kernel secara real-time dan menegakkan kebijakan keamanan, serta menjadi mesin di balik fitur Live Protect milik Cisco.">Tetragon</span>, platform keamanan runtime eBPF open-source yang dirilis Isovalent pada 2022, yang sudah menjadi mesin di balik fitur Live Protect milik Cisco untuk memitigasi celah di produk mereka sendiri. Kalau Tetragon mengamati dan menegakkan policy yang ditulis manusia, Shirudo dibangun ulang di sekitar aktor baru: AI agent.</p>
+<p>Alur kerja yang didemokan OpenAI berjalan seperti ini. Sebuah <span class="gterm" data-term="vulnerability" data-def="A weakness in a system or application that attackers can exploit.">vulnerability</span> teridentifikasi. Sebuah agentic control plane — OpenAI memakai agent Codex untuk demo ini — mereproduksi celah itu di dalam <span class="gterm" data-term="sandbox" data-def="Lingkungan terisolasi yang ditegakkan OS untuk menjalankan kode tak tepercaya: tanpa jaringan eksternal, environment variable yang disanitasi dan di-allowlist, batas resource, dan penulisan dibatasi ke scratch path yang ditetapkan. Menjalankan kode target di luar sandbox berisiko mengeksekusi build script yang dikendalikan penyerang.">sandbox</span>, mencari titik tempat shield bisa menempel, menulis kode mitigasi, dan mengujinya terhadap reproducer <span class="gterm" data-term="exploit" data-def="A piece of code or technique that takes advantage of a vulnerability.">exploit</span> yang hidup. Operator meninjau bukti-buktinya dan menyetujui shield sebelum apa pun ditayangkan. Agent mengerjakan pekerjaan yang cepat dan repetitif; manusia tetap memegang keputusan akhir.</p>
+<h2 id="empat-pilar-satu-masalah-trust"><span class="hnum">02</span>Empat pilar, satu masalah trust</h2>
+<p>OpenAI dan Cisco menyusun Shirudo di sekitar empat kebutuhan arsitektur, dan yang paling menarik bukan AI-nya — melainkan model trust-nya.</p>
+<p><strong>Live protection.</strong> Shield mencegat atau memblokir code path yang rentan tanpa me-restart layanan, dan operator bisa mengamati dampak nyata sebuah shield sebelum mengaktifkan enforcement. Tujuannya: perlindungan yang mulai berjalan di hari celah diumumkan, bukan di hari patch dikirim.</p>
+<p><strong>AI-assisted defense.</strong> Agent menyelidiki celah, membangun shield, dan memvalidasinya terhadap traffic nyata. Intinya kecepatan: celah yang ditemukan AI kini datang lebih cepat daripada kemampuan tim manusia men-triase-nya, jadi pertahanan juga harus bergerak secepat mesin.</p>
+<p><strong>Trusted deployment.</strong> Setiap shield ditandatangani secara kriptografis dan diverifikasi sebelum bisa dimuat — bahkan jika penyerang sudah mendapatkan akses administrator di host tersebut. Inilah bagian yang membedakan Shirudo dari sekadar hack pintar: pipeline shield dirancang supaya admin yang sudah terkompromi tidak bisa diam-diam menyelipkan &quot;shield&quot; berbahaya atau mencabut shield yang asli.</p>
+<p><strong>Hardware-backed verification.</strong> Chip <span class="gterm" data-term="TPM" data-def="Trusted Platform Module — chip keamanan hardware khusus di motherboard komputer yang menyimpan kunci kriptografis dan mencatat pengukuran kondisi boot dan runtime sistem, memungkinkan atestasi yang didukung hardware.">TPM</span> 2.0 menyimpan measurement log yang berakar di hardware atas setiap shield yang dimuat atau dicabut. Tim mendapatkan audit trail yang benar-benar bisa dipercaya — bukti tentang apa yang aktif di sebuah sistem, dicatat oleh hardware, bukan oleh software yang bisa ditulis ulang penyerang.</p>
+<p>Rantai trust inilah yang mengubah program kernel yang ditulis AI — ide yang terdengar menakutkan — menjadi sesuatu yang bisa di-deploy. Tanpa shield yang ditandatangani dan atestasi TPM, membiarkan agent menyuntikkan kode ke kernel adalah kegilaan. Dengan keduanya, risikonya setidaknya terkendali.</p>
+<h2 id="uji-java4shell-dan-kenapa-ini-relevan-di-sini"><span class="hnum">03</span>Uji Java4Shell — dan kenapa ini relevan di sini</h2>
+<p>Proof of concept-nya sengaja dipilih dekat dengan pembaca blog ini. Dalam satu uji terkontrol, shield yang ditulis Codex menyisipkan validasi ke dalam routine decoding <span class="gterm" data-term="Base64" data-def="Encoding teks yang merepresentasikan data biner dengan 64 karakter ASCII yang bisa dicetak (A-Z, a-z, 0-9, + dan /), dengan = sebagai padding; dipakai di mana-mana, dari token dan JWT sampai unggahan file.">Base64</span> milik Java — primitif yang persis berada di balik <span class="gterm" data-term="Java4Shell" data-def="Julukan untuk CVE-2026-114938, out-of-bounds write di heap pada intrinsic decoder Base64 x86-64 milik HotSpot; ekor Base64 malformed ber-padding membuat JVM menulis 62 byte melewati buffer heap, memungkinkan kebocoran heap (JavaBleed) dan, pada beberapa aplikasi, remote code execution tanpa autentikasi.">Java4Shell</span> (CVE-2026-114938), celah <span class="gterm" data-term="OpenJDK" data-def="Implementasi referensi open-source dari platform Java, dikelola Oracle dan komunitas; sebagian besar distribusi Java (Corretto, Temurin, Zulu, dan lain-lain) dibangun darinya.">OpenJDK</span> yang kita bahas minggu lalu. Ditempelkan ke instance Elasticsearch yang sudah berjalan, shield itu menghentikan percobaan <span class="gterm" data-term="exploit" data-def="A piece of code or technique that takes advantage of a vulnerability.">exploit</span> Java4Shell sementara aplikasinya tetap online. Cisco melaporkan pendekatan yang sama juga memblokir percobaan terhadap sebuah celah PHP dalam pengujian.</p>
+<p>Dua catatan jujur perlu disampaikan di sini. Pertama, ini adalah uji yang dirancang dan dijalankan oleh pembuat proyek itu sendiri, bukan evaluasi independen — Isovalent sendiri menyebut mitigasi itu &quot;appears to be effective&quot;. Anggap ini demo yang menjanjikan, bukan benchmark. Kedua, Shirudo tidak bisa melindungi segalanya. Engineer Isovalent John Fastabend mencatat di sebuah Linux kernel summit pada 2026 bahwa timnya sering menemui kerentanan yang tidak punya titik penempelan yang cocok di kernel. Beberapa celah memang tidak punya hook yang bersih.</p>
+<p>Ada juga syarat yang berat untuk saat ini. Proyek ini masih pre-release, dan pemakaian produksi membutuhkan kernel Linux yang membawa patch kernel khusus Shirudo plus chip <span class="gterm" data-term="TPM" data-def="Trusted Platform Module — chip keamanan hardware khusus di motherboard komputer yang menyimpan kunci kriptografis dan mencatat pengukuran kondisi boot dan runtime sistem, memungkinkan atestasi yang didukung hardware.">TPM</span> 2.0. Ini khusus Linux, dan shield adalah perban, bukan obat — ia membeli waktu; ia tidak memperbaiki bug yang mendasarinya. OpenAI mengatakan berharap suatu hari nanti bisa merilis shield yang sudah teruji bersamaan dengan saat celah diumumkan, dengan policy <span class="gterm" data-term="least privilege" data-def="Prinsip keamanan bahwa setiap akun, proses, atau layanan hanya boleh memegang akses minimum yang dibutuhkan untuk pekerjaannya — tidak lebih.">least privilege</span> yang dibuat otomatis sebagai target jangka panjang.</p>
+<h2 id="apa-yang-harus-dilakukan-sekarang"><span class="hnum">04</span>Apa yang harus dilakukan sekarang</h2>
+<p>Shirudo bukan sesuatu yang bisa di-rollout ke produksi minggu ini. Ini sesuatu yang layak mulai dievaluasi — karena arah yang ditujunya adalah arah pertahanan ke depan. Proyek ini open-source di bawah lisensi BSD 2-Clause (program BPF-nya berlisensi ganda BSD dan GPL), kodenya ada di github.com/shirudo-dev/shirudo, dan Isovalent menyediakan quickstart virtual machine serta lab interaktif untuk mencobanya. OpenAI juga mengumumkan webinar deep-dive teknis pada 15 Desember 2026.</p>
+<p>Kalau kamu menjalankan infrastruktur Linux, ini cara praktis untuk mendekatinya:</p>
+<ol>
+<li><strong>Coba lab-nya, bukan fleet-mu.</strong> Jalankan VM quickstart, reproduksi demo shield Java4Shell, dan amati bagaimana shield menempel, mengamati, lalu menegakkan aturan. Tujuannya memahami alur kerja, bukan melindungi apa pun dulu.</li>
+<li><strong>Petakan eksposur patch-gap-mu.</strong> Layanan mana yang paling lama dari disclosure sampai ter-patch — dan kenapa? Nilai Shirudo sebanding dengan besarnya gap itu. Fleet yang patch dalam hitungan jam tidak banyak terbantu; fleet yang butuh change window dan reboot sangat terbantu.</li>
+<li><strong>Awasi katalog shield.</strong> Nilai sebenarnya proyek ini akan datang saat shield yang sudah teruji dikirim bersamaan dengan disclosure. Sampai saat itu, setiap shield adalah pekerjaan custom — dan kode kernel custom yang ditulis agent adalah hal yang persis membutuhkan pipeline bertanda tangan dan teratestasi TPM yang sedang dibangun Shirudo.</li>
+<li><strong>Terus patch.</strong> Shield adalah sabuk pengaman, bukan perbaikan. Ia membuatmu tetap hidup selagi perbaikan dibangun; ia bukan alasan untuk melewatkan perbaikan itu.</li>
+</ol>
+<p>Greg Brockman, presiden dan co-founder OpenAI, menyatakannya dengan lugas saat peluncuran: &quot;Finding a bug today doesn&#x27;t mean you can patch every system tomorrow.&quot; Kalimat itu adalah tesis keseluruhannya. Patch gap bukan kegagalan penjadwalan — ini fakta struktural tentang bagaimana software dikirim. Shirudo adalah upaya serius pertama untuk bertahan di dalam gap itu, bukan sekadar meminta maaf karenanya. Apakah ini bekerja dalam skala besar masih menjadi pertanyaan terbuka, dan jawaban jujurnya adalah belum ada yang tahu. Tapi untuk pertama kalinya, ada yang membangun tooling untuk mencari tahu — secara terbuka, dengan kode yang publik, dan dengan model trust yang dirancang sejak awal. Itu saja sudah cukup alasan untuk memperhatikannya.</p><div class="author-box"><div class="kicker"><span class="dot"></span>ditulis oleh</div><p><strong>kou</strong> mendokumentasikan threat intel, attack surface, dan pertahanan praktis — dari sisi gelap internet.</p></div><div class="pager"><a href="/id/artikel/certificate-transparency/"><span class="dir">← sebelumnya</span><span class="t">Certificate Transparency: Buku Besar Publik yang Menangkap Sertifikat Nakal</span></a><span></span></div></div>
+                <aside class="toc"><h4>Daftar isi</h4><ol><li style="margin-left:0px"><a href="#sebenarnya-shield-itu-apa">Sebenarnya shield itu apa?</a></li><li style="margin-left:0px"><a href="#empat-pilar-satu-masalah-trust">Empat pilar, satu masalah trust</a></li><li style="margin-left:0px"><a href="#uji-java4shell-dan-kenapa-ini-relevan-di-sini">Uji Java4Shell — dan kenapa ini relevan di sini</a></li><li style="margin-left:0px"><a href="#apa-yang-harus-dilakukan-sekarang">Apa yang harus dilakukan sekarang</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>catatan keamanan dari sisi gelap internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="cari artikel…" aria-label="search">
+    <div class="search-hint">ketik minimal 2 huruf · esc untuk tutup · ctrl+k dari mana saja</div>
+    <div class="search-results" data-empty="nggak ketemu — coba kata kunci lain."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

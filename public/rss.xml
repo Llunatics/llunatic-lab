@@ -4,7 +4,11 @@
 <title>llunatic-lab (en)</title><link>https://lab.llunaticsys.web.id/</link>
 <description>Security notes from the dark side of the internet</description>
 <language>en</language>
-<item><title>Certificate Transparency: The Public Ledger That Catches Rogue Certificates</title>
+<item><title>Shirudo: OpenAI and Cisco&#x27;s eBPF Shield for the Patch Gap</title>
+            <link>https://lab.llunaticsys.web.id/artikel/shirudo-openai-cisco-ebpf-shields/</link>
+            <description>A critical vulnerability drops on a Friday. The patch lands weeks later. On November 23, 2026, OpenAI and Cisco open-sourced Shirudo — an eBPF runtime that lets an AI agent write a temporary shield for the flaw and load it onto live Linux systems, no reboot required.</description>
+            <pubDate>Fri, 27 Nov 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/artikel/shirudo-openai-cisco-ebpf-shields/</guid></item><item><title>Certificate Transparency: The Public Ledger That Catches Rogue Certificates</title>
             <link>https://lab.llunaticsys.web.id/artikel/certificate-transparency/</link>
             <description>Every TLS certificate your browser trusts is written into a public, append-only log before it is issued. Certificate Transparency turns certificate issuance from a private handshake into a public record — and in 2026, the rules around it got stricter than ever.</description>
             <pubDate>Wed, 25 Nov 2026 00:00:00 -0000</pubDate>
@@ -80,10 +84,6 @@
             <link>https://lab.llunaticsys.web.id/artikel/arista-velocloud-zero-day-read-only-to-superuser/</link>
             <description>Arista&#x27;s October 22 advisory describes a SQL injection flaw that turns the lowest-privilege VeloCloud account into a full operator — the third exploited VeloCloud Orchestrator flaw since July, and the first that only needs a login.</description>
             <pubDate>Sun, 25 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/artikel/arista-velocloud-zero-day-read-only-to-superuser/</guid></item><item><title>PHP2Shell: When the Runtime Itself Is the Vulnerability — A Case Breakdown</title>
-            <link>https://lab.llunaticsys.web.id/artikel/php2shell-runtime-rce/</link>
-            <description>No plugin was broken. No password was guessed. Two flaws in PHP itself let an unauthenticated attacker run code on a web server — and the first exploit attempts arrived four days before the patch existed.</description>
-            <pubDate>Sat, 24 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/artikel/php2shell-runtime-rce/</guid></item>
+            <guid>https://lab.llunaticsys.web.id/artikel/arista-velocloud-zero-day-read-only-to-superuser/</guid></item>
 </channel>
 </rss>

@@ -4,7 +4,11 @@
 <title>llunatic-lab (id)</title><link>https://lab.llunaticsys.web.id/id/</link>
 <description>Catatan keamanan dari sisi gelap internet</description>
 <language>id</language>
-<item><title>Certificate Transparency: Buku Besar Publik yang Menangkap Sertifikat Nakal</title>
+<item><title>Shirudo: Perisai eBPF dari OpenAI dan Cisco untuk Menutup Celah Patch</title>
+            <link>https://lab.llunaticsys.web.id/id/artikel/shirudo-openai-cisco-ebpf-shields/</link>
+            <description>Kerentanan kritis bocor di hari Jumat. Patch-nya baru datang berminggu-minggu kemudian. Pada 23 November 2026, OpenAI dan Cisco merilis Shirudo sebagai open-source — runtime eBPF yang membiarkan AI agent menulis perisai sementara untuk celah itu dan memasangnya ke sistem Linux yang sedang berjalan, tanpa reboot.</description>
+            <pubDate>Fri, 27 Nov 2026 00:00:00 -0000</pubDate>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/shirudo-openai-cisco-ebpf-shields/</guid></item><item><title>Certificate Transparency: Buku Besar Publik yang Menangkap Sertifikat Nakal</title>
             <link>https://lab.llunaticsys.web.id/id/artikel/certificate-transparency/</link>
             <description>Setiap sertifikat TLS yang dipercaya browser-mu wajib ditulis ke dalam log publik yang hanya bisa ditambah, sebelum sertifikat itu diterbitkan. Certificate Transparency mengubah penerbitan sertifikat dari jabat tangan privat menjadi catatan publik — dan pada 2026, aturannya menjadi lebih ketat dari sebelumnya.</description>
             <pubDate>Wed, 25 Nov 2026 00:00:00 -0000</pubDate>
@@ -80,10 +84,6 @@
             <link>https://lab.llunaticsys.web.id/id/artikel/arista-velocloud-zero-day-read-only-to-superuser/</link>
             <description>Advisory Arista 22 Oktober menggambarkan celah SQL injection yang mengubah akun VeloCloud paling rendah haknya menjadi operator penuh — celah Orchestrator ketiga yang dieksploitasi sejak Juli, dan yang pertama hanya membutuhkan login.</description>
             <pubDate>Sun, 25 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/id/artikel/arista-velocloud-zero-day-read-only-to-superuser/</guid></item><item><title>PHP2Shell: Saat Runtime-nya Sendiri yang Jadi Celah — Bedah Kasus</title>
-            <link>https://lab.llunaticsys.web.id/id/artikel/php2shell-runtime-rce/</link>
-            <description>Bukan plugin yang jebol. Bukan password yang ketebak. Dua celah di PHP sendiri memungkinkan penyerang tanpa akun menjalankan kode di server web — dan percobaan eksploitasi pertamanya datang empat hari sebelum patch tersedia.</description>
-            <pubDate>Sat, 24 Oct 2026 00:00:00 -0000</pubDate>
-            <guid>https://lab.llunaticsys.web.id/id/artikel/php2shell-runtime-rce/</guid></item>
+            <guid>https://lab.llunaticsys.web.id/id/artikel/arista-velocloud-zero-day-read-only-to-superuser/</guid></item>
 </channel>
 </rss>

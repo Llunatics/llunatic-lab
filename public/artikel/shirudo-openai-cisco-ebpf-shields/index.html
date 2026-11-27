@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shirudo: OpenAI and Cisco&#x27;s eBPF Shield for the Patch Gap — llunatic-lab</title>
+<meta name="description" content="A critical vulnerability drops on a Friday. The patch lands weeks later. On November 23, 2026, OpenAI and Cisco open-sourced Shirudo — an eBPF runtime that lets an AI agent write a temporary shield for the flaw and load it onto live Linux systems, no reboot required.">
+<meta property="og:title" content="Shirudo: OpenAI and Cisco&#x27;s eBPF Shield for the Patch Gap">
+<meta property="og:description" content="A critical vulnerability drops on a Friday. The patch lands weeks later. On November 23, 2026, OpenAI and Cisco open-sourced Shirudo — an eBPF runtime that lets an AI agent write a temporary shield for the flaw and load it onto live Linux systems, no reboot required.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0c'/%3E%3Ctext x='9' y='22' font-family='monospace' font-size='16' fill='%23bef264'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,560&family=Inter:wght@400;500;600;650&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<meta property="og:image" content="https://lab.llunaticsys.web.id/assets/covers/shirudo-openai-cisco-ebpf-shields.jpg"><link rel="alternate" hreflang="en" href="https://lab.llunaticsys.web.id/artikel/shirudo-openai-cisco-ebpf-shields/"><link rel="alternate" hreflang="id" href="https://lab.llunaticsys.web.id/id/artikel/shirudo-openai-cisco-ebpf-shields/">
+</head>
+<body>
+<div class="progress"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">LLUNATIC<span class="cursor">_</span></a>
+    <div class="nav-links">
+      <a href="/arsip/">Archive</a>
+      <a href="/tentang/">About</a>
+      <a class="lang-toggle" href="/id/artikel/shirudo-openai-cisco-ebpf-shields/">ID</a>
+      <button class="icon-btn search-toggle" aria-label="search"></button>
+      <button class="icon-btn theme-toggle" aria-label="toggle theme"></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+            <article class="article-hero"><div class="wrap-narrow">
+              <div class="kicker"><span class="dot"></span>article</div>
+              <h1>Shirudo: OpenAI and Cisco&#x27;s eBPF Shield for the Patch Gap</h1>
+              <div class="meta"><span>27 November 2026</span><span>·</span>
+              <span>6 min read</span><a class="tag" href="/tag/tools/">tools</a> <a class="tag" href="/tag/ebpf/">ebpf</a> <a class="tag" href="/tag/shirudo/">shirudo</a> <a class="tag" href="/tag/openai/">openai</a></div>
+              <img class="cover" src="/assets/covers/shirudo-openai-cisco-ebpf-shields.jpg" alt="Shirudo: OpenAI and Cisco&#x27;s eBPF Shield for the Patch Gap">
+            </div></article>
+            <div class="article-body"><div class="wrap">
+              <div class="article-grid">
+                <div class="prose"><p>Every defender knows the gap. A critical <span class="gterm" data-term="vulnerability" data-def="A weakness in a system or application that attackers can exploit.">vulnerability</span> is disclosed on a Friday, <span class="gterm" data-term="exploit" data-def="A piece of code or technique that takes advantage of a vulnerability.">exploit</span> code is circulating by Monday, and the vendor patch — after testing, change approval, and a maintenance window — lands sometime next month. That window between disclosure and patch is where breaches happen. It is the most dangerous real estate in security, and for years the only answer has been to hurry up and hope.</p>
+<p>On November 23, 2026, Cisco and OpenAI announced a different answer: <span class="gterm" data-term="Shirudo" data-def="An open-source eBPF-based runtime security project launched by Cisco and OpenAI in November 2026; Japanese for &#x27;shield&#x27;. It deploys cryptographically signed, AI-generated shields onto live Linux systems to temporarily block exploitation of known vulnerabilities until a permanent patch lands.">Shirudo</span>, Japanese for &quot;shield&quot;. It is an open-source runtime built on <span class="gterm" data-term="eBPF" data-def="Extended Berkeley Packet Filter — a Linux kernel technology that runs small, verified programs at hooks inside the kernel, letting operators observe and control system behavior without modifying kernel source or rebooting.">eBPF</span> that deploys temporary, targeted protections directly onto running Linux systems — no reboot, no service restart — while teams prepare the permanent patch. It is the first release under the two companies&#x27; joint Secure Infrastructure Project, and it is aimed squarely at the patch gap.</p>
+<h2 id="what-a-shield-actually-is"><span class="hnum">01</span>What a shield actually is</h2>
+<p>A Shirudo shield is a small, focused program that attaches to the exact operation an <span class="gterm" data-term="exploit" data-def="A piece of code or technique that takes advantage of a vulnerability.">exploit</span> needs — and nothing else. The key design choice is precision. Shutting off an entire risky function could break legitimate traffic, because attackers and normal users often call the same code. A shield instead intercepts one specific behavior: the malformed input, the dangerous code path, the one call the exploit depends on. Legitimate requests keep flowing; the attack does not.</p>
+<p>That precision is possible because of <span class="gterm" data-term="eBPF" data-def="Extended Berkeley Packet Filter — a Linux kernel technology that runs small, verified programs at hooks inside the kernel, letting operators observe and control system behavior without modifying kernel source or rebooting.">eBPF</span>, the Linux kernel technology that lets small, verified programs run at hooks inside the kernel without modifying kernel source. Isovalent, the Cisco-owned company behind Shirudo, likes to compare eBPF to what JavaScript did for browsers: it makes the running kernel safely programmable on the fly. Shirudo is a rewrite of <span class="gterm" data-term="Tetragon" data-def="An open-source eBPF-based runtime security platform released by Isovalent in 2022, later owned by Cisco; it observes kernel events in real time and enforces security policies, and powers Cisco&#x27;s Live Protect feature.">Tetragon</span>, the open-source eBPF runtime security platform Isovalent released in 2022, which already powers Cisco&#x27;s Live Protect feature for mitigating flaws in its own products. Where Tetragon observes and enforces human-written policy, Shirudo is rebuilt around a new actor: the AI agent.</p>
+<p>The workflow OpenAI demonstrated runs like this. A <span class="gterm" data-term="vulnerability" data-def="A weakness in a system or application that attackers can exploit.">vulnerability</span> is identified. An agentic control plane — OpenAI used its Codex agent for the demo — reproduces the flaw in a <span class="gterm" data-term="sandbox" data-def="An OS-enforced isolated environment for running untrusted code: no external network, sanitized allowlisted environment variables, resource limits, and writes restricted to assigned scratch paths. Running target code outside one risks executing attacker-controlled build scripts.">sandbox</span>, finds a point where a shield can attach, writes the mitigation code, and tests it against a live <span class="gterm" data-term="exploit" data-def="A piece of code or technique that takes advantage of a vulnerability.">exploit</span> reproducer. The operator reviews the evidence and approves the shield before anything goes live. The agent does the fast, repetitive work; the human keeps the final say.</p>
+<h2 id="four-pillars-one-trust-problem"><span class="hnum">02</span>Four pillars, one trust problem</h2>
+<p>OpenAI and Cisco organized Shirudo around four architectural requirements, and the most interesting one is not the AI — it is the trust model.</p>
+<p><strong>Live protection.</strong> Shields intercept or block vulnerable code paths without restarting services, and operators can observe a shield&#x27;s real-world impact before flipping enforcement on. The goal is protection that starts the day a flaw is disclosed, not the day the patch ships.</p>
+<p><strong>AI-assisted defense.</strong> Agents investigate flaws, build shields, and validate them against real traffic. The point is speed: AI-discovered flaws are now arriving faster than human teams can triage them, so the defense has to move at machine speed too.</p>
+<p><strong>Trusted deployment.</strong> Every shield is cryptographically signed and verified before it can load — even if an attacker has already gained administrator access on the host. This is the part that makes Shirudo different from a clever hack: the shield pipeline is designed so that a compromised admin cannot silently swap in a malicious &quot;shield&quot; or remove a real one.</p>
+<p><strong>Hardware-backed verification.</strong> A <span class="gterm" data-term="TPM" data-def="Trusted Platform Module — a dedicated hardware security chip on a computer&#x27;s motherboard that stores cryptographic keys and records measurements of the system&#x27;s boot and runtime state, enabling hardware-backed attestation.">TPM</span> 2.0 chip keeps a verifiable, hardware-rooted measurement log of every shield loaded or removed. Teams get an audit trail they can actually trust — evidence of what was active on a system, recorded by hardware rather than by software an attacker could rewrite.</p>
+<p>That trust chain is what turns an AI-written kernel program from a terrifying idea into a deployable one. Without signed shields and TPM attestation, letting an agent inject code into your kernel would be madness. With them, it is at least a controlled risk.</p>
+<h2 id="the-java4shell-test-and-why-it-matters-here"><span class="hnum">03</span>The Java4Shell test — and why it matters here</h2>
+<p>The proof of concept was deliberately chosen close to home for readers of this blog. In a single controlled test, a shield written by Codex inserted validation into Java&#x27;s <span class="gterm" data-term="Base64" data-def="A text encoding that represents binary data with 64 printable ASCII characters (A-Z, a-z, 0-9, + and /), with = as padding; used everywhere from tokens and JWTs to file uploads.">Base64</span> decoding routine — the exact primitive behind <span class="gterm" data-term="Java4Shell" data-def="Nickname for CVE-2026-114938, a heap out-of-bounds write in HotSpot&#x27;s x86-64 Base64 decoder intrinsic; a malformed padded Base64 tail makes the JVM write 62 bytes past a heap buffer, enabling heap leaks (JavaBleed) and, in some applications, unauthenticated remote code execution.">Java4Shell</span> (CVE-2026-114938), the <span class="gterm" data-term="OpenJDK" data-def="The open-source reference implementation of the Java platform, maintained by Oracle and the community; most Java distributions (Corretto, Temurin, Zulu, and others) are built from it.">OpenJDK</span> flaw we covered last week. Attached to an already-running Elasticsearch instance, the shield stopped a Java4Shell <span class="gterm" data-term="exploit" data-def="A piece of code or technique that takes advantage of a vulnerability.">exploit</span> attempt while the application stayed online. Cisco reported the same approach also blocked attempts against a PHP flaw in testing.</p>
+<p>Two honest caveats belong here. First, this was a test designed and run by the project&#x27;s own builders, not an independent evaluation — Isovalent itself said the mitigation &quot;appears to be effective&quot;. Treat it as a promising demo, not a benchmark. Second, Shirudo cannot shield everything. Isovalent engineer John Fastabend noted at a Linux kernel summit in 2026 that his team often encounters vulnerabilities with no suitable point in the kernel where a shield could attach. Some flaws simply have no clean hook.</p>
+<p>There are also hard requirements today. The project is pre-release, and production use needs a Linux kernel carrying Shirudo&#x27;s own kernel patches plus a <span class="gterm" data-term="TPM" data-def="Trusted Platform Module — a dedicated hardware security chip on a computer&#x27;s motherboard that stores cryptographic keys and records measurements of the system&#x27;s boot and runtime state, enabling hardware-backed attestation.">TPM</span> 2.0 chip. It is Linux-only, and a shield is a bandage, not a cure — it buys time; it does not fix the underlying bug. OpenAI has said it hopes to eventually release tested shields at the same time flaws are disclosed, with automatically generated <span class="gterm" data-term="least privilege" data-def="The security principle that every account, process, or service should hold only the minimum access needed to do its job — nothing more.">least privilege</span> policies as a longer-term aim.</p>
+<h2 id="what-to-do-with-it-now"><span class="hnum">04</span>What to do with it now</h2>
+<p>Shirudo is not something to roll out to production this week. It is something to start evaluating — because the direction it points in is where defense is heading. The project is open source under the BSD 2-Clause license (its BPF programs are dual-licensed BSD and GPL), the code lives at github.com/shirudo-dev/shirudo, and Isovalent hosts a virtual machine quickstart and an interactive lab for trying it out. OpenAI has also announced a technical deep-dive webinar for December 15, 2026.</p>
+<p>If you run Linux infrastructure, here is a practical way to approach it:</p>
+<ol>
+<li><strong>Try the lab, not your fleet.</strong> Spin up the VM quickstart, reproduce the Java4Shell shield demo, and watch how a shield attaches, observes, and enforces. The goal is to understand the workflow, not to protect anything yet.</li>
+<li><strong>Map your patch-gap exposure.</strong> Which of your services take the longest from disclosure to patched — and why? Shirudo&#x27;s value is proportional to that gap. A fleet that patches in hours gains little; one that needs change windows and reboots gains a lot.</li>
+<li><strong>Watch the shield catalog.</strong> The project&#x27;s real value will arrive when tested shields ship alongside disclosures. Until then, every shield is a custom job — and custom kernel code written by an agent is exactly the thing that needs the signed, TPM-attested pipeline Shirudo is building.</li>
+<li><strong>Keep patching.</strong> A shield is a seatbelt, not a repair. It keeps you alive while the fix is built; it is not a reason to skip the fix.</li>
+</ol>
+<p>Greg Brockman, OpenAI&#x27;s president and co-founder, put it plainly at the launch: &quot;Finding a bug today doesn&#x27;t mean you can patch every system tomorrow.&quot; That sentence is the whole thesis. The patch gap is not a scheduling failure — it is a structural fact of how software ships. Shirudo is the first serious attempt to defend inside that gap instead of just apologizing for it. Whether it works at scale is still an open question, and the honest answer is that nobody knows yet. But for the first time, someone is building the tooling to find out — in the open, with the code public, and with the trust model designed first. That alone makes it worth your attention.</p><div class="author-box"><div class="kicker"><span class="dot"></span>written by</div><p><strong>kou</strong> documents what’s learned about threat intel, attack surface, and practical defense — from the dark side of the internet.</p></div><div class="pager"><a href="/artikel/certificate-transparency/"><span class="dir">← previous</span><span class="t">Certificate Transparency: The Public Ledger That Catches Rogue Certificates</span></a><span></span></div></div>
+                <aside class="toc"><h4>Contents</h4><ol><li style="margin-left:0px"><a href="#what-a-shield-actually-is">What a shield actually is</a></li><li style="margin-left:0px"><a href="#four-pillars-one-trust-problem">Four pillars, one trust problem</a></li><li style="margin-left:0px"><a href="#the-java4shell-test-and-why-it-matters-here">The Java4Shell test — and why it matters here</a></li><li style="margin-left:0px"><a href="#what-to-do-with-it-now">What to do with it now</a></li></ol></aside>
+              </div>
+            </div></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span class="js-year">2026</span> llunaticsys</span>
+      <span>security notes from the dark side of the internet</span>
+      <span><a href="/rss.xml">rss</a> · <a href="/sitemap.xml">sitemap</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="search articles…" aria-label="search">
+    <div class="search-hint">type at least 2 characters · esc to close · ctrl+k anywhere</div>
+    <div class="search-results" data-empty="nothing found — try another keyword."></div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>
